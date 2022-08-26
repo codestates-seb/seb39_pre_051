@@ -1,5 +1,6 @@
 package com.codestates.pre51.dto;
 
+import com.codestates.pre51.answer.dto.AnswerDTO;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,4 +20,5 @@ public class MultiResponseDTO<T> {
         this.pageInfo = new PageInfo(page.getNumber() + 1,
                 page.getSize(), page.getTotalElements(), page.getTotalPages());
     }
+
 }

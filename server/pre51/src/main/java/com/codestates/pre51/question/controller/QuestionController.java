@@ -46,9 +46,7 @@ public class QuestionController {
 
     @PostMapping("/ask")
     public ResponseEntity postQuestion(@RequestBody QuestionDTO.Post requestBody){
-        System.out.println(requestBody.getQuestionContent()); // contents 로 잘 들어옴
         Question question = questionMapper.questionPostToQuestion(requestBody);
-        System.out.println("RequestBody content value: "+question.getQuestionContent());
         Question createdQuestion =questionService.createQuestion(question);
         QuestionDTO.Response response = questionMapper.questionToQuestionResponse(createdQuestion);
 
