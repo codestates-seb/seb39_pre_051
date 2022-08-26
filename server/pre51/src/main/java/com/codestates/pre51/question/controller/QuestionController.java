@@ -1,19 +1,25 @@
 package com.codestates.pre51.question.controller;
 
+import com.codestates.pre51.question.dto.QuestionDTO;
 import com.codestates.pre51.question.entity.Question;
+import com.codestates.pre51.question.mapper.QuestionMapper;
+import com.codestates.pre51.dto.SingleResponseDTO;
 import com.codestates.pre51.question.repository.QuestionRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.codestates.pre51.question.service.QuestionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("")
 public class QuestionController {
-    private final QuestionRepository questionRepository;
+    private final QuestionService questionService;
 
-    public QuestionController(QuestionRepository questionRepository) {
-        this.questionRepository = questionRepository;
+    private final QuestionMapper questionMapper;
+    public QuestionController(QuestionService questionService, QuestionMapper questionMapper) {
+        this.questionService = questionService;
+        this.questionMapper=questionMapper;
     }
 
     @GetMapping("/questions")
@@ -21,11 +27,15 @@ public class QuestionController {
         return "hello world";
     }
 
-    @PostMapping("/signup")
-    public Question signUp(){
-        final Question question = Question.builder().question_id(0).email("test@test.com").build();
-        System.out.println(question.getQuestion_id());
-        System.out.println(question.getEmail());
-        return questionRepository.save(question);
+
+    @PostMapping("/ask")
+    public ResponseEntity postQuestion(@RequestBody QuestionDTO.Post requestBody){
+        Question question = questionMapper.questionPostToQuestion(requestBody);
+        Question createdQuestion =questionService.createQuestion(question);
+        QuestionDTO.Response response = questionMapper.questionToQuestionResponse(createdQuestion);
+
+        return new ResponseEntity<>(
+                new SingleResponseDTO<>(response),
+                HttpStatus.CREATED);
     }
 }
