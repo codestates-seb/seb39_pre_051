@@ -8,6 +8,8 @@
       <change afterPath="$PROJECT_DIR$/server/pre51/src/main/java/com/codestates/pre51/question/controller/QuestionController.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/server/pre51/src/main/java/com/codestates/pre51/question/entity/Question.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/server/pre51/src/main/java/com/codestates/pre51/question/repository/QuestionRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/pre51/src/main/java/com/codestates/pre51/question/service/QuestionService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/pre51/src/main/java/com/codestates/pre51/question/service/QuestionServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -35,6 +37,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -111,7 +114,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1661405176230</updated>
-      <workItem from="1661405178471" duration="4295000" />
+      <workItem from="1661405178471" duration="6151000" />
     </task>
     <servers />
   </component>
