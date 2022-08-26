@@ -2,42 +2,51 @@ package com.codestates.pre51.question.dto;
 
 //import javax.validation.constraints.NotBlank;
 
-import jdk.jfr.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import javax.persistence.Column;
+import lombok.Setter;
 import java.sql.Time;
 import java.time.LocalDateTime;
 
 public class QuestionDTO {
     @Getter
     @AllArgsConstructor
+    @Setter
     public static class Post{
 
         //@NotBlank
 
-        private long question_writer_id;
+        private long questionWriterId;
 
-        private String question_title;
+        private String questionTitle;
 
-        private String question_content;
+        private String questionContent;
 
     }
 
     @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class Patch{
+
+        private long questionId;
+
+        private String questionTitle;
+
+        private String questionContent;
+
+    }
+    @Getter
     @AllArgsConstructor
     public static class Response{
-        private long question_id;
-        private long question_writer_id;
-        private String question_title;
-        private String question_content;
-        private long question_likes;
-        private LocalDateTime question_created_at;
-        private LocalDateTime question_modified_at;
-        private long question_bestanswer_id;
-        private Time question_answered_at;
+        private long questionId;
+        private long questionWriterId;
+        private String questionTitle;
+        private String questionContent;
+        private long questionLikes;
+        private LocalDateTime questionCreatedAt;
+        private LocalDateTime questionModifiedAt;
+        private long questionBestanswerId;
+        private Time questionAnsweredAt;
     }
 }

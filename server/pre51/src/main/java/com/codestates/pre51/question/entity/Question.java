@@ -22,32 +22,33 @@ import java.time.LocalDateTime;
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long question_id;
+    @Column(name="question_id")
+    private long questionId;
 
-    @Column(nullable = false)
-    private long question_writer_id;
+    @Column(nullable = false, name="question_writer_id")
+    private long questionWriterId;
 
-    @Column(nullable = false,length = 100)
-    private String question_title;
+    @Column(nullable = false,length = 100, name="question_title")
+    private String questionTitle;
 
-    @Column(nullable = false,columnDefinition = "TEXT")
-    private String question_content;
+    @Column(nullable = false, columnDefinition = "TEXT", name="question_content")
+    private String questionContent;
 
-    @Column(nullable = false, columnDefinition = "INT(4) default '0'")
-    private long question_likes;
+    @Column(nullable = false, columnDefinition = "INT(4) default '0'", name="question_likes")
+    private long questionLikes;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name="question_created_at")
     @CreatedDate
-    private LocalDateTime question_created_at;
+    private LocalDateTime questionCreatedAt;
 
-    @Column
+    @Column(name="question_modified_at")
     @LastModifiedDate
-    private LocalDateTime question_modified_at;
+    private LocalDateTime questionModifiedAt;
 
-    @Column
-    private long question_bestanswer_id;
+    @Column(name="question_bestanswer_id")
+    private long questionBestanswerId;
 
-    @Column
+    @Column(name="questionAnsweredAt")
     @Timestamp
     private Time question_answered_at;
 }
