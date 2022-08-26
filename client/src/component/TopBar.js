@@ -1,7 +1,5 @@
 const TopBar = () => {
-    return (
-        <div>TopBar</div>
-    )
-}
+  return <div>TopBar</div>;
+};
 
-export default TopBar
+export default TopBar;
