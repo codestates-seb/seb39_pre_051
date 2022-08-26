@@ -11,7 +11,6 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     public QuestionService(QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;
-
     }
 
     public Page<Question> findQuestions(int page, int size){
@@ -38,4 +37,8 @@ public class QuestionService {
         return questionRepository.save(findQuestion);
     }
 
+    public void deleteQuestion(long questionId){
+        Question question = questionRepository.findByQuestionId(questionId);
+        questionRepository.delete(question);
+    }
 }

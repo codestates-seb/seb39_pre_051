@@ -36,6 +36,14 @@ public class QuestionDTO {
         private String questionContent;
 
     }
+
+    @Getter
+    @AllArgsConstructor
+    @Setter
+    public static class Delete{
+        private long questionId;
+    }
+
     @Getter
     @AllArgsConstructor
     public static class Response{
