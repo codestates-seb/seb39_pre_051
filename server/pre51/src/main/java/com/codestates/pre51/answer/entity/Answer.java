@@ -1,6 +1,7 @@
 package com.codestates.pre51.answer.entity;
 
 import com.codestates.pre51.question.entity.Question;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
@@ -43,6 +44,6 @@ public class Answer {
 
     @ManyToOne
     @JoinColumn(name="question_id")
+    @JsonIgnore
     private Question answerQuestions;
-
 }

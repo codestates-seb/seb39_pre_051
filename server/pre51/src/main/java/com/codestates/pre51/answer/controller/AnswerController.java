@@ -39,9 +39,10 @@ public class AnswerController {
     public ResponseEntity postAnswer(@RequestBody AnswerDTO.Post requestBody,
                                      @PathVariable("question-id") long question_id){
         Answer answer = answerMapper.answerPostToAnswer(requestBody);
-        Answer createdAnswer = answerService.createAnswer(answer);
+        Question question = questionService.findQuestion(question_id);
+        answer.setAnswerQuestions(question);
 
-        createdAnswer.setAnswerQuestions(questionService.findQuestion(question_id));
+        Answer createdAnswer = answerService.createAnswer(answer);
         AnswerDTO.Response response = answerMapper.answerToAnswerResponse(createdAnswer);
 
         return new ResponseEntity<>(
