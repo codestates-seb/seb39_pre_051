@@ -23,6 +23,21 @@ const Header = styled.header`
   background-color: #f8f9f9;
 `;
 
+const TobBarLogoA = styled.a`
+  text-decoration: none;
+`;
+
+const TobBarLogoSpan = styled.span`
+  margin-left: 0;
+  width: 15rem;
+  height: 3rem;
+  margin-top: -0.4rem;
+  display: inline-block;
+  text-indent: -9999rem;
+  background-position: 0 -50rem;
+  background-image: url(https://cdn.sstatic.net/Img/unified/sprites.svg?v=fcc0ea44ba27);
+`;
+
 const TobBarLeftNav = styled.div`
   display: flex;
   margin: -0.2rem;
@@ -102,7 +117,9 @@ const TopBar = () => {
   return (
     <Header>
       <TopBarDiv>
-        <span>stackoverflow</span>
+        <TobBarLogoA href='/'>
+          <TobBarLogoSpan />
+        </TobBarLogoA>
         <TobBarLeftNav>
           <TopBarA href='https://stackoverflow.co/'>About</TopBarA>
           <TopBarA href='#'>Products</TopBarA>
