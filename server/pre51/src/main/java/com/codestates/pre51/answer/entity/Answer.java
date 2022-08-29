@@ -1,5 +1,6 @@
 package com.codestates.pre51.answer.entity;
 
+import com.codestates.pre51.question.entity.Question;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
@@ -40,6 +41,8 @@ public class Answer {
     @LastModifiedDate
     private LocalDateTime answerModifiedAt;
 
-    @Column(nullable = false,name="answer_question_id")
-    private long answerQuestionId;
+    @ManyToOne
+    @JoinColumn(name="question_id")
+    private Question answerQuestions;
+
 }

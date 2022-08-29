@@ -24,9 +24,8 @@ public class QuestionService {
     }
 
     public Question findQuestion(long questionId) {
-        Question question = questionRepository.findByQuestionId(questionId);
 
-        return question;
+        return questionRepository.findByQuestionId(questionId);
     }
 
     public Question updateQuestion(Question question){

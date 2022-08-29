@@ -6,6 +6,8 @@ import com.codestates.pre51.answer.mapper.AnswerMapper;
 import com.codestates.pre51.answer.service.AnswerService;
 
 import com.codestates.pre51.dto.SingleResponseDTO;
+import com.codestates.pre51.question.entity.Question;
+import com.codestates.pre51.question.service.QuestionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +19,12 @@ import java.util.List;
 public class AnswerController {
     private final AnswerService answerService;
     private final AnswerMapper answerMapper;
+    private final QuestionService questionService;
 
-    public AnswerController(AnswerService answerService, AnswerMapper answerMapper){
+    public AnswerController(AnswerService answerService, AnswerMapper answerMapper, QuestionService questionService){
         this.answerMapper=answerMapper;
         this.answerService=answerService;
+        this.questionService = questionService;
     }
 
     @GetMapping("")
@@ -31,10 +35,13 @@ public class AnswerController {
                 HttpStatus.OK);
     }
 
-    @PostMapping("/answer")
-    public ResponseEntity postAnswer(@RequestBody AnswerDTO.Post requestBody){
+    @PostMapping("/answer/{question-id}")
+    public ResponseEntity postAnswer(@RequestBody AnswerDTO.Post requestBody,
+                                     @PathVariable("question-id") long question_id){
         Answer answer = answerMapper.answerPostToAnswer(requestBody);
         Answer createdAnswer = answerService.createAnswer(answer);
+
+        createdAnswer.setAnswerQuestions(questionService.findQuestion(question_id));
         AnswerDTO.Response response = answerMapper.answerToAnswerResponse(createdAnswer);
 
         return new ResponseEntity<>(

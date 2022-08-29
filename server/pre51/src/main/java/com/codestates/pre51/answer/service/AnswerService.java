@@ -2,6 +2,7 @@ package com.codestates.pre51.answer.service;
 
 import com.codestates.pre51.answer.entity.Answer;
 import com.codestates.pre51.answer.repository.AnswerRepository;
+import com.codestates.pre51.question.entity.Question;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +20,10 @@ public class AnswerService {
     }
 
     public Answer createAnswer(Answer answer) {
-        Answer savedAnswer = answerRepository.save(answer);
-        return savedAnswer;
+        return answerRepository.save(answer);
+    }
+
+    public Answer findQuestionsAnswers(Answer answer) {
+        return answerRepository.save(answer);
     }
 }

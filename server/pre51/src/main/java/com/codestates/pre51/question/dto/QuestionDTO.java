@@ -2,11 +2,13 @@ package com.codestates.pre51.question.dto;
 
 //import javax.validation.constraints.NotBlank;
 
+import com.codestates.pre51.answer.entity.Answer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import java.sql.Time;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class QuestionDTO {
     @Getter
@@ -21,6 +23,8 @@ public class QuestionDTO {
         private String questionTitle;
 
         private String questionContent;
+
+        private List<Answer> questionAnswers;
 
     }
 
@@ -54,7 +58,8 @@ public class QuestionDTO {
         private long questionLikes;
         private LocalDateTime questionCreatedAt;
         private LocalDateTime questionModifiedAt;
-        private long questionBestanswerId;
+        private long questionBestAnswerId;
         private Time questionAnsweredAt;
+        private List<Answer> questionAnswers;
     }
 }
