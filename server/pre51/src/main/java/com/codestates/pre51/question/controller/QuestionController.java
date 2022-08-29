@@ -53,7 +53,7 @@ public class QuestionController {
         *
         */
         Question question = questionService.findQuestion(questionId);
-        List<Answer> answer = answerService.findAnswers();
+        List<Answer> answer = answerService.findAnswers(question);
         question.setQuestionAnswers(answer);
         return new ResponseEntity<>(
                 new SingleResponseDTO<>(questionMapper.questionToQuestionResponse(question))
