@@ -3,8 +3,33 @@ import Card from '../component/Card';
 import Footer from '../component/Footer';
 import TopBar from '../component/TopBar';
 import SideBar from '../component/SideBar';
-import Pagination from '../component/Pagination'
+import Pagination from '../component/Pagination';
 import AskBtn from '../component/AskBtn';
+
+const QuestionMain = () => {
+  return (
+    <>
+      <TopBar />
+      <Container>
+        <SideBar />
+        <Content>
+          <TitleLayout>
+            <TitleContainer>
+              <Title>All Questions</Title>
+              <AskBtn />
+            </TitleContainer>
+          </TitleLayout>
+          <CardLayout>
+            <Card />
+            <Card />
+            <Pagination total='30' limit='15' page='1' />
+          </CardLayout>
+        </Content>
+      </Container>
+      <Footer />
+    </>
+  );
+};
 
 const Container = styled.div`
   height: auto;
@@ -21,56 +46,31 @@ const Container = styled.div`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  border-left: 1px solid #D6D9DC;
+  border-left: 1px solid #d6d9dc;
+  border-bottom: 1px solid #d6d9dc;
   padding: 2.4rem 0;
-  max-width:110rem;
+  max-width: 110rem;
   line-height: 1.7rem;
 `;
 
-//TitleContainer
-const TitleContainer = styled.div`
+//TitleLayout
+const TitleLayout = styled.div`
   padding-left: 2rem;
-`
-const TitleWrapper = styled.div`
-  display:flex;
-`
+`;
+const TitleContainer = styled.div`
+  display: flex;
+`;
 //Title 태그는 실제로는 본인의 질문페이지로 이동하는 a 태그이다 이후 수정할 것.
 const Title = styled.h1`
   font-size: 2.7rem;
-  color: #3b4045; 
+  color: #3b4045;
   margin: 0 0 0.8rem 0;
   width: 80rem;
-`
+`;
 //CardLayout
 
 const CardLayout = styled.div`
-  /* border: 1px solid red; */
-`
 
+`;
 
-const Home = () => {
-  return (
-    <>
-      <TopBar />
-      <Container>
-        <SideBar />
-        <Content>
-          <TitleContainer>
-            <TitleWrapper>
-              <Title>Top Question</Title>
-              <AskBtn />
-            </TitleWrapper>
-          </TitleContainer>
-          <CardLayout>
-            <Card />
-            <Card />
-            <Pagination total='30' limit='15' page='1'/>
-          </CardLayout>
-        </Content>
-      </Container>
-      <Footer />
-    </>
-  );
-};
-
-export default Home;
+export default QuestionMain;
