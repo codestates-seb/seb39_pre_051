@@ -6,12 +6,14 @@ import com.codestates.pre51.answer.mapper.AnswerMapper;
 import com.codestates.pre51.answer.service.AnswerService;
 
 import com.codestates.pre51.dto.SingleResponseDTO;
+import com.codestates.pre51.question.dto.QuestionDTO;
 import com.codestates.pre51.question.entity.Question;
 import com.codestates.pre51.question.service.QuestionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -35,7 +37,7 @@ public class AnswerController {
                 HttpStatus.OK);
     }
 
-    @PostMapping("/answer/{question-id}")
+    @PostMapping("/{question-id}")
     public ResponseEntity postAnswer(@RequestBody AnswerDTO.Post requestBody,
                                      @PathVariable("question-id") long question_id){
         Answer answer = answerMapper.answerPostToAnswer(requestBody);
@@ -48,5 +50,30 @@ public class AnswerController {
         return new ResponseEntity<>(
                 new SingleResponseDTO<>(response),
                 HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{answer-id}/edit")
+    public ResponseEntity patchQuestion(
+            @PathVariable("answer-id") @Positive long answerId,
+            @RequestBody AnswerDTO.Patch requestBody){
+        requestBody.setAnswerId(answerId);
+        System.out.println(requestBody.getAnswerId()+" ,"+requestBody.getAnswerContent());
+        Answer answer =
+                answerService.updateAnswer(answerMapper.answerPatchToAnswer(requestBody));
+
+
+        return new ResponseEntity<>(
+                new SingleResponseDTO<>(answerMapper.answerToAnswerResponse(answer)),
+                HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{answer-id}")
+    public ResponseEntity deleteQuestion(
+            @PathVariable("answer-id") @Positive long answerId){
+
+        answerService.deleteAnswer(answerId);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
     }
 }

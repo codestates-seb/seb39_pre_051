@@ -1,6 +1,9 @@
 package com.codestates.pre51.question.entity;
 
 import com.codestates.pre51.answer.entity.Answer;
+
+import com.codestates.pre51.comment.entity.Comment;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jdk.jfr.Timestamp;
 import lombok.*;
@@ -59,4 +62,8 @@ public class Question {
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "answerQuestions")
     @JsonIgnore
     private List<Answer> questionAnswers = new ArrayList<>();
+
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "commentQuestions")
+    @JsonIgnore
+    private List<Comment> questionComments = new ArrayList<>();
 }

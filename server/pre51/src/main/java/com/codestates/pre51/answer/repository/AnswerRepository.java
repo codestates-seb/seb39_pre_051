@@ -10,7 +10,8 @@ import java.util.List;
 
 @Repository
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
-    //List<Answer> findByQuestion(@Param(value = "answerQuestions") Question question);
-    //List<Answer> findByQuestion(@Param(value = "question_id") long question_id);
+
+    Answer findByAnswerId(long answerId);
+
     List<Answer> findAllByAnswerQuestions(Question question);
 }
