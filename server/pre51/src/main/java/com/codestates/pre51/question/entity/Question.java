@@ -1,5 +1,7 @@
 package com.codestates.pre51.question.entity;
 
+import com.codestates.pre51.answer.entity.Answer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jdk.jfr.Timestamp;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -10,6 +12,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.sql.Time;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name="question")
 @Getter
@@ -45,10 +49,14 @@ public class Question {
     @LastModifiedDate
     private LocalDateTime questionModifiedAt;
 
-    @Column(name="question_bestanswer_id")
-    private long questionBestanswerId;
+    @Column(name="question_best_answer_id")
+    private long questionBestAnswerId;
 
-    @Column(name="questionAnsweredAt")
+    @Column(name="question_answered_at")
     @Timestamp
-    private Time question_answered_at;
+    private Time questionAnsweredAt;
+
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "answerQuestions")
+    @JsonIgnore
+    private List<Answer> questionAnswers = new ArrayList<>();
 }

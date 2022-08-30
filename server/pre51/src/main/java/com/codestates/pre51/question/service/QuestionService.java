@@ -2,6 +2,7 @@ package com.codestates.pre51.question.service;
 
 import com.codestates.pre51.question.entity.Question;
 import com.codestates.pre51.question.repository.QuestionRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -24,9 +25,8 @@ public class QuestionService {
     }
 
     public Question findQuestion(long questionId) {
-        Question question = questionRepository.findByQuestionId(questionId);
 
-        return question;
+        return questionRepository.findByQuestionId(questionId);
     }
 
     public Question updateQuestion(Question question){
