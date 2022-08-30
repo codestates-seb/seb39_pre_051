@@ -252,11 +252,19 @@ const Ask = () => {
     text-decoration: none;
     cursor: pointer;
 
+    &:hover {
+      background: #0074cc;
+    }
+
+    & + #discard:hover {
+      background: #fcf2f2;
+    }
+
     color: ${(props) => props.color || '#525960'};
     background: ${(props) => props.background || '#F8F9F9'};
     border-color: ${(props) => props.borderColor || 'transparent'};
     border-radius: ${(props) => props.borderRadius || '0.3rem'};
-    margin-left: ${(props) => props.marginLeft || '0'};
+    margin-right: ${(props) => props.marginRight || '0'};
   `;
 
   return (
@@ -266,7 +274,7 @@ const Ask = () => {
         <HeadLine>Ask a public question</HeadLine>
         <QuestionForm>
           <QuestionTitleContainer>
-            <QusetionTitleLabel for='title'>
+            <QusetionTitleLabel htmlFor='title'>
               Title
               <QusetionTitleP>
                 Be specific and imagine you’re asking a question to another
@@ -274,12 +282,13 @@ const Ask = () => {
               </QusetionTitleP>
             </QusetionTitleLabel>
             <QuestionTitleInput
+              id='title'
               type='text'
               placeholder='e.g. Is there an R function for finding the index of an element in a vector?'
             />
           </QuestionTitleContainer>
           <QuestionBodyContainer>
-            <QuestionBodyLabel for='body'>
+            <QuestionBodyLabel htmlFor='body'>
               Body
               <QuestionBodyP>
                 Include all the information someone would need to answer your
@@ -330,18 +339,19 @@ const Ask = () => {
               </QuestionBodyMdHelpUl>
             </QuestionBodyMdHelp>
             <QuestionBodyDiv>
-              <QuestionBodyTextArea />
+              <QuestionBodyTextArea id='body' />
               <QuestionBodyResize></QuestionBodyResize>
             </QuestionBodyDiv>
           </QuestionBodyContainer>
           <QuestionTagsContainer>
-            <QuestionTagsLabel>
+            <QuestionTagsLabel htmlFor='label'>
               Tags
               <QuestionTagsP>
                 Add up to 5 tags to describe what your question is about
               </QuestionTagsP>
             </QuestionTagsLabel>
             <QuestionTagsInput
+              id='label'
               type='text'
               placeholder='e.g. (ruby-on-rails .net sql-server)'
             />
@@ -352,10 +362,11 @@ const Ask = () => {
             color='#FFFFFF'
             background='#0A95FF'
             borderColor='#7AA7C7'
+            marginRight='0.4rem'
           >
             Review your question
           </QuestionSubmitButton>
-          <QuestionSubmitButton color='#C22E32' background='none'>
+          <QuestionSubmitButton id='discard' color='#C22E32' background='none'>
             Discard draft
           </QuestionSubmitButton>
         </QuestionSubmitContainer>

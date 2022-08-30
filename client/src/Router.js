@@ -5,6 +5,8 @@ import Login from './page/Login';
 import SignUp from './page/SignUp'
 import Question from './page/Question'
 import QuestionMain from './page/QuestionMain';
+import UserProfile from './page/UserProfile';
+
 
 const Router = () => {
   return (
@@ -15,6 +17,7 @@ const Router = () => {
       <Route path='/ask' element={<Ask />} />
       <Route path='/questions' element={<QuestionMain/>} />
       <Route path='/questions/:questionId' element={<Question />} />
+      <Route path='/users' element={<UserProfile />} />
     </Routes>
   );
 };
