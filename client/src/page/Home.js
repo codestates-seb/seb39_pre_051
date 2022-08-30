@@ -5,6 +5,33 @@ import TopBar from '../component/TopBar';
 import SideBar from '../component/SideBar';
 import Pagination from '../component/Pagination'
 import AskBtn from '../component/AskBtn';
+import { useSelector } from 'react-redux';
+
+const Home = () => {
+  const themeState = useSelector((state)=>state.themeSlice).theme
+  return (
+    <>
+      <TopBar />
+      <Container>
+        <SideBar />
+        <Content>
+          <TitleContainer>
+            <TitleWrapper>
+              <Title themeState={themeState}>Top Question</Title>
+              <AskBtn />
+            </TitleWrapper>
+          </TitleContainer>
+          <CardLayout>
+            <Card />
+            <Card />
+            <Pagination total='30' limit='15' page='1'/>
+          </CardLayout>
+        </Content>
+      </Container>
+      <Footer />
+    </>
+  );
+};
 
 const Container = styled.div`
   height: auto;
@@ -37,40 +64,14 @@ const TitleWrapper = styled.div`
 //Title 태그는 실제로는 본인의 질문페이지로 이동하는 a 태그이다 이후 수정할 것.
 const Title = styled.h1`
   font-size: 2.7rem;
-  color: #3b4045; 
+  color : ${(props) => props.themeState === 'light' ? ' #3b4045' : '#E7E9EB'};
   margin: 0 0 0.8rem 0;
   width: 80rem;
 `
 //CardLayout
 
 const CardLayout = styled.div`
-  /* border: 1px solid red; */
 `
 
-
-const Home = () => {
-  return (
-    <>
-      <TopBar />
-      <Container>
-        <SideBar />
-        <Content>
-          <TitleContainer>
-            <TitleWrapper>
-              <Title>Top Question</Title>
-              <AskBtn />
-            </TitleWrapper>
-          </TitleContainer>
-          <CardLayout>
-            <Card />
-            <Card />
-            <Pagination total='30' limit='15' page='1'/>
-          </CardLayout>
-        </Content>
-      </Container>
-      <Footer />
-    </>
-  );
-};
 
 export default Home;

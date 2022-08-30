@@ -1,13 +1,15 @@
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 
 const tagArray = ['java', 'javascript', 'python', 'GO', 'C++'];
 
 const Card = () => {
+  const themeState = useSelector((state)=>state.themeSlice).theme
   return (
     <CardLayout>
       <CardContainer>
         <VoteContainer>
-          <Votes>0 votes</Votes>
+          <Votes themeState={themeState}>0 votes</Votes>
           <Answers>0 answers</Answers>
           <Views>0 views</Views>
         </VoteContainer>
@@ -17,7 +19,7 @@ const Card = () => {
           <QuestionInfoContainer>
             <TagWrapper>
               {tagArray.map((el, key) => (
-                <Tag key={key}>{el}</Tag>
+                <Tag key={key} themeState={themeState}>{el}</Tag>
               ))}
             </TagWrapper>
             <InfoWrapper>
@@ -57,7 +59,7 @@ const VoteContainer = styled.div`
   }
 `;
 const Votes = styled.div`
-  color: #0c0d0e;
+  color: ${(props)=>props.themeState ==='light' ? '#0c0d0e' : '#F2F2F3'};
 `;
 const Answers = styled.div``;
 const Views = styled.div``;
@@ -87,9 +89,9 @@ const QuestionInfoContainer = styled.div`
 const TagWrapper = styled.div``;
 
 const Tag = styled.a`
-  border: 1px solid #ffffff;
-  color: hsl(205, 47%, 41%);
-  background-color: hsl(205, 46%, 92%);
+  border: ${(props)=>props.themeState==='light' ? '1px solid #ffffff' : 'none'};
+  color : ${(props)=>props.themeState ==='light' ? 'hsl(205, 47%, 41%)' : '#CDE1EE'};
+  background-color: ${(props)=>props.themeState ==='light' ? 'hsl(205, 46%, 92%)' : 'hsl(205,14%,28%)'};
   padding: 0.5rem 0.6rem;
   text-align: center;
 `;

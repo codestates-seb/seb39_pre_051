@@ -5,8 +5,10 @@ import TopBar from '../component/TopBar';
 import SideBar from '../component/SideBar';
 import Pagination from '../component/Pagination';
 import AskBtn from '../component/AskBtn';
+import { useSelector } from 'react-redux';
 
 const QuestionMain = () => {
+  const themeState = useSelector((state)=>state.themeSlice).theme
   return (
     <>
       <TopBar />
@@ -15,7 +17,7 @@ const QuestionMain = () => {
         <Content>
           <TitleLayout>
             <TitleContainer>
-              <Title>All Questions</Title>
+              <Title themeState={themeState}>All Questions</Title>
               <AskBtn />
             </TitleContainer>
           </TitleLayout>
@@ -63,7 +65,7 @@ const TitleContainer = styled.div`
 //Title 태그는 실제로는 본인의 질문페이지로 이동하는 a 태그이다 이후 수정할 것.
 const Title = styled.h1`
   font-size: 2.7rem;
-  color: #3b4045;
+  color : ${(props) => props.themeState === 'light' ? ' #3b4045' : '#E7E9EB'};
   margin: 0 0 0.8rem 0;
   width: 80rem;
 `;

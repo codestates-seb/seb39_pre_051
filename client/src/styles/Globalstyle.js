@@ -19,6 +19,5 @@ export const GlobalStyle = createGlobalStyle`
     body{
     background: ${({ theme }) => theme.bgColor};
     color: ${({ theme }) => theme.textColor};
-    border: ${({ theme }) => theme.borderColor};
     }
 `;

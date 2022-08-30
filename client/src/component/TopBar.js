@@ -1,10 +1,59 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
+import {useSelector} from 'react-redux'
 
-/**
- *  TopBar 컴포넌트는 해당 서비스의 모든 화면의 최상단에 고정되어 있는 GNB(Global Navigation Bar)이다.
- */
+
+
+const TopBar = (props) => {
+  const themeState = useSelector((state)=>state.themeSlice).theme
+  console.log(themeState)
+  return (
+    <Header themeState={themeState}>
+      <TopBarDiv>
+        <TobBarLogoA href='/' themeState={themeState} >
+          <TobBarLogoSpan />
+        </TobBarLogoA>
+        <TobBarLeftNav>
+          <TopBarA href='https://stackoverflow.co/' themeState={themeState}>About</TopBarA>
+          <TopBarA href='#' themeState={themeState}>Products</TopBarA>
+          <TopBarA href='https://stackoverflow.co/teams/' themeState={themeState}>For Teams</TopBarA>
+        </TobBarLeftNav>
+        <TopBarForm id='search'>
+          <TopBarSearchDiv>
+            <TopBarInput type='text' placeholder='Search...' />
+            <FontAwesomeIcon id='searchIcon' icon={faSearch} />
+          </TopBarSearchDiv>
+        </TopBarForm>
+        <TopBarRightNav>
+          <TopBarA
+            id='login'
+            href='/login'
+            color='#39739D'
+            backgroundColor='#E1ECF4'
+            borderColor='#7AA7C7'
+            borderRadius='0.3rem'
+            themeState={themeState}
+          >
+            Log in
+          </TopBarA>
+          <TopBarA
+            id='signup'
+            href='/signup'
+            color='#FFFFFF'
+            backgroundColor='#0A95FF'
+            borderColor='#7AA7C7'
+            borderRadius='0.3rem'
+            marginLeft='0.3rem'
+            themeState={themeState}
+          >
+            Sign up
+          </TopBarA>
+        </TopBarRightNav>
+      </TopBarDiv>
+    </Header>
+  );
+};
 
 const Header = styled.header`
   position: fixed !important;
@@ -21,7 +70,7 @@ const Header = styled.header`
   display: flex;
   margin: 0 auto;
   align-items: center;
-  background-color: #f8f9f9;
+  background-color: ${(props) => props.themeState === 'light' ?  '#f8f9f9' : '#393939'};
 `;
 
 const TobBarLogoA = styled.a`
@@ -31,7 +80,7 @@ const TobBarLogoA = styled.a`
   text-decoration: none;
 
   &:hover {
-    background-color: #e3e6e8;
+    background-color: ${(props) => props.themeState === 'light' ? ' #e3e6e8;' : '#414244'};
   }
 `;
 
@@ -112,70 +161,22 @@ const TopBarA = styled.a`
   font-size: 1.3rem;
   border: 0.1rem solid #6a737c;
   text-decoration: none;
-
   &:hover {
-    background-color: #e3e6e8;
+    background-color: ${(props) => props.themeState === 'light' ? ' #e3e6e8;' : '#414244'};
   }
 
   &#login:hover {
-    background-color: #b3d3ea;
+    background-color: ${(props) => props.themeState==='light' ? '#b3d3ea' : '#414244'};
   }
 
   &#signup:hover {
-    background-color: #0074cc;
+    background-color: ${(props) => props.themeState==='light' ? '#0074cc' : '#414244'};
   }
-
-  color: ${(props) => props.color || '#525960'};
-  background-color: ${(props) => props.backgroundColor || '#F8F9F9'};
-  border-color: ${(props) => props.borderColor || 'transparent'};
+  color: ${(props)=> props.themeState==='light' ? props.color || '#525960' : '#E7E9EB' };
+  background-color: ${(props) => props.themeState==='light' ? props.backgroundColor || '#F8F9F9'  : '#393939'};
+  border-color:${(props) => props.themeState==='light' ? props.borderColor || 'transparent' : '#393939'};
   border-radius: ${(props) => props.borderRadius || '100rem'};
   margin-left: ${(props) => props.marginLeft || '0'};
 `;
-
-const TopBar = () => {
-  return (
-    <Header>
-      <TopBarDiv>
-        <TobBarLogoA href='/'>
-          <TobBarLogoSpan />
-        </TobBarLogoA>
-        <TobBarLeftNav>
-          <TopBarA href='https://stackoverflow.co/'>About</TopBarA>
-          <TopBarA href='#'>Products</TopBarA>
-          <TopBarA href='https://stackoverflow.co/teams/'>For Teams</TopBarA>
-        </TobBarLeftNav>
-        <TopBarForm id='search'>
-          <TopBarSearchDiv>
-            <TopBarInput type='text' placeholder='Search...' />
-            <FontAwesomeIcon id='searchIcon' icon={faSearch} />
-          </TopBarSearchDiv>
-        </TopBarForm>
-        <TopBarRightNav>
-          <TopBarA
-            id='login'
-            href='/login'
-            color='#39739D'
-            backgroundColor='#E1ECF4'
-            borderColor='#7AA7C7'
-            borderRadius='0.3rem'
-          >
-            Log in
-          </TopBarA>
-          <TopBarA
-            id='signup'
-            href='/signup'
-            color='#FFFFFF'
-            backgroundColor='#0A95FF'
-            borderColor='#7AA7C7'
-            borderRadius='0.3rem'
-            marginLeft='0.3rem'
-          >
-            Sign up
-          </TopBarA>
-        </TopBarRightNav>
-      </TopBarDiv>
-    </Header>
-  );
-};
 
 export default TopBar;
