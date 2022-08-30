@@ -16,9 +16,11 @@ import {
   faUndo,
 } from '@fortawesome/free-solid-svg-icons';
 import { useRef } from 'react';
+import { useSelector } from 'react-redux';
 
 const AddAnswer = () => {
   const textAreaInput = useRef();
+  const themeState = useSelector((state) => state.themeSlice).theme;
 
   const handleAnswerSubmit = (e) => {
     e.preventDefault();
@@ -27,8 +29,8 @@ const AddAnswer = () => {
   };
   return (
     <AddAnswerLayout>
-      <HeadLine>Your Answer</HeadLine>
-      <QuestionForm onSubmit={(e)=>handleAnswerSubmit(e)}>
+      <HeadLine themeState={themeState}>Your Answer</HeadLine>
+      <QuestionForm themeState={themeState} onSubmit={(e)=>handleAnswerSubmit(e)}>
         <QuestionBodyContainer>
           <QuestionBodyButton>
             <FontAwesomeIcon className='md-button' icon={faBold} />
@@ -51,12 +53,13 @@ const AddAnswer = () => {
               Hide formatting tips
             </QuestionFormattingTipsButton>
           </QuestionBodyButton>
-          <QuestionBodyDiv>
+          <QuestionBodyDiv themeState={themeState}>
               <QuestionBodyTextArea
                 type='text'
                 ref={textAreaInput}
+                themeState={themeState}
               />
-              <QuestionBodyResize></QuestionBodyResize>
+              <QuestionBodyResize themeState={themeState}></QuestionBodyResize>
               <button>Post Your Answer</button>
           </QuestionBodyDiv>
         </QuestionBodyContainer>
@@ -76,12 +79,13 @@ const HeadLine = styled.div`
   align-items: center;
   font-size: 2.5rem;
   margin-left: 1.7rem;
+  color : ${(props)=>props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3' };
 `;
 
 const QuestionForm = styled.form`
   width: 88rem;
   padding: 1.6rem;
-  background-color: #ffffff;
+  background-color: ${(props)=>props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D' };
 `;
 
 const QuestionBodyContainer = styled.div`
@@ -130,9 +134,9 @@ const QuestionBodyDiv = styled.div`
   position: relative;
   button {
     cursor: pointer;
-    background-color: #0a95ff;
+    background-color: ${(props) => props.themeState==='light' ? '#0a95ff' : '#0C63A9'};
     color: #ffffff;
-    border: 1px solid #ffffff;
+    border: ${(props)=>props.themeState ==='light' ? '1px solid #ffffff': 'none'};
     border-radius: 0.3rem;
     width: 12.9rem;
     height: 3.78rem;
@@ -157,6 +161,8 @@ const QuestionBodyTextArea = styled.textarea`
     width: 100%;
     font-size: 1.6rem;
     resize: none;
+    background-color:${(props)=>props.themeState ==='light' ? '#FFFFFF' : '#2D2D2D'};
+    color: ${(props)=>props.themeState ==='light' ? "#0C0D0E" : "#F2F2F3"};
 `;
 
 const QuestionBodyResize = styled.div`
@@ -167,7 +173,7 @@ const QuestionBodyResize = styled.div`
   margin: -0.3rem 0 0;
   cursor: s-resize;
   overflow: hidden;
-  background-color: #f1f2f3;
+  background-color: ${(props)=> props.themeState ==='light' ? '#f1f2f3' : '#3D3D3C'};
 `;
 
 

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import Comment from './Comment';
 import { useRef } from 'react';
+import { useSelector } from 'react-redux';
 
 const OpinionCard = ({
   id,
@@ -12,6 +13,7 @@ const OpinionCard = ({
   isQuestion,
 }) => {
   const commentInput = useRef();
+  const themeState = useSelector((state)=>state.themeSlice).theme
 
   const handleCommentSubmit =(e) => {
     e.preventDefault();
@@ -38,9 +40,9 @@ const OpinionCard = ({
           <ContentContainer>
             <Content>{content}</Content>
             <ContentInfoContainer>
-              <ContentInfo>
-                <InfoModified>{modifiedAt}</InfoModified>
-                <InfoBox>
+              <ContentInfo themeState={themeState}>
+                <InfoModified themeState={themeState}>{modifiedAt}</InfoModified>
+                <InfoBox themeState={themeState}>
                   <img src='https://w7.pngwing.com/pngs/981/645/png-transparent-default-profile-united-states-computer-icons-desktop-free-high-quality-person-icon-miscellaneous-silhouette-symbol.png' alt='프로필사진'></img>
                   <div id='writer'>{writer}</div>
                 </InfoBox>
@@ -70,7 +72,7 @@ const OpinionCard = ({
                   />
                 ))}
           </CommentLayout>
-          <AddCommentContainer>
+          <AddCommentContainer themeState={themeState}>
             <form onSubmit={(e) => handleCommentSubmit(e)}>
               <input type='text' ref={commentInput} onKeyDown={handleEnterPress}></input>
               <button>Add a comment</button>
@@ -136,11 +138,13 @@ const ContentInfo = styled.div`
   font-size: 1.2rem;
   line-height: 1.7rem;
   background-color: #d9eaf7;
+  background-color:${(props)=>props.themeState==='light' ? '#D9EAF7' : '#0C63A9'};
   padding: 0.5rem 0.6rem 0.7rem 0.7rem;
 `;
 
 const InfoModified = styled.div`
   color: #6a737c;
+  color: ${(props)=> props.themeState ==='light' ? '#6a737c' : '#ACB3B9' };
   margin: 0.1rem 0px 0.4rem 0;
 `
 
@@ -151,7 +155,7 @@ const InfoBox = styled.div`
     width: 3.2rem;
   }
   #writer {
-    color:hsl(206,100%,40%);
+    color: ${(props)=> props.themeState ==='light' ? ':hsl(206,100%,40%)' : '#2F9BFF'};
     font-size: 1.3rem;
     margin: 0 0 0 0.8rem;
   }
@@ -166,14 +170,14 @@ const AddCommentContainer = styled.div`
   font-size: 1.3rem;
   input{
     display: block;
-    width:100%;
+    width:99%;
     border : 1px solid #D6D9DC;
     border-radius: 0.3rem;
-    margin: 1rem 0 1rem 0;;
+    margin: 1rem 0 1rem 1rem;
   }
   button{
-  color:#D6D9DC;
-  background-color:#ffffff;
+  color: ${(props)=>props.themeState === 'light' ? '#D6D9DC' : '#60666c'};
+  background-color: ${(props)=>props.themeState==='light'? '#ffffff' : '#2D2D2D'};
   border: none;
   &:hover{
     color: #0a95ff;;

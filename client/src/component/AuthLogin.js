@@ -7,8 +7,6 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  /* display:block;*/
-  /* border: 1px solid red; */
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -16,13 +14,11 @@ const Container = styled.div`
 `;
 // input
 const InputSection = styled.div`
-  /* border: 1px solid green; */
   border-radius: 0.7rem;
   margin-bottom: 2.4rem;
   background-color: #ffffff;
   padding: 2.4rem;
   form {
-    /* padding: 3.4rem; */
     border-radius: 0.7rem;
     
     
@@ -40,7 +36,6 @@ const InputWrapper = styled.div`
   }
   input {
     width: 100%;
-    /*height: 3.3rem;*/
     padding: 0.8rem 0.9rem;
     border-radius: 0.3rem;
     border: 1px solid #babfc4;

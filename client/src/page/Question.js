@@ -6,6 +6,7 @@ import OpinionCard from '../component/OpinionCard';
 import { useParams } from 'react-router-dom';
 import AskBtn from '../component/AskBtn';
 import AddAnswer from '../component/AddAnswer';
+import { useSelector } from 'react-redux';
 
 const question = [
   {
@@ -73,6 +74,7 @@ const question = [
 
 const Question = () => {
   const params = useParams();
+  const themeState = useSelector((state)=>state.themeSlice).theme
   return (
     <>
       <TopBar />
@@ -81,10 +83,10 @@ const Question = () => {
         <Content>
           <TitleLayout>
             <TitleContainer>
-              <Title>{question[params.questionId].questionTitle}</Title>
+              <Title themeState={themeState}>{question[params.questionId].questionTitle}</Title>
               <AskBtn />
             </TitleContainer>
-            <CreatedAt>{question[params.questionId].questionCreatedAt}</CreatedAt>
+            <CreatedAt themeState={themeState}>{question[params.questionId].questionCreatedAt}</CreatedAt>
           </TitleLayout>
           <OpinionCard id={question[params.questionId].questionId} likes={question[params.questionId].questionLikes} content={question[params.questionId].questionContent} modifiedAt={question[params.questionId].questionModifiedAt} writer={question[params.questionId].questionWriter} comment={question[params.questionId].questionComment} isQuestion={true} />
           <AnswerSummay>{question[params.questionId].answer.length} Answers</AnswerSummay>
@@ -133,7 +135,7 @@ const TitleContainer = styled.div`
 //Title 태그는 실제로는 본인의 질문페이지로 이동하는 a 태그이다 이후 수정할 것.
 const Title = styled.h1`
   font-size: 2.7rem;
-  color: #3b4045; 
+  color : ${(props) => props.themeState === 'light' ? ' #3b4045' : '#E7E9EB'};
   margin: 0 0 0.8rem 0;
   width: 80rem;
 `
@@ -142,7 +144,7 @@ const CreatedAt = styled.div`
   font-size: 1.3rem;
   margin : 0 0 1.6rem 0;
   padding: 0 0 0.8rem 0;
-  color: #232629;
+  color: ${(props)=> props.themeState ==='light' ? '#232629' : '#E7E9EB'};
 `
 const AnswerSummay = styled.div`
   font-size:1.9rem;
