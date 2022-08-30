@@ -22,9 +22,8 @@ public class AnswerService {
     }
 
 
+    public List<Answer> findAnswers(Question question){
 
-
-    public List<Answer> findAnswers(Question question){ // 해당 question 안에 들어있는 answer 들만 추출
         return answerRepository.findAllByAnswerQuestions(question);
     }
 

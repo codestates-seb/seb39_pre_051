@@ -53,4 +53,5 @@ public class Answer {
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "commentAnswers",fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Comment> answerComments = new ArrayList<>();
+
 }
