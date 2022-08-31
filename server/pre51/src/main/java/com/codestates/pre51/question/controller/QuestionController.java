@@ -48,6 +48,21 @@ public class QuestionController {
     public ResponseEntity getQuestion(@PathVariable("question-id") long questionId){
         Question question = questionService.findQuestion(questionId);
 
+//        System.out.println("*************************************************");
+//
+//        List<Answer> ans = question.getQuestionAnswers();
+//        for(Answer data : ans){
+//            List<Comment> com = data.getAnswerComments();
+//            for(Comment c : com){
+//                System.out.println(c.getCommentContent());
+//            }
+//        }
+//
+//        System.out.println("*************************************************");
+        // Solution - answer 객체 모두 불러오고, 각 answer 마다 comment까지 추가
+//        List<Answer> answer = answerService.findAnswers(question);
+//        question.setQuestionAnswers(answer);
+
         return new ResponseEntity<>(
                 new SingleResponseDTO<>(questionMapper.questionToQuestionResponse(question))
                 ,HttpStatus.OK);

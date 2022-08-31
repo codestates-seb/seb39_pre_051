@@ -3,7 +3,6 @@ import styled from 'styled-components';
 const FooterLayout = styled.footer`
   width: 100%;
   background-color: #232629;
-  transform: translateY(100%);
 `;
 const FooterWrapper = styled.div`
   display: flex;

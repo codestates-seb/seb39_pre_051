@@ -14,6 +14,7 @@ const Header = styled.header`
   min-width: auto;
   box-shadow: 0 0.1rem 0.2rem hsla(0, 0%, 0%, 0.05),
     0 0.1rem 0.4rem hsla(0, 0%, 0%, 0.05), 0 0.2rem 0.8rem hsla(0, 0%, 0%, 0.05);
+  border-top: 0.3rem solid var(--color-orange);
   width: 100%;
   max-width: 100%;
   height: 5rem;
@@ -23,9 +24,31 @@ const Header = styled.header`
   background-color: #f8f9f9;
 `;
 
+const TobBarLogoA = styled.a`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+
+  &:hover {
+    background-color: #e3e6e8;
+  }
+`;
+
+const TobBarLogoSpan = styled.span`
+  margin-left: 0;
+  width: 15rem;
+  height: 3rem;
+  margin-top: -0.4rem;
+  display: inline-block;
+  text-indent: -9999rem;
+  background-position: 0 -50rem;
+  background-image: url(https://cdn.sstatic.net/Img/unified/sprites.svg?v=fcc0ea44ba27);
+`;
+
 const TobBarLeftNav = styled.div`
   display: flex;
-  margin: -0.2rem;
+  margin: 0.2rem;
   padding: 0.2rem 0;
 `;
 
@@ -87,14 +110,25 @@ const TopBarRightNav = styled.div`
 const TopBarA = styled.a`
   padding: 0.8rem 1.04rem;
   font-size: 1.3rem;
-  line-height: 1.5;
   border: 0.1rem solid #6a737c;
   text-decoration: none;
 
+  &:hover {
+    background-color: #e3e6e8;
+  }
+
+  &#login:hover {
+    background-color: #b3d3ea;
+  }
+
+  &#signup:hover {
+    background-color: #0074cc;
+  }
+
   color: ${(props) => props.color || '#525960'};
-  background: ${(props) => props.background || '#F8F9F9'};
+  background-color: ${(props) => props.backgroundColor || '#F8F9F9'};
   border-color: ${(props) => props.borderColor || 'transparent'};
-  border-radius: ${(props) => props.borderRadius || '0.3rem'};
+  border-radius: ${(props) => props.borderRadius || '100rem'};
   margin-left: ${(props) => props.marginLeft || '0'};
 `;
 
@@ -102,7 +136,9 @@ const TopBar = () => {
   return (
     <Header>
       <TopBarDiv>
-        <span>stackoverflow</span>
+        <TobBarLogoA href='/'>
+          <TobBarLogoSpan />
+        </TobBarLogoA>
         <TobBarLeftNav>
           <TopBarA href='https://stackoverflow.co/'>About</TopBarA>
           <TopBarA href='#'>Products</TopBarA>
@@ -116,18 +152,22 @@ const TopBar = () => {
         </TopBarForm>
         <TopBarRightNav>
           <TopBarA
+            id='login'
             href='/login'
             color='#39739D'
-            background='#E1ECF4'
+            backgroundColor='#E1ECF4'
             borderColor='#7AA7C7'
+            borderRadius='0.3rem'
           >
             Log in
           </TopBarA>
           <TopBarA
+            id='signup'
             href='/signup'
             color='#FFFFFF'
-            background='#0A95FF'
+            backgroundColor='#0A95FF'
             borderColor='#7AA7C7'
+            borderRadius='0.3rem'
             marginLeft='0.3rem'
           >
             Sign up

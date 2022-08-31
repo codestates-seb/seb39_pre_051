@@ -1,7 +1,9 @@
 package com.codestates.pre51.question.entity;
 
 import com.codestates.pre51.answer.entity.Answer;
+
 import com.codestates.pre51.comment.entity.Comment;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jdk.jfr.Timestamp;
 import lombok.*;
