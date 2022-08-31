@@ -20,6 +20,8 @@ public class AnswerDTO {
 
         private Question question;
 
+        private List<Comment> answerComments;
+
     }
 
     @Getter

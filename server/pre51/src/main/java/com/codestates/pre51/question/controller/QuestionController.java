@@ -9,6 +9,9 @@ import com.codestates.pre51.question.entity.Question;
 import com.codestates.pre51.question.mapper.QuestionMapper;
 import com.codestates.pre51.dto.SingleResponseDTO;
 import com.codestates.pre51.question.service.QuestionService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +36,8 @@ public class QuestionController {
         this.answerService=answerService;
     }
 
+    @ApiOperation
+    (value="모든 게시글 조회" , notes="페이징 page, size 로 전체 질문 목록을 반환한다.")
     @GetMapping("")
     public ResponseEntity getQuestions(@Positive @RequestParam int page,
                                        @Positive @RequestParam int size){
@@ -43,32 +48,17 @@ public class QuestionController {
                         pageQuestions),
                 HttpStatus.OK);
     }
-
+    @ApiOperation(value="질문 식별자를 이용한 해당 질문 조회" , notes=" 질문-식별자로 한개의 질문을 반환한다.")
     @GetMapping("/{question-id}")
-    public ResponseEntity getQuestion(@PathVariable("question-id") long questionId){
+    public ResponseEntity getQuestion(@PathVariable("question-id") @ApiParam(name = "질문_식별자") long questionId){
         Question question = questionService.findQuestion(questionId);
-
-//        System.out.println("*************************************************");
-//
-//        List<Answer> ans = question.getQuestionAnswers();
-//        for(Answer data : ans){
-//            List<Comment> com = data.getAnswerComments();
-//            for(Comment c : com){
-//                System.out.println(c.getCommentContent());
-//            }
-//        }
-//
-//        System.out.println("*************************************************");
-        // Solution - answer 객체 모두 불러오고, 각 answer 마다 comment까지 추가
-//        List<Answer> answer = answerService.findAnswers(question);
-//        question.setQuestionAnswers(answer);
-
         return new ResponseEntity<>(
                 new SingleResponseDTO<>(questionMapper.questionToQuestionResponse(question))
                 ,HttpStatus.OK);
     }
 
     @PostMapping("/ask")
+    @ApiOperation(value="질문 작성" , notes="질문-작성자-식별자, 질문-제목, 질문-내용 필요")
     public ResponseEntity postQuestion(@RequestBody QuestionDTO.Post requestBody){
         Question question = questionMapper.questionPostToQuestion(requestBody);
         Question createdQuestion =questionService.createQuestion(question);
@@ -80,7 +70,8 @@ public class QuestionController {
     }
 
     @GetMapping("/{question-id}/edit")
-    public ResponseEntity getQuestionEdit(@PathVariable("question-id") @Positive long questionId){
+    @ApiOperation(value="질문 수정 페이지로 전환" , notes="질문-식별자 필요")
+    public ResponseEntity getQuestionEdit(@PathVariable("question-id") @ApiParam(name = "질문_식별자") @Positive long questionId){
         Question question = questionService.findQuestion(questionId);
         return new ResponseEntity<>(
                 new SingleResponseDTO<>(questionMapper.questionToQuestionResponse(question))
@@ -88,8 +79,9 @@ public class QuestionController {
     }
 
     @PatchMapping("/{question-id}/edit")
+    @ApiOperation(value="질문 수정" , notes="질문_작성자-식별자, 질문-제목, 질문-내용 필요")
     public ResponseEntity patchQuestion(
-            @PathVariable("question-id") @Positive long questionId,
+            @PathVariable("question-id") @ApiParam(name = "질문_식별자") @Positive long questionId,
             @RequestBody QuestionDTO.Patch requestBody){
         requestBody.setQuestionId(questionId);
 
@@ -102,8 +94,9 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{question-id}")
+    @ApiOperation(value="질문 삭제" , notes="질문-작성자-식별자, 질문-제목, 질문-내용 필요")
     public ResponseEntity deleteQuestion(
-            @PathVariable("question-id") @Positive long questionId){
+            @PathVariable("question-id") @ApiParam(name = "질문_식별자") @Positive long questionId){
 
         questionService.deleteQuestion(questionId);
 

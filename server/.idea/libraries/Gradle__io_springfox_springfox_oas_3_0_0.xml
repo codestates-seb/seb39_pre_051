@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: io.springfox:springfox-oas:3.0.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.springfox/springfox-oas/3.0.0/e7bc9c1319cf1b64ae714a249c3db3b8fe01e42b/springfox-oas-3.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.springfox/springfox-oas/3.0.0/e1fe17a9e2f3d7329e923825fccb0511f67cee7a/springfox-oas-3.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -9,4 +9,6 @@ public interface CommentMapper {
     Comment commentPostToComment(CommentDTO.Post requestBody);
 
     CommentDTO.Response commentToCommentResponse(Comment createdComment);
+
+    Comment commentPatchToComment(CommentDTO.Patch requestBody);
 }

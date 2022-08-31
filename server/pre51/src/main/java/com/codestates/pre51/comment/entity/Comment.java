@@ -40,12 +40,12 @@ public class Comment {
     @LastModifiedDate
     private LocalDateTime commentModifiedAt;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name="answer_id")
     @JsonIgnore
     private Answer commentAnswers;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name="question_id")
     @JsonIgnore
     private Question commentQuestions;

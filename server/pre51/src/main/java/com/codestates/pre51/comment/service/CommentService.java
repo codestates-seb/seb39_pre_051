@@ -15,4 +15,11 @@ public class CommentService {
     public Comment createComment(Comment comment) {
         return commentRepository.save(comment);
     }
+
+    public Comment updateComment(Comment comment) {
+        Comment findComment = commentRepository.findByCommentId(comment.getCommentId());
+        findComment.setCommentContent(comment.getCommentContent());
+
+        return commentRepository.save(findComment);
+    }
 }

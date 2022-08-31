@@ -9,6 +9,8 @@ import com.codestates.pre51.dto.SingleResponseDTO;
 import com.codestates.pre51.question.dto.QuestionDTO;
 import com.codestates.pre51.question.entity.Question;
 import com.codestates.pre51.question.service.QuestionService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +32,7 @@ public class AnswerController {
     }
 
     @GetMapping("")
+    @ApiOperation(value="DB에 있는 모든 답변 조회" , notes="사용 X POSTMAN 응답 확인용")
     public ResponseEntity getAnswers(){
         List<Answer> answers = answerService.findAnswers();
         return new ResponseEntity<>(
@@ -38,8 +41,9 @@ public class AnswerController {
     }
 
     @PostMapping("/{question-id}")
+    @ApiOperation(value="답변_생성" , notes="답변-작성자-식별자, 답변-내용 필요")
     public ResponseEntity postAnswer(@RequestBody AnswerDTO.Post requestBody,
-                                     @PathVariable("question-id") long question_id){
+                                     @PathVariable("question-id") @ApiParam(name = "질문_식별자")long question_id){
         Answer answer = answerMapper.answerPostToAnswer(requestBody);
         Question question = questionService.findQuestion(question_id);
         answer.setAnswerQuestions(question);
@@ -53,11 +57,11 @@ public class AnswerController {
     }
 
     @PatchMapping("/{answer-id}/edit")
-    public ResponseEntity patchQuestion(
-            @PathVariable("answer-id") @Positive long answerId,
+    @ApiOperation(value="답변-수정" , notes="답변-식별자, 답변-내용 필요")
+    public ResponseEntity patchAnswer(
+            @PathVariable("answer-id") @ApiParam(name = "답변_식별자") @Positive long answerId,
             @RequestBody AnswerDTO.Patch requestBody){
         requestBody.setAnswerId(answerId);
-        System.out.println(requestBody.getAnswerId()+" ,"+requestBody.getAnswerContent());
         Answer answer =
                 answerService.updateAnswer(answerMapper.answerPatchToAnswer(requestBody));
 
@@ -68,8 +72,9 @@ public class AnswerController {
     }
 
     @DeleteMapping("/{answer-id}")
+    @ApiOperation(value="답변-삭제" , notes="답변-식별자 필요")
     public ResponseEntity deleteQuestion(
-            @PathVariable("answer-id") @Positive long answerId){
+            @PathVariable("answer-id") @ApiParam(name = "답변_식별자") @Positive long answerId){
 
         answerService.deleteAnswer(answerId);
 
