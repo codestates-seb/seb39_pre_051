@@ -66,7 +66,7 @@ const Title = styled.h1`
   font-size: 2.7rem;
   color : ${(props) => props.themeState === 'light' ? ' #3b4045' : '#E7E9EB'};
   margin: 0 0 0.8rem 0;
-  width: 80rem;
+  width: 60rem;
 `
 //CardLayout
 
