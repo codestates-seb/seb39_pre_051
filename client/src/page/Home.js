@@ -13,12 +13,12 @@ const Home = () => {
     <>
       <TopBar />
       <Container>
-        <SideBar />
+        <SideBar pageName={'Home'} />
         <Content>
           <TitleContainer>
             <TitleWrapper>
               <Title themeState={themeState}>Top Question</Title>
-              <AskBtn />
+              <AskBtn/>
             </TitleWrapper>
           </TitleContainer>
           <CardLayout>
