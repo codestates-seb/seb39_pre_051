@@ -18,10 +18,82 @@ import {
   faSquarePollHorizontal,
   faUndo,
 } from '@fortawesome/free-solid-svg-icons';
+import { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 
 const Ask = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
+  const [hide, setHide] = useState(false);
+  const [drag, setDrag] = useState(false);
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+  const [tag, setTag] = useState('');
+
+  const textAreaRef = useRef(null);
+  const resizeRef = useRef(null);
+  const previousClient = useRef({ y: 0 });
+
+  const handleMouseDown = (e) => {
+    setDrag(true);
+    previousClient.current = { y: e.clientY };
+    resizeRef.current.addEventListener('mousemove', handleMouseMove);
+  };
+
+  const handleMouseMove = (e) => {
+    if (drag) {
+      console.log(previousClient.current);
+      let changeY = e.clientY - previousClient.current.y;
+
+      let defaultHeight = textAreaRef.current.offsetHeight;
+
+      let height = defaultHeight + changeY;
+
+      textAreaRef.current.style.height = height + 'px';
+    }
+  };
+
+  const handleMouseUp = (e) => {
+    if (drag) {
+      setDrag(false);
+      previousClient.current = { y: 0 };
+      resizeRef.current.removeEventListener('mousemove', handleMouseMove);
+    }
+  };
+
+  const handleOnClick = (e) => {
+    setHide(!hide);
+    if (hide) {
+      e.target.style.backgroundColor = '#e3e6e8';
+      e.target.style.left = '21.8rem';
+    } else {
+      e.target.style.backgroundColor = 'transparent';
+      e.target.style.left = '21.33rem';
+    }
+  };
+
+  const onChange = (e) => {
+    if (e.target.id === 'title') {
+      setTitle(e.target.value);
+    } else {
+      setTag(e.target.value);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    return axios
+      .post('SERVERURL/question/ask', { title, body, tag })
+      .then((res) => console.log(res))
+      .catch((err) => {
+        if (err.response.status === 404) {
+          console.log(`url: ${err.config.url}  data: ${err.config.data}`);
+        }
+      });
+  };
+
+  console.log('title:' + title + ' body:' + body + ' tag:' + tag);
+
   return (
     <>
       <TopBar />
@@ -41,6 +113,7 @@ const Ask = () => {
               type='text'
               placeholder='e.g. Is there an R function for finding the index of an element in a vector?'
               themeState={themeState}
+              onChange={onChange}
             />
           </QuestionTitleContainer>
           <QuestionBodyContainer>
@@ -71,32 +144,75 @@ const Ask = () => {
               />
               <FontAwesomeIcon className='md-button' icon={faUndo} />
               <FontAwesomeIcon className='md-button' icon={faRedo} />
-              <QuestionFormattingTipsButton themeState={themeState}>
-                Hide formatting tips
-              </QuestionFormattingTipsButton>
+              {hide ? (
+                <QuestionFormattingTipsButton
+                  themeState={themeState}
+                  onClick={handleOnClick}
+                  isHide={hide}
+                >
+                  Show formatting tips
+                </QuestionFormattingTipsButton>
+              ) : (
+                <QuestionFormattingTipsButton
+                  themeState={themeState}
+                  onClick={handleOnClick}
+                >
+                  Hide formatting tips
+                </QuestionFormattingTipsButton>
+              )}
             </QuestionBodyButton>
-            <QuestionBodyMdHelp themeState={themeState}>
-              <QuestionBodyMdHelpUl>
-                <QuestionBodyMdHelpLi themeState={themeState}>Links</QuestionBodyMdHelpLi>
-                <QuestionBodyMdHelpLi themeState={themeState}>Images</QuestionBodyMdHelpLi>
-                <QuestionBodyMdHelpLi themeState={themeState}>Styling/Headers</QuestionBodyMdHelpLi>
-                <QuestionBodyMdHelpLi themeState={themeState}>Lists</QuestionBodyMdHelpLi>
-                <QuestionBodyMdHelpLi themeState={themeState}>Blockquotes</QuestionBodyMdHelpLi>
-                <QuestionBodyMdHelpLi themeState={themeState}>Code</QuestionBodyMdHelpLi>
-                <QuestionBodyMdHelpLi themeState={themeState}>HTML</QuestionBodyMdHelpLi>
-                <QuestionBodyMdHelpLi themeState={themeState}>Tables</QuestionBodyMdHelpLi>
-                <QuestionBodyMdHelpA href='https://stackoverflow.com/editing-help'>
-                  More
-                  <FontAwesomeIcon
-                    id='faArrow'
-                    icon={faArrowUpRightFromSquare}
-                  />
-                </QuestionBodyMdHelpA>
-              </QuestionBodyMdHelpUl>
-            </QuestionBodyMdHelp>
+            {hide ? (
+              <></>
+            ) : (
+              <QuestionBodyMdHelp themeState={themeState}>
+                <QuestionBodyMdHelpUl id='md-help'>
+                  <QuestionBodyMdHelpLi themeState={themeState}>
+                    Links
+                  </QuestionBodyMdHelpLi>
+                  <QuestionBodyMdHelpLi themeState={themeState}>
+                    Images
+                  </QuestionBodyMdHelpLi>
+                  <QuestionBodyMdHelpLi themeState={themeState}>
+                    Styling/Headers
+                  </QuestionBodyMdHelpLi>
+                  <QuestionBodyMdHelpLi themeState={themeState}>
+                    Lists
+                  </QuestionBodyMdHelpLi>
+                  <QuestionBodyMdHelpLi themeState={themeState}>
+                    Blockquotes
+                  </QuestionBodyMdHelpLi>
+                  <QuestionBodyMdHelpLi themeState={themeState}>
+                    Code
+                  </QuestionBodyMdHelpLi>
+                  <QuestionBodyMdHelpLi themeState={themeState}>
+                    HTML
+                  </QuestionBodyMdHelpLi>
+                  <QuestionBodyMdHelpLi themeState={themeState}>
+                    Tables
+                  </QuestionBodyMdHelpLi>
+                  <QuestionBodyMdHelpA href='https://stackoverflow.com/editing-help'>
+                    More
+                    <FontAwesomeIcon
+                      id='faArrow'
+                      icon={faArrowUpRightFromSquare}
+                    />
+                  </QuestionBodyMdHelpA>
+                </QuestionBodyMdHelpUl>
+              </QuestionBodyMdHelp>
+            )}
+
             <QuestionBodyDiv>
-              <QuestionBodyTextArea id='body' />
-              <QuestionBodyResize></QuestionBodyResize>
+              <QuestionBodyTextArea
+                id='body'
+                ref={textAreaRef}
+                style
+                onChange={(e) => setBody(e.target.value)}
+              />
+              <QuestionBodyResize
+                ref={resizeRef}
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+              ></QuestionBodyResize>
             </QuestionBodyDiv>
           </QuestionBodyContainer>
           <QuestionTagsContainer>
@@ -111,6 +227,7 @@ const Ask = () => {
               type='text'
               placeholder='e.g. (ruby-on-rails .net sql-server)'
               themeState={themeState}
+              onChange={onChange}
             />
           </QuestionTagsContainer>
         </QuestionForm>
@@ -121,6 +238,7 @@ const Ask = () => {
             borderColor='#7AA7C7'
             marginRight='0.4rem'
             themeState={themeState}
+            onClick={handleSubmit}
           >
             Review your question
           </QuestionSubmitButton>
@@ -147,7 +265,8 @@ const Container = styled.div`
   margin: 0 auto;
   padding-top: 5.06rem;
   padding-left: 2.6rem;
-  background-color: ${(props)=>props.themeState === 'light' ? '#F1F2F3' : '#3D3D3C' };
+  background-color: ${(props) =>
+    props.themeState === 'light' ? '#F1F2F3' : '#3D3D3C'};
 `;
 
 const HeadLine = styled.div`
@@ -161,7 +280,8 @@ const HeadLine = styled.div`
 const QuestionForm = styled.form`
   width: 88rem;
   padding: 1.6rem;
-  background-color: ${(props)=>props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D' };
+  background-color: ${(props) =>
+    props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D'};
   box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.06), 0 2px 6px hsla(0, 0%, 0%, 0.06),
     0 3px 8px hsla(0, 0%, 0%, 0.09); ;
 `;
@@ -173,7 +293,7 @@ const QuestionTitleContainer = styled.div`
 const QusetionTitleLabel = styled.label`
   font-size: 1.5rem;
   font-weight: 700;
-  color : ${(props)=>props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3' };
+  color: ${(props) => (props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3')};
   cursor: pointer;
 `;
 
@@ -190,8 +310,9 @@ const QuestionTitleInput = styled.input`
   padding: 0.6rem 0.7rem;
   border: 1px solid #babfc4;
   border-radius: 0.3rem;
-  background-color: ${(props)=>props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D' };
-  color: ${(props)=>props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3' };
+  background-color: ${(props) =>
+    props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D'};
+  color: ${(props) => (props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3')};
   color: #0c0d0e;
   font-size: 1.3rem;
 
@@ -207,7 +328,7 @@ const QuestionBodyContainer = styled.div`
 const QuestionBodyLabel = styled.label`
   font-size: 1.5rem;
   font-weight: 700;
-  color : ${(props)=>props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3' };
+  color: ${(props) => (props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3')};
   cursor: pointer;
 `;
 
@@ -250,8 +371,9 @@ const QuestionFormattingTipsButton = styled.div`
   line-height: 1.5;
   border: 0.1rem solid transparent;
   border-radius: 0.3rem;
-  color:${(props)=>props.themeState==='light' ? '#3b4045' : '#CFD2D6'};
-  background-color: ${(props)=>props.themeState==='light' ? '#e3e6e8' : '#404245'};
+  color: ${(props) => (props.themeState === 'light' ? '#3b4045' : '#CFD2D6')};
+  background-color: ${(props) =>
+    props.themeState === 'light' ? '#e3e6e8' : '#404245'};
   text-decoration: none;
   cursor: pointer;
 `;
@@ -260,7 +382,8 @@ const QuestionBodyMdHelp = styled.div`
   display: flex;
   width: 100%;
   height: 3rem;
-  background-color: ${(props)=>props.themeState === 'light' ? '#f7f7f8' : '#393939' };
+  background-color: ${(props) =>
+    props.themeState === 'light' ? '#f7f7f8' : '#393939'};
   margin: -0.1rem 0 0;
   border: 1px solid #babfc4;
 `;
@@ -276,7 +399,7 @@ const QuestionBodyMdHelpLi = styled.li`
   padding: 0.5rem 0.6rem 0.6rem;
   margin: 0 0.2rem;
   font-size: 1.3rem;
-  color: ${(props) => props.themeState==='light' ? '#OCODOE' : 'F2F2F3'};
+  color: ${(props) => (props.themeState === 'light' ? '#OCODOE' : 'F2F2F3')};
   cursor: pointer;
 `;
 
@@ -327,7 +450,7 @@ const QuestionTagsContainer = styled.div`
 const QuestionTagsLabel = styled.label`
   font-size: 1.5rem;
   font-weight: 700;
-  color : ${(props)=>props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3' };
+  color: ${(props) => (props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3')};
   cursor: pointer;
 `;
 
@@ -344,8 +467,9 @@ const QuestionTagsInput = styled.input`
   padding: 0.6rem 0.7rem;
   border: 1px solid #babfc4;
   border-radius: 0.3rem;
-  background-color: ${(props)=>props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D' };
-  color: ${(props)=>props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3' };
+  background-color: ${(props) =>
+    props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D'};
+  color: ${(props) => (props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3')};
   font-size: 1.3rem;
 
   ::placeholder {
@@ -374,17 +498,20 @@ const QuestionSubmitButton = styled.div`
   }
 
   & + #discard:hover {
-    background: ${(props)=> props.themeState==='light' ? '#fcf2f2;' : '#583023'};
+    background: ${(props) =>
+      props.themeState === 'light' ? '#fcf2f2;' : '#583023'};
   }
 
-  background-color:${(props)=>props.themeState==='light' ? props.background || '#F8F9F9' : '#0C63A9'};
-  border:${(props)=>props.themeState==='light' ? '1px solid #ffffff' : 'none'};
+  background-color: ${(props) =>
+    props.themeState === 'light' ? props.background || '#F8F9F9' : '#0C63A9'};
+  border: ${(props) =>
+    props.themeState === 'light' ? '1px solid #ffffff' : 'none'};
   color: ${(props) => props.color || '#525960'};
   border-radius: ${(props) => props.borderRadius || '0.3rem'};
   margin-right: ${(props) => props.marginRight || '0'};
-  & + #discard{
+  & + #discard {
     background-color: transparent;
-    border : none; 
+    border: none;
   }
 `;
 
