@@ -24,7 +24,7 @@ const UserProfile = () => {
     <>
       <TopBar />
       <Container>
-        <SideBar />
+        <SideBar pageName={'Users'}/>
         <Content>
           <UserProfileDiv>
             <UserProfileImageDiv>

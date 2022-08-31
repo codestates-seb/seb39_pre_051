@@ -13,7 +13,7 @@ const QuestionMain = () => {
     <>
       <TopBar />
       <Container>
-        <SideBar />
+        <SideBar pageName={'Questions'}/>
         <Content>
           <TitleLayout>
             <TitleContainer>
@@ -49,7 +49,6 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   border-left: 1px solid #d6d9dc;
-  border-bottom: 1px solid #d6d9dc;
   padding: 2.4rem 0;
   max-width: 110rem;
   line-height: 1.7rem;

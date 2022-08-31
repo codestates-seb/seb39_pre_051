@@ -79,7 +79,7 @@ const Question = () => {
     <>
       <TopBar />
       <Container>
-        <SideBar />
+        <SideBar pageName={'Questions'}/>
         <Content>
           <TitleLayout>
             <TitleContainer>
