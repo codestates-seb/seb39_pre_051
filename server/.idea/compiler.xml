@@ -12,5 +12,6 @@
         <module name="pre51.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel target="11" />
   </component>
 </project>

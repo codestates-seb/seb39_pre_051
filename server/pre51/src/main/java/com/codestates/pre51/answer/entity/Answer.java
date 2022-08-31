@@ -12,7 +12,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity(name="answer")
 @Getter
@@ -34,7 +36,8 @@ public class Answer {
     @Column(nullable = false, columnDefinition = "TEXT", name="answer_content")
     private String answerContent;
 
-    @Column(nullable = false, columnDefinition = "INT(4) default '0'", name="answer_likes")
+    //@Column(nullable = false, columnDefinition = "INT(4) default '0'", name="answer_likes")
+    @Column(nullable = false, columnDefinition = "INT", name="answer_likes")
     private long answerLikes;
 
     @Column(nullable = false, name="answer_created_at")

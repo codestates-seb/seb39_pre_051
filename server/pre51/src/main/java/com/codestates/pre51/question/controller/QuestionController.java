@@ -46,39 +46,8 @@ public class QuestionController {
 
     @GetMapping("/{question-id}")
     public ResponseEntity getQuestion(@PathVariable("question-id") long questionId){
-        /* 모든 답변을 같이 딸려오게 하는 방법
-        *  1. JPA 맵핑?
-        *  2. response객체에 List<Answer> 포함?
-        *   - answer 엔티티에 questionId 엔티티 추가해야함 jpa랑 어긋나는 느낌
-        *  3. Multiresponsedto로 변환? - 아닌듯
-        *
-        */
-
         Question question = questionService.findQuestion(questionId);
-        Comment com = new Comment();
-        com.setCommentWriterId(1);
-        com.setCommentContent("this is content");
-        List<Comment> newC = new ArrayList<>();
-        newC.add(com);
-        List<Answer> ans = question.getQuestionAnswers();
-        ans.get(0).setAnswerComments(newC);
-        question.setQuestionAnswers(ans);
 
-
-//        System.out.println("*************************************************");
-//
-//        List<Answer> ans = question.getQuestionAnswers();
-//        for(Answer data : ans){
-//            List<Comment> com = data.getAnswerComments();
-//            for(Comment c : com){
-//                System.out.println(c.getCommentContent());
-//            }
-//        }
-//
-//        System.out.println("*************************************************");
-        // Solution - answer 객체 모두 불러오고, 각 answer 마다 comment까지 추가
-//        List<Answer> answer = answerService.findAnswers(question);
-//        question.setQuestionAnswers(answer);
         return new ResponseEntity<>(
                 new SingleResponseDTO<>(questionMapper.questionToQuestionResponse(question))
                 ,HttpStatus.OK);
