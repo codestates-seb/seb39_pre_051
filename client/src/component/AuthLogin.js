@@ -1,10 +1,259 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSquareFacebook } from '@fortawesome/free-brands-svg-icons';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-
 import styled from 'styled-components';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
+
+const AuthLogin = (props) => {
+  const themeState = useSelector((state) => state.themeSlice).theme;
+  const [emailValid, setEmailValid] = useState(false);
+  const [passwordValid, setPasswordValid] = useState(false);
+  const [rePasswordValid, setRePasswordValid] = useState(false);
+  const [emailDesc, setEmailDesc] = useState('');
+  const [passwordDesc, setPasswordDesc] = useState('');
+  const [rePasswordDesc, setRePasswordDesc] = useState('');
+  const [inputValue, setInputValue] = useState({
+    displayName: '',
+    email: '',
+    password: '',
+    rePassword: '',
+  });
+  const { displayName, email, password, rePassword } = inputValue;
+  
+  const handleInput = (event) => {
+    const { name, value } = event.target;
+    console.log(name, value);
+    setInputValue({
+      ...inputValue,
+      [name]: value,
+    });
+  };
+
+  //유효성 검사
+
+  const regNumber = /[0-9]/g;
+  const regString = /[a-zA-Z]/g;
+  const regSpecialCharacter =
+    /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
+  const regEmail =
+    /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+
+  const emailValidation = () => {
+    if (regEmail.test(email)) {
+      setEmailValid(true);
+      setEmailDesc('');
+    } else {
+      setEmailValid(false);
+      setEmailDesc('잘못된 양식입니다.');
+    }
+  };
+
+  const passwordValidation = () => {
+    if (
+      8 < password.length &&
+      password.length < 20 &&
+      regNumber.test(password) &&
+      regString.test(password) &&
+      regSpecialCharacter.test(password)
+    ) {
+      setPasswordValid(true);
+      setPasswordDesc('');
+    } else {
+      setPasswordValid(false);
+      setPasswordDesc('8자이상 20자이하, 숫자, 문자, 특수문자를 포함해주세요.');
+    }
+  };
+  const rePasswordValidation = () => {
+    if (rePassword === password) {
+      setRePasswordValid(true);
+      setRePasswordDesc('');
+    } else {
+      setRePasswordValid(false);
+      setRePasswordDesc('입력하신 비밀번호가 같지않습니다.');
+    }
+  };
+
+  //submitHandler
+  const submitHandler = (e) => {
+    e.preventDefault();
+    if (props.status === 'login') {
+      //로그인 일시
+      console.log('로그인')
+      console.log(email, password)
+      if (!email || !password) {
+        console.log('아이디와 비밀번호를 입력하세요!');
+        return
+      }
+      try{
+        axios.post('/users/login',{
+          memberEmail : email,
+          memberPassword : password
+        }).then((res)=>{
+          console.log(res)
+        })
+      } catch(err) {
+        console.log('로그인 error', err)
+      }
+    } else {
+      //회원가입 일시
+      console.log('회원가입')
+      console.log(displayName, email, password)
+      try {
+        axios.post('/users/signup', {
+          memberName : displayName,
+          memberEmail : email,
+          memberPassword : password,
+        }).then((res)=> {
+          console.log(res)
+        })
+      } catch(err) {
+        console.log('회원가입 error', err);
+      }
+    }
+  };
+
+  return (
+    <Container themeState={themeState}>
+      <Test>
+        <LogoContainer>
+          <a href='/'>
+            <svg width='32' height='37' viewBox='0 0 32 37'>
+              <path d='M26 33v-9h4v13H0V24h4v9h22Z' fill='#BCBBBB'></path>
+              <path
+                d='m21.5 0-2.7 2 9.9 13.3 2.7-2L21.5 0ZM26 18.4 13.3 7.8l2.1-2.5 12.7 10.6-2.1 2.5ZM9.1 15.2l15 7 1.4-3-15-7-1.4 3Zm14 10.79.68-2.95-16.1-3.35L7 23l16.1 2.99ZM23 30H7v-3h16v3Z'
+                fill='#F48024'
+              ></path>
+            </svg>
+          </a>
+        </LogoContainer>
+      </Test>
+      <OAuthSection>
+        <OAuthBtn
+          background=' hsl(0,0%,100%)'
+          color='#232629'
+          border='1px solid #D6D9DC'
+          themeState={themeState}
+        >
+          <FontAwesomeIcon icon={faGoogle} />
+          {props.status === 'login' ? ' Login with' : ' Sign up with'} Google
+        </OAuthBtn>
+        <OAuthBtn
+          background='hsl(210,8%,20%)'
+          color='#FFFFFF'
+          border='1px solid #D6D9DC'
+          themeState={themeState}
+        >
+          <FontAwesomeIcon icon={faGithub} />
+          {props.status === 'login' ? ' Login with' : ' Sign up with'} GitHub
+        </OAuthBtn>
+        <OAuthBtn
+          background='#385499'
+          color='#FFFFFF'
+          border='1px solid  #FFFFFF'
+          themeState={themeState}
+        >
+          <FontAwesomeIcon icon={faSquareFacebook} />
+          {props.status === 'login' ? ' Login with' : ' Sign up with'} Facebook
+        </OAuthBtn>
+      </OAuthSection>
+      <InputSection themeState={themeState}>
+        <form onSubmit={submitHandler}>
+          {props.status === 'login' ? (
+            <>
+              <InputWrapper themeState={themeState}>
+                <label htmlFor='email'>Email</label>
+                <input
+                  id='email'
+                  type='email'
+                  name='email'
+                  onChange={handleInput}
+                  required
+                />
+              </InputWrapper>
+              <InputWrapper themeState={themeState}>
+                <label htmlFor='password'>Password</label>
+                <input
+                  id='password'
+                  type='password'
+                  name='password'
+                  onChange={handleInput}
+                  required
+                />
+              </InputWrapper>
+            </>
+          ) : (
+            <>
+              <InputWrapper themeState={themeState}>
+                <label htmlFor='displayname'>Dispay name</label>
+                <input
+                  id='displayname'
+                  type='text'
+                  name='displayName'
+                  onChange={handleInput}
+                  required
+                />
+              </InputWrapper>
+              <InputWrapper themeState={themeState}>
+                <label htmlFor='email'>Email</label>
+                <div>{emailDesc}</div>
+                <input
+                  id='email'
+                  type='email'
+                  name='email'
+                  onChange={handleInput}
+                  onKeyUp={emailValidation}
+                  required
+                />
+              </InputWrapper>
+              <InputWrapper themeState={themeState}>
+                <label htmlFor='password'>Password</label>
+                <div>{passwordDesc}</div>
+                <input
+                  id='password'
+                  type='password'
+                  name='password'
+                  onChange={handleInput}
+                  onKeyUp={passwordValidation}
+                  required
+                />
+              </InputWrapper>
+              <InputWrapper themeState={themeState}>
+                <label htmlFor='rePassword2'>Confirm Password</label>
+                <div>{rePasswordDesc}</div>
+                <input
+                  id='rePassword'
+                  type='password'
+                  name='rePassword'
+                  onChange={handleInput}
+                  onKeyUp={rePasswordValidation}
+                  required
+                />
+              </InputWrapper>
+            </>
+          )}
+          <BtnWrapper themeState={themeState}>
+            <button>
+              {props.status === 'login' ? 'Log in' : 'Sign up'}
+            </button>
+          </BtnWrapper>
+        </form>
+      </InputSection>
+      <MessageLayout>
+        {props.status === 'login'
+          ? `Don't have an account `
+          : `Already have an account? `}
+        {props.status === 'login' ? (
+          <a href='/signup'>Sign up</a>
+        ) : (
+          <a href='/login'>Log in</a>
+        )}
+      </MessageLayout>
+    </Container>
+  );
+};
 
 const Container = styled.div`
   display: flex;
@@ -20,19 +269,21 @@ const InputSection = styled.div`
   padding: 2.4rem;
   form {
     border-radius: 0.7rem;
-    
-    
   }
 `;
 
 const InputWrapper = styled.div`
   padding: 0.4rem 0;
+  span {
+  }
   label {
     display: block;
     padding: 0 0.2rem;
     margin: 0.2rem 0;
     font-size: 1.5rem;
     font-weight: 600;
+    color: ${(props) =>
+      props.themeState === 'light' ? 'inherits' : '#2D2D2D'};
   }
   input {
     width: 100%;
@@ -43,6 +294,10 @@ const InputWrapper = styled.div`
   &#login {
     display: none;
   }
+  div{
+    color: var(--color-orange);
+    font-weight:600;
+  }
 `;
 
 const BtnWrapper = styled.div`
@@ -51,16 +306,19 @@ const BtnWrapper = styled.div`
     color: #ffffff;
     border-radius: 0.3rem;
     padding: 1rem;
-    background-color: #0a95ff;
+    background-color: ${(props) =>
+      props.themeState === 'light' ? '#0a95ff' : '#0C63A9'};
+    border: ${(props) =>
+      props.themeState === 'light' ? '1px solid #ffffff' : '1px solid #OC63A9'};
     border: 0.1rem solid #ffffff;
-    box-shadow:rgba(255,255,255,0.4) 0px 1px 0px 0px inset;
+    box-shadow: rgba(255, 255, 255, 0.4) 0px 1px 0px 0px inset;
     cursor: pointer;
     &:hover {
+      background-color: ${(props) =>
+        props.themeState === 'light' ? '#0074cc' : '#0964AA'};
     }
   }
 `;
-
-
 
 // OAuth
 
@@ -70,15 +328,16 @@ const OAuthSection = styled.div`
 
 const OAuthBtn = styled.button`
   display: block;
+  cursor: pointer;
   font-size: 1.3rem;
   line-height: 1.5rem;
   width: 100%;
   height: 3.78rem;
   margin: 0.4rem 0;
-  padding: 0.6rem 1rem ;
-  color: ${(props)=> props.color};
+  padding: 0.6rem 1rem;
+  color: ${(props) => props.color};
   background-color: ${(props) => props.background};
-  border : ${(props)=> props.border};
+  border: ${(props) => (props.themeState === 'light' ? props.border : 'none')};
   border-radius: 0.5rem;
 `;
 
@@ -100,72 +359,10 @@ const LogoContainer = styled.div`
 const MessageLayout = styled.div`
   font-size: 1.3rem;
   text-align: center;
-  a{
+  a {
     text-decoration: none;
-    color: hsl(206,100%,40%);
+    color: hsl(206, 100%, 40%);
   }
-`
-
-const AuthLogin = (props) => {
-  const displayNameInputRef = useRef();
-  const emailInputRef = useRef();
-  const passwordInputRef = useRef();
-  return (
-    <Container>
-      <Test>
-        <LogoContainer>
-          <a href='/'>
-            <svg width='32' height='37' viewBox='0 0 32 37'>
-              <path d='M26 33v-9h4v13H0V24h4v9h22Z' fill='#BCBBBB'></path>
-              <path
-                d='m21.5 0-2.7 2 9.9 13.3 2.7-2L21.5 0ZM26 18.4 13.3 7.8l2.1-2.5 12.7 10.6-2.1 2.5ZM9.1 15.2l15 7 1.4-3-15-7-1.4 3Zm14 10.79.68-2.95-16.1-3.35L7 23l16.1 2.99ZM23 30H7v-3h16v3Z'
-                fill='#F48024'
-              ></path>
-            </svg>
-          </a>
-        </LogoContainer>
-      </Test>
-
-      <OAuthSection>
-        <OAuthBtn background=' hsl(0,0%,100%)' color='#232629' border='1px solid #D6D9DC'>
-          <FontAwesomeIcon icon={faGoogle} />
-          {props.status === 'login' ? ' Login with' : ' Sign up with'} Google
-        </OAuthBtn>
-        <OAuthBtn background='hsl(210,8%,20%)' color='#FFFFFF' border='1px solid #D6D9DC'>
-          <FontAwesomeIcon icon={faGithub} />
-          {props.status === 'login' ? ' Login with' : ' Sign up with'} GitHub
-        </OAuthBtn>
-        <OAuthBtn background='#385499' color='#FFFFFF' border='1px solid  #FFFFFF'>
-          <FontAwesomeIcon icon={faSquareFacebook} />
-          {props.status === 'login' ? ' Login with' : ' Sign up with'} Facebook
-        </OAuthBtn>
-      </OAuthSection>
-      <InputSection>
-        <form onSubmit={props.submitHandler}>
-          <InputWrapper id={props.status}>
-            <label htmlFor='displayname'>Dispay name</label>
-            <input id='displayname' type='text' ref={displayNameInputRef} />
-          </InputWrapper>
-          <InputWrapper>
-            <label htmlFor='email'>Email</label>
-            <input id='emil' type='email' ref={emailInputRef} />
-          </InputWrapper>
-          <InputWrapper>
-            <label htmlFor='password'>Password</label>
-            <input id='password' type='password' ref={passwordInputRef} />
-          </InputWrapper>
-          <BtnWrapper>
-            <button type='button'>
-              {props.status === 'login' ? 'Log in' : 'Sign Up'}
-            </button>
-          </BtnWrapper>
-        </form>
-      </InputSection>
-      <MessageLayout>
-        {props.status==='login' ? `Don't have an account ` : `Already have an account? `}{props.status==='login' ? <a href='/signup'>Sign up</a>  : <a href='/login'>Log in</a>}
-      </MessageLayout>
-    </Container>
-  );
-};
+`;
 
 export default AuthLogin;
