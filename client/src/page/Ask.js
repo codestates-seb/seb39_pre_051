@@ -32,32 +32,31 @@ const Ask = () => {
 
   const textAreaRef = useRef(null);
   const resizeRef = useRef(null);
-  const previousClient = useRef({ y: 0 });
+  const previousClient = useRef(0);
+  const defaultOffsetHeight = useRef(0);
 
   const handleMouseDown = (e) => {
     setDrag(true);
-    previousClient.current = { y: e.clientY };
-    resizeRef.current.addEventListener('mousemove', handleMouseMove);
+    console.log(e.clientY);
+    previousClient.current = e.clientY;
+    defaultOffsetHeight.current = textAreaRef.current.offsetHeight;
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
   };
 
   const handleMouseMove = (e) => {
-    if (drag) {
-      console.log(previousClient.current);
-      let changeY = e.clientY - previousClient.current.y;
+    const changeY = e.clientY - previousClient.current;
 
-      let defaultHeight = textAreaRef.current.offsetHeight;
-
-      let height = defaultHeight + changeY;
-
-      textAreaRef.current.style.height = height + 'px';
-    }
+    const height = (defaultOffsetHeight.current + changeY) / 10;
+    console.log(height);
+    textAreaRef.current.style.height = height + 'rem';
   };
 
   const handleMouseUp = (e) => {
     if (drag) {
       setDrag(false);
       previousClient.current = { y: 0 };
-      resizeRef.current.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousemove', handleMouseMove);
     }
   };
 
@@ -211,7 +210,6 @@ const Ask = () => {
               <QuestionBodyResize
                 ref={resizeRef}
                 onMouseDown={handleMouseDown}
-                onMouseUp={handleMouseUp}
               ></QuestionBodyResize>
             </QuestionBodyDiv>
           </QuestionBodyContainer>
