@@ -8,9 +8,11 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface QuestionMapper {
+
     Question questionPostToQuestion(QuestionDTO.Post requestBody);
 
     QuestionDTO.Response questionToQuestionResponse(Question question);
+
     List<QuestionDTO.Response> questionsToQuestionResponses(List<Question> questions);
     Question questionPatchToQuestion(QuestionDTO.Patch requestBody);
 }

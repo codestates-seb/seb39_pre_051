@@ -2,8 +2,10 @@ package com.codestates.pre51.question.dto;
 
 //import javax.validation.constraints.NotBlank;
 
+import com.codestates.pre51.answer.dto.AnswerDTO;
 import com.codestates.pre51.answer.entity.Answer;
-import com.codestates.pre51.comment.entity.Comment;
+import com.codestates.pre51.answercomment.entity.AnswerComment;
+import com.codestates.pre51.questioncomment.entity.QuestionComment;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -66,7 +68,7 @@ public class QuestionDTO {
         private LocalDateTime questionModifiedAt;
         private long questionBestAnswerId;
         private Time questionAnsweredAt;
-        private List<Comment> questionComments;
+        private List<QuestionComment> questionQuestionComments;
         private List<Answer> questionAnswers;
     }
 }

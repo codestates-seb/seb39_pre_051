@@ -2,7 +2,7 @@ package com.codestates.pre51.question.entity;
 
 import com.codestates.pre51.answer.entity.Answer;
 
-import com.codestates.pre51.comment.entity.Comment;
+import com.codestates.pre51.questioncomment.entity.QuestionComment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jdk.jfr.Timestamp;
@@ -63,7 +63,7 @@ public class Question {
     @JsonIgnore
     private List<Answer> questionAnswers = new ArrayList<>();
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "commentQuestions")
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "questionComments")
     @JsonIgnore
-    private List<Comment> questionComments = new ArrayList<>();
+    private List<QuestionComment> questionQuestionComments = new ArrayList<>();
 }
