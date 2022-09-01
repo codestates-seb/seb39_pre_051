@@ -1,26 +1,68 @@
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 
 const Pagination = ({ total, limit, page, setPage }) => {
+  const themeState = useSelector((state) => state.themeSlice).theme;
+
   const numPages = Math.ceil(total / limit);
+
+  const handleOnClick = (e) => {
+    setPage(page + 1);
+  };
 
   return (
     <>
       <Nav>
-        <Button onClick={() => setPage(page - 1)} disabled={page === 1}>
+        <Button
+          onClick={() => setPage(page - 1)}
+          disabled={page === 1}
+          themeState={themeState}
+        >
           Prev
         </Button>
-        {Array(numPages)
-          .fill()
-          .map((_, i) => (
+        {numPages > 5 ? (
+          <>
+            {Array(5)
+              .fill()
+              .map((_, i) => (
+                <Button
+                  key={i + 1}
+                  onClick={() => setPage(i + 1)}
+                  aria-current={page === i + 1 ? 'page' : null}
+                  themeState={themeState}
+                >
+                  {i + 1}
+                </Button>
+              ))}
+            <div>...</div>
             <Button
-              key={i + 1}
-              onClick={() => setPage(i + 1)}
-              aria-current={page === i + 1 ? 'page' : null}
+              key={numPages}
+              onClick={() => setPage(numPages)}
+              aria-current={page === numPages ? 'page' : null}
+              themeState={themeState}
             >
-              {i + 1}
+              {numPages}
             </Button>
-          ))}
-        <Button onClick={() => setPage(page + 1)} disabled={page === numPages}>
+          </>
+        ) : (
+          Array(numPages)
+            .fill()
+            .map((_, i) => (
+              <Button
+                key={i + 1}
+                onClick={() => setPage(i + 1)}
+                aria-current={page === i + 1 ? 'page' : null}
+                themeState={themeState}
+              >
+                {i + 1}
+              </Button>
+            ))
+        )}
+        <Button
+          onClick={() => setPage(page + 1)}
+          disabled={page === numPages}
+          themeState={themeState}
+        >
           Next
         </Button>
       </Nav>
@@ -37,18 +79,25 @@ const Nav = styled.nav`
 `;
 
 const Button = styled.button`
-  border: 1px solid #d6d9dc;
+  border: ${(props) =>
+    props.themeState === 'light' ? '1px solid #d6d9dc' : '1px solid #4a4e51'};
   border-radius: 0.3rem;
   padding: 0.3rem 0.8rem;
   margin: 0 0.2rem;
-  background: #ffffff;
-  color: #0c0d0e;
+  background-color: transparent;
+  color: ${(props) => (props.themeState === 'light' ? '#3f4042' : '#b4b5b7')};
   font-size: 1.3rem;
   line-height: 1.9rem;
 
   &:hover {
-    background: #d6d9dc;
+    background-color: ${(props) =>
+      props.themeState === 'light' ? '#d6d9dc' : '#4a4e51'};
     cursor: pointer;
+  }
+
+  &[aria-current] {
+    color: #ffffff;
+    background-color: var(--color-orange);
   }
 
   &[disabled] {
