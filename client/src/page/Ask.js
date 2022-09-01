@@ -26,9 +26,9 @@ const Ask = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
   const [hide, setHide] = useState(false);
   const [drag, setDrag] = useState(false);
-  const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
-  const [tag, setTag] = useState('');
+  const [questionTitle, setTitle] = useState('');
+  const [questionContent, setBody] = useState('');
+  const [questionTag, setTag] = useState('');
 
   const textAreaRef = useRef(null);
   const resizeRef = useRef(null);
@@ -37,7 +37,6 @@ const Ask = () => {
 
   const handleMouseDown = (e) => {
     setDrag(true);
-    console.log(e.clientY);
     previousClient.current = e.clientY;
     defaultOffsetHeight.current = textAreaRef.current.offsetHeight;
     window.addEventListener('mousemove', handleMouseMove);
@@ -48,7 +47,7 @@ const Ask = () => {
     const changeY = e.clientY - previousClient.current;
 
     const height = (defaultOffsetHeight.current + changeY) / 10;
-    console.log(height);
+
     textAreaRef.current.style.height = height + 'rem';
   };
 
@@ -82,7 +81,7 @@ const Ask = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     return axios
-      .post('SERVERURL/question/ask', { title, body, tag })
+      .post('/questions/ask', { questionTitle, questionContent, questionTag })
       .then((res) => console.log(res))
       .catch((err) => {
         if (err.response.status === 404) {
@@ -91,7 +90,14 @@ const Ask = () => {
       });
   };
 
-  console.log('title:' + title + ' body:' + body + ' tag:' + tag);
+  console.log(
+    'title:' +
+      questionTitle +
+      ' body:' +
+      questionContent +
+      ' tag:' +
+      questionTag
+  );
 
   return (
     <>
