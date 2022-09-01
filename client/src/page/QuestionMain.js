@@ -6,14 +6,20 @@ import SideBar from '../component/SideBar';
 import Pagination from '../component/Pagination';
 import AskBtn from '../component/AskBtn';
 import { useSelector } from 'react-redux';
+import SideBarWidget from '../component/SideBarWidget';
+import { useState } from 'react';
 
 const QuestionMain = () => {
-  const themeState = useSelector((state)=>state.themeSlice).theme
+  const themeState = useSelector((state) => state.themeSlice).theme;
+
+  const [page, setPage] = useState(1);
+  const [size, setSize] = useState(15);
+
   return (
     <>
       <TopBar />
       <Container>
-        <SideBar pageName={'Questions'}/>
+        <SideBar pageName={'Questions'} />
         <Content>
           <TitleLayout>
             <TitleContainer>
@@ -24,9 +30,16 @@ const QuestionMain = () => {
           <CardLayout>
             <Card />
             <Card />
-            <Pagination total='30' limit='15' page='1' />
+            <Pagination
+              total='150'
+              limit={size}
+              page={page}
+              setPage={setPage}
+              setSize={setSize}
+            />
           </CardLayout>
         </Content>
+        <SideBarWidget />
       </Container>
       <Footer />
     </>
@@ -64,14 +77,12 @@ const TitleContainer = styled.div`
 //Title 태그는 실제로는 본인의 질문페이지로 이동하는 a 태그이다 이후 수정할 것.
 const Title = styled.h1`
   font-size: 2.7rem;
-  color : ${(props) => props.themeState === 'light' ? ' #3b4045' : '#E7E9EB'};
+  color: ${(props) => (props.themeState === 'light' ? ' #3b4045' : '#E7E9EB')};
   margin: 0 0 0.8rem 0;
-  width: 80rem;
+  width: 60rem;
 `;
 //CardLayout
 
-const CardLayout = styled.div`
-
-`;
+const CardLayout = styled.div``;
 
 export default QuestionMain;
