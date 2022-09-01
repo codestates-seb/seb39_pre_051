@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Positive;
@@ -52,6 +53,7 @@ public class QuestionController {
     @GetMapping("/{question-id}")
     public ResponseEntity getQuestion(@PathVariable("question-id") @ApiParam(name = "질문_식별자") long questionId){
         Question question = questionService.findQuestion(questionId);
+        
         return new ResponseEntity<>(
                 new SingleResponseDTO<>(questionMapper.questionToQuestionResponse(question))
                 ,HttpStatus.OK);
@@ -73,6 +75,7 @@ public class QuestionController {
     @ApiOperation(value="질문 수정 페이지로 전환" , notes="질문-식별자 필요")
     public ResponseEntity getQuestionEdit(@PathVariable("question-id") @ApiParam(name = "질문_식별자") @Positive long questionId){
         Question question = questionService.findQuestion(questionId);
+
         return new ResponseEntity<>(
                 new SingleResponseDTO<>(questionMapper.questionToQuestionResponse(question))
                 ,HttpStatus.OK);
