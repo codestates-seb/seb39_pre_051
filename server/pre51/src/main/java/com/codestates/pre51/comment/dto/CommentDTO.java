@@ -22,7 +22,13 @@ public class CommentDTO {
 
         private Answer answer;
     }
-
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class Patch{
+        private long commentId;
+        private String commentContent;
+    }
     @Getter
     @Setter
     @AllArgsConstructor
@@ -32,8 +38,7 @@ public class CommentDTO {
         private String commentContent;
         private LocalDateTime commentCreatedAt;
         private LocalDateTime commentModifiedAt;
-        private Answer answer;
-        private Question question;
+
     }
 
 }

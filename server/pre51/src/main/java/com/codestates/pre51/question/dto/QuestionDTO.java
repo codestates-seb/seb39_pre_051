@@ -4,6 +4,7 @@ package com.codestates.pre51.question.dto;
 
 import com.codestates.pre51.answer.entity.Answer;
 import com.codestates.pre51.comment.entity.Comment;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -53,7 +54,10 @@ public class QuestionDTO {
     @AllArgsConstructor
     @Setter
     public static class Response{
+        @ApiModelProperty(value="게시글의 식별자 ID")
         private long questionId;
+
+
         private long questionWriterId;
         private String questionTitle;
         private String questionContent;

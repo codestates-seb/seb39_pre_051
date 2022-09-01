@@ -13,7 +13,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfiguration {
-
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -26,8 +25,8 @@ public class SwaggerConfiguration {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("코드스테이츠 pre51 API 문서")
-                .description("설명 부분입니다")
+                .title("StackOverFlow API Documents")
+                .description("API 문서")
                 .version("1.0.0")
                 .build();
     }
