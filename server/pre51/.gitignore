@@ -38,3 +38,4 @@ out/
 
 ### DB Settings ###
 src/main/resources/application.yml
+src/main/resources/application-deploy.yml
