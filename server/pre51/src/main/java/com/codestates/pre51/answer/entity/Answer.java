@@ -1,6 +1,7 @@
 package com.codestates.pre51.answer.entity;
 
-import com.codestates.pre51.comment.entity.Comment;
+import com.codestates.pre51.answercomment.entity.AnswerComment;
+import com.codestates.pre51.questioncomment.entity.QuestionComment;
 import com.codestates.pre51.question.entity.Question;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -12,9 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity(name="answer")
 @Getter
@@ -53,8 +52,7 @@ public class Answer {
     @JsonIgnore
     private Question answerQuestions;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "commentAnswers",fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "answerComments",fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Comment> answerComments = new ArrayList<>();
-
+    private List<AnswerComment> answerAnswerComments = new ArrayList<>();
 }

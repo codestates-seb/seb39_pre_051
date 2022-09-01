@@ -1,25 +1,20 @@
 package com.codestates.pre51.question.controller;
 
-import com.codestates.pre51.answer.entity.Answer;
 import com.codestates.pre51.answer.service.AnswerService;
-import com.codestates.pre51.comment.entity.Comment;
 import com.codestates.pre51.dto.MultiResponseDTO;
 import com.codestates.pre51.question.dto.QuestionDTO;
 import com.codestates.pre51.question.entity.Question;
 import com.codestates.pre51.question.mapper.QuestionMapper;
 import com.codestates.pre51.dto.SingleResponseDTO;
 import com.codestates.pre51.question.service.QuestionService;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Positive;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -53,11 +48,13 @@ public class QuestionController {
     @GetMapping("/{question-id}")
     public ResponseEntity getQuestion(@PathVariable("question-id") @ApiParam(name = "질문_식별자") long questionId){
         Question question = questionService.findQuestion(questionId);
-        
+
         return new ResponseEntity<>(
                 new SingleResponseDTO<>(questionMapper.questionToQuestionResponse(question))
                 ,HttpStatus.OK);
     }
+
+
 
     @PostMapping("/ask")
     @ApiOperation(value="질문 작성" , notes="질문-작성자-식별자, 질문-제목, 질문-내용 필요")
@@ -106,4 +103,19 @@ public class QuestionController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
+
+    /*
+
+    @PatchMapping("/{question-id}")
+    @ApiOperation(value="질문의 답변 채택" , notes="질문-식별자, 답변-식별자 필요")
+    public ResponseEntity selectBestAnswer(
+            @PathVariable("question-id") @ApiParam(name = "질문_식별자") @Positive long questionId,
+            @RequestBody QuestionDTO.Patch requestBody){
+
+
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
+    */
 }

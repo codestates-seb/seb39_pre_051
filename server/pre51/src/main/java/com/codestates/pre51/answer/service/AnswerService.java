@@ -38,7 +38,6 @@ public class AnswerService {
     public void deleteAnswer(long answerId) {
         Answer answer = answerRepository.findByAnswerId(answerId);
         answerRepository.delete(answer);
-        System.out.println("*******************************************************************************");
     }
 
     public Answer updateAnswer(Answer answer) {
