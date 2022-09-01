@@ -34,6 +34,9 @@
       "react-app/jest"
     ]
   },
+
+  "proxy": "http://frontend.gonetis.com:8080",
+
   "browserslist": {
     "production": [
       ">0.2%",
