@@ -7,13 +7,33 @@ import Pagination from '../component/Pagination';
 import AskBtn from '../component/AskBtn';
 import { useSelector } from 'react-redux';
 import SideBarWidget from '../component/SideBarWidget';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const QuestionMain = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
 
+  const [loading, setLoading] = useState(true);
+
   const [page, setPage] = useState(1);
-  const [size, setSize] = useState(15);
+  const [size, setSize] = useState(1);
+  const [total, setTotal] = useState(150);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`/questions?size=${size}&page=${page}`)
+      .then((res) => {
+        setLoading(false);
+        //pagination
+        setTotal(Number(res.data.pageInfo.totalElements));
+        setPage(page);
+        setSize(size);
+        //card에 뿌릴 data
+        setData(res.data.data);
+      })
+      .catch((err) => console.log(err));
+  }, [page, size, loading]);
 
   return (
     <>
@@ -28,14 +48,25 @@ const QuestionMain = () => {
             </TitleContainer>
           </TitleLayout>
           <CardLayout>
-            <Card />
-            <Card />
+            {data.map((el) => (
+              <Card
+                key={Number(el.questionId)}
+                questionId={el.questionId}
+                questionTitle={el.questionTitle}
+                questionWriterId={el.questionWriterId}
+                questionContent={el.questionContent}
+                questionLikes={el.questionLikes}
+                questionAnswers={el.questionAnswers.length}
+                questionCreatedAt={el.questionCreatedAt}
+              ></Card>
+            ))}
             <Pagination
-              total='150'
+              total={total}
               size={size}
               page={page}
               setPage={setPage}
               setSize={setSize}
+              setTotal={setTotal}
             />
           </CardLayout>
         </Content>
