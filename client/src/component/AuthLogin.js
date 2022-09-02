@@ -5,7 +5,9 @@ import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import styled from 'styled-components';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { logIn } from '../redux/slice/userInfoSlice';
 
 const AuthLogin = (props) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
@@ -22,6 +24,7 @@ const AuthLogin = (props) => {
     rePassword: '',
   });
   const { displayName, email, password, rePassword } = inputValue;
+  const dispatch=useDispatch()
   
   const handleInput = (event) => {
     const { name, value } = event.target;
@@ -34,12 +37,18 @@ const AuthLogin = (props) => {
 
   //유효성 검사
 
+  //regNumber는 검사대상 전체(/g)에서 0-9안의 요소가 있는지 확인함
+  //regString은 검사대상 전체에서(/g)에서 영어대문자소문자가 있는지 확인함
+  //regSpecialCharacter는 검사대상 전체에서 특수문자가 있는지 확인함
+  
   const regNumber = /[0-9]/g;
   const regString = /[a-zA-Z]/g;
   const regSpecialCharacter =
     /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
   const regEmail =
     /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+
+  //비밀번호의 경우 아래와 같이 식을 구성하여 '8자이상 20자이하, 숫자, 문자, 특수문자를 포함해주세요.'의 조건을 갖게함.
 
   const emailValidation = () => {
     if (regEmail.test(email)) {
@@ -81,34 +90,26 @@ const AuthLogin = (props) => {
     e.preventDefault();
     if (props.status === 'login') {
       //로그인 일시
-      console.log('로그인')
-      console.log(email, password)
       if (!email || !password) {
         console.log('아이디와 비밀번호를 입력하세요!');
         return
       }
       try{
-        axios.post('/users/login',{
+        dispatch(logIn({
           memberEmail : email,
-          memberPassword : password
-        }).then((res)=>{
-          console.log(res)
-        })
+          memberPassword : password}))
       } catch(err) {
         console.log('로그인 error', err)
       }
     } else {
       //회원가입 일시
-      console.log('회원가입')
-      console.log(displayName, email, password)
       try {
-        axios.post('/users/signup', {
+        const response =  axios.post('/users/signup',{
           memberName : displayName,
           memberEmail : email,
-          memberPassword : password,
-        }).then((res)=> {
-          console.log(res)
+          memberPassword : password
         })
+        return console.log(response)
       } catch(err) {
         console.log('회원가입 error', err);
       }
