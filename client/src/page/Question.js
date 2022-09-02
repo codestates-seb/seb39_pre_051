@@ -7,8 +7,9 @@ import { useParams } from 'react-router-dom';
 import AskBtn from '../component/AskBtn';
 import AddAnswer from '../component/AddAnswer';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { readQuestion } from '../redux/slice/questionSlice';
+import axios from 'axios';
 
 const question = [
   {
@@ -82,12 +83,34 @@ const question = [
 
 
 const Question = () => {
+  const [questionEditMode, setQuestionEditMode] = useState(false)
+  const [title, setTitle] = useState('')
+  const [originalTitle, setOriginalTitle] = useState('')
   const params = useParams();
   const themeState = useSelector((state) => state.themeSlice).theme;
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(readQuestion(params.questionId))
+    // dispatch(readQuestion(params.questionId))
+    setTitle(question[params.questionId].questionTitle)
+    setOriginalTitle(question[params.questionId].questionTitle)
+    axios
+    .get(`/questions/${params.questionId}`)
+    .then((res)=>{
+      console.log(res)
+    })
+    .catch((err)=>console.log(err))
   },[]);
+
+
+const handelEditTitle = (e) => {
+  setTitle(e.target.value)
+}
+
+  const handleQuestionEditMode = () => {
+    setQuestionEditMode(!questionEditMode)
+    setTitle(originalTitle)
+  }
+
   return (
     <>
       <TopBar />
@@ -97,7 +120,17 @@ const Question = () => {
           <TitleLayout>
             <TitleContainer>
               <Title themeState={themeState}>
+                {questionEditMode ? (
+                  <form>
+                    <label id='editText'></label>
+                    <input id='editText' value={title} onChange={handelEditTitle} />
+                  </form>
+                ) : (
+                <>
                 {question[params.questionId].questionTitle}
+                </>
+                ) }
+                
               </Title>
               <AskBtn />
             </TitleContainer>
@@ -115,6 +148,9 @@ const Question = () => {
             email={question[params.questionId].questionEmail}
             comment={question[params.questionId].questionComment}
             isQuestion={true}
+            questionEditMode={questionEditMode}
+            handleQuestionEditMode={handleQuestionEditMode}
+            title={title}
           />
           <AnswerSummay>
             {question[params.questionId].answer.length} Answers
@@ -178,6 +214,9 @@ const Title = styled.h1`
   color: ${(props) => (props.themeState === 'light' ? ' #3b4045' : '#E7E9EB')};
   margin: 0 0 0.8rem 0;
   width: 80rem;
+  input{
+    width:100%;
+  }
 `;
 
 const CreatedAt = styled.div`

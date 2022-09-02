@@ -1,8 +1,13 @@
 import styled from 'styled-components';
 import Comment from './Comment';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {addQuestionComment, addAnswerComment} from '../redux/slice/questionSlice'
+import {
+  addQuestionComment,
+  addAnswerComment,
+} from '../redux/slice/questionSlice';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const OpinionCard = ({
   id,
@@ -10,52 +15,136 @@ const OpinionCard = ({
   content,
   modifiedAt,
   writer,
+  email,
   comment,
   questionId,
   isQuestion,
+  handleQuestionEditMode,
+  questionEditMode,
+  title,
 }) => {
   const commentInput = useRef();
-  const themeState = useSelector((state)=>state.themeSlice).theme
-  const userState = useSelector((state)=>state.userInfoSlice)
-  const dispatch = useDispatch()
-  console.log(userState.email, email)
-  const handleCommentSubmit =(e, id) => {
+  const themeState = useSelector((state) => state.themeSlice).theme;
+  const userState = useSelector((state) => state.userInfoSlice);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [text, setText] = useState('');
+  const [answerEditMode, setAnswerEditMode] = useState(false);
+  const [originalText, setOriginalText] = useState('')
+  useEffect(() => {
+    setText(content);
+    setOriginalText(content)
+  }, []);
+
+  const handleCommentSubmit = (e, id) => {
     e.preventDefault();
-    const enteredComment = commentInput.current.value
+    const enteredComment = commentInput.current.value;
     //입력값이 없을 경우
-    if(!enteredComment){
+    if (!enteredComment) {
       console.log('댓글 입력하세요');
-      commentInput.current.value = ''
-      return
+      commentInput.current.value = '';
+      return;
     }
-    if(isQuestion){
-      console.log(`${id}번 질문에 대한 댓글 ${enteredComment}입니다.`)
-      dispatch(addQuestionComment({questionId : id, questionComment : {
-        // questionCommentWriter : userState.displayName,
-        questionCommentWriter : userState.email,
-        questionCommentContent : enteredComment,
-        token : userState.token
-      }}))
-      commentInput.current.value = ''
-    } else{
-      console.log(`${questionId}번 질문 ${id}번 답변에 대한 댓글 ${enteredComment}입니다.`)
-      dispatch(addAnswerComment({questionId, answerId : id, answerComment: {
-        answerCommentWriter : userState.displayName,
-        // answerCommentWriter : userState.email,
-        answerCommentContent : enteredComment,
-        token : userState.token
-      }}))
-      commentInput.current.value = ''
+    if (isQuestion) {
+      console.log(`${id}번 질문에 대한 댓글 ${enteredComment}입니다.`);
+      dispatch(
+        addQuestionComment({
+          questionId: id,
+          questionComment: {
+            // questionCommentWriter : userState.displayName,
+            questionCommentWriter: userState.email,
+            questionCommentContent: enteredComment,
+            token: userState.token,
+          },
+        })
+      );
+      commentInput.current.value = '';
+    } else {
+      console.log(
+        `${questionId}번 질문 ${id}번 답변에 대한 댓글 ${enteredComment}입니다.`
+      );
+      dispatch(
+        addAnswerComment({
+          questionId,
+          answerId: id,
+          answerComment: {
+            answerCommentWriter: userState.displayName,
+            // answerCommentWriter : userState.email,
+            answerCommentContent: enteredComment,
+            token: userState.token,
+          },
+        })
+      );
+      commentInput.current.value = '';
     }
-  }
-  
+  };
+
   const handleEnterPress = (e) => {
-    if(e.key === 'Enter') {
-      return (e) =>handleCommentSubmit()
-    }else{
-      return
+    if (e.key === 'Enter') {
+      return (e) => handleCommentSubmit();
+    } else {
+      return;
+    }
+  };
+
+
+  //질문 수정
+  const handelQuestionEditSubmit = async(e) => {
+    try{
+      console.log(title, text,id)
+      const response = await axios.patch(`/question/${id}/edit`,{
+        questionTitle : title,
+        questionContent : text
+      })
+      return response
+    }catch(e){
+      console.log(e)
     }
   }
+
+//답변 수정
+const handleAnswerEditSubmit = async() => {
+  console.log(text, id)
+  try{
+    const response = await axios.patch(`/answer/${id}/edit`,{
+      answerContent : text
+    })
+    return response
+  } catch(e) {
+    console.log(e)
+  }
+}
+
+  //질문, 답변 삭제
+  const handleDelete = async () => {
+    if (isQuestion) {
+      try{
+        console.log(`${id}번 질문 삭제 입니다.`);
+        const response = await axios.delete(`/questions/${id}`);
+        navigate('/');
+        return response;
+      }catch(e){
+        console.log(e)
+      }
+    } else {
+      try{
+        console.log(`${questionId}번 질문의 ${id}번 답변 삭제 버튼입니다. `);
+        const response = await axios.delete(`/answer/${id}`);
+        return response;
+      }catch(e){
+        console.log(e)
+      }
+    }
+  };
+  const handleEditText = (e) => {
+    console.log(e.target.value);
+    setText(e.target.value);
+  };
+
+  const handleAnswerEditMode = () => {
+    setAnswerEditMode(!answerEditMode);
+    setText(originalText)
+  };
   return (
     <OpinionLayout>
       <OpinionContainer>
@@ -66,13 +155,85 @@ const OpinionCard = ({
         </VoteContainer>
         <OpinionContentContainer>
           <ContentContainer>
-            <Content>{content}</Content>
+            {questionEditMode && isQuestion ? (
+              <>
+                {/* 질문수정모드 이면서 질문 일 때  */}
+                <form>
+                  <label id='editText'/>
+                  <input id='editText'value={text} onChange={handleEditText}/>
+                </form>
+              </>
+            ) : //질문수정모드가아닐때
+            answerEditMode ? (
+              <>
+                {/*질문수정모드가 아니면서 질문이아니면서(답변이면서) 답변 수정모드 일 때*/}
+                <form>
+                  <label id='editText'/>
+                  <input id='editText' value={text} onChange={handleEditText}/>
+                </form>
+              </>
+            ) : (
+              <>
+                {/*질문수정모드가 아닐 때, 답변수정모드도 아닐 */}
+                <Content>{content}</Content>
+              </>
+            )}
             <ContentInfoContainer>
-              {userState.email === email && <><span>edit</span><span>delete</span></>} 
+              {userState.email === email ? (
+                isQuestion ? (
+                  questionEditMode ? (
+                    <>
+                      <EditWrapper themeState={themeState}>
+                        <span onClick={() => handelQuestionEditSubmit()}>수정하기</span>
+                        <span onClick={() => handleQuestionEditMode()}>
+                          cancel
+                        </span>
+                      </EditWrapper>
+                    </>
+                  ) : (
+                    <>
+                      <EditWrapper themeState={themeState}>
+                        <span onClick={() => handleQuestionEditMode()}>
+                          edit
+                        </span>
+                        <span onClick={() => handleDelete()}>delete</span>
+                      </EditWrapper>
+                    </>
+                  )
+                ) : answerEditMode ? (
+                  <>
+                    <EditWrapper themeState={themeState}>
+                      <span onClick={()=>handleAnswerEditSubmit()}>수정하기</span>
+                      <span onClick={() => handleAnswerEditMode()}>cancel</span>
+                    </EditWrapper>
+                  </>
+                ) : (
+                  <>
+                    <EditWrapper themeState={themeState}>
+                      <span onClick={() => handleAnswerEditMode()}>edit</span>
+                      <span onClick={() => handleDelete()}>delete</span>
+                    </EditWrapper>
+                  </>
+                )
+              ) : (
+                <>
+                  {/* 로그인상태가 아니거나, 자신이 작성한게 아닐 때 */}
+                  <EditWrapper themeState={themeState}>
+                    <span></span>
+                    <span></span>
+                  </EditWrapper>
+                </>
+              )}
+
               <ContentInfo themeState={themeState}>
-                <InfoModified themeState={themeState}>{modifiedAt}</InfoModified>
+                <InfoModified themeState={themeState}>
+                  {modifiedAt}
+                </InfoModified>
                 <InfoBox themeState={themeState}>
-                  <img src='https://w7.pngwing.com/pngs/981/645/png-transparent-default-profile-united-states-computer-icons-desktop-free-high-quality-person-icon-miscellaneous-silhouette-symbol.png' alt='프로필사진'></img>
+                  <img
+                    src='https://w7.pngwing.com/pngs/981/645/png-transparent-default-profile-united-states-computer-icons-desktop-free-high-quality-person-icon-miscellaneous-silhouette-symbol.png'
+                    alt='프로필사진'
+                  ></img>
                   <div id='writer'>{writer}</div>
                 </InfoBox>
               </ContentInfo>
@@ -89,6 +250,7 @@ const OpinionCard = ({
                     content={el.questionCommentContent}
                     likes={el.questionCommentLikes}
                     modifiedAt={el.questionCommentModifiedAt}
+                    isQuestion={isQuestion}
                   />
                 ))
               : comment.map((el) => (
@@ -100,15 +262,20 @@ const OpinionCard = ({
                     content={el.answerCommentContent}
                     likes={el.answerCommentLikes}
                     modifiedAt={el.answerCommentModifiedAt}
+                    isQuestion={isQuestion}
                   />
                 ))}
           </CommentLayout>
           <AddCommentContainer themeState={themeState}>
             <form onSubmit={(e) => handleCommentSubmit(e, id)}>
-              <input type='text' ref={commentInput} onKeyDown={handleEnterPress}></input>
+              <input
+                type='text'
+                ref={commentInput}
+                onKeyDown={handleEnterPress}
+              ></input>
               <button>Add a comment</button>
             </form>
-            </AddCommentContainer>
+          </AddCommentContainer>
         </OpinionContentContainer>
       </OpinionContainer>
     </OpinionLayout>
@@ -117,24 +284,23 @@ const OpinionCard = ({
 
 const OpinionLayout = styled.div`
   width: 72.5rem;
-  border-top: 1px solid #D6D9DC;
+  border-top: 1px solid #d6d9dc;
 `;
 const OpinionContainer = styled.div`
   display: flex;
 `;
 
-
 const VoteContainer = styled.div`
   margin: 1rem 1.6rem 1rem 1rem;
   div {
-    text-align:center;
+    text-align: center;
     font-size: 2.1rem;
-    color: #6A737C;
+    color: #6a737c;
     margin: 0.2rem;
   }
-  button{
+  button {
     margin: 0.2rem;
-    height:3.6rem;
+    height: 3.6rem;
     width: 3.6rem;
   }
 `;
@@ -143,24 +309,37 @@ const OpinionContentContainer = styled.div`
   width: 66.2rem;
 `;
 
-
 const ContentContainer = styled.div`
   font-size: 1.5rem;
   padding: 0 1.6rem 0 0;
   margin: 1rem 0;
+  input{
+    width:100%;
+  }
 `;
 
 const Content = styled.div`
   margin: 1.5rem 0;
-  
 `;
 
 const ContentInfoContainer = styled.div`
-  display:flex;
+  display: flex;
   margin: 1.6rem 0;
   padding: 0.4rem 0 0 0;
   justify-content: space-between;
-`
+`;
+const EditWrapper = styled.div`
+  span {
+    cursor: pointer;
+    margin-right: 1rem;
+    font-size: 1.3rem;
+    color: ${(props) => (props.themeState === 'light' ? '#6a737c' : '#ACB3B9')};
+    :hover {
+      color: ${(props) =>
+        props.themeState === 'light' ? '#0a95ff' : '#9FA6Ad'};
+    }
+  }
+`;
 
 const ContentInfo = styled.div`
   width: 20rem;
@@ -169,15 +348,16 @@ const ContentInfo = styled.div`
   font-size: 1.2rem;
   line-height: 1.7rem;
   background-color: #d9eaf7;
-  background-color:${(props)=>props.themeState==='light' ? '#D9EAF7' : '#0C63A9'};
+  background-color: ${(props) =>
+    props.themeState === 'light' ? '#D9EAF7' : '#0C63A9'};
   padding: 0.5rem 0.6rem 0.7rem 0.7rem;
 `;
 
 const InfoModified = styled.div`
   color: #6a737c;
-  color: ${(props)=> props.themeState ==='light' ? '#6a737c' : '#ACB3B9' };
+  color: ${(props) => (props.themeState === 'light' ? '#6a737c' : '#ACB3B9')};
   margin: 0.1rem 0px 0.4rem 0;
-`
+`;
 
 const InfoBox = styled.div`
   display: flex;
@@ -186,12 +366,12 @@ const InfoBox = styled.div`
     width: 3.2rem;
   }
   #writer {
-    color: ${(props)=> props.themeState ==='light' ? ':hsl(206,100%,40%)' : '#2F9BFF'};
+    color: ${(props) =>
+      props.themeState === 'light' ? ':hsl(206,100%,40%)' : '#2F9BFF'};
     font-size: 1.3rem;
     margin: 0 0 0 0.8rem;
   }
 `;
-
 
 const CommentLayout = styled.div`
   margin: 1.2rem 0 0 0;
@@ -199,21 +379,22 @@ const CommentLayout = styled.div`
 
 const AddCommentContainer = styled.div`
   font-size: 1.3rem;
-  input{
+  input {
     display: block;
-    width:99%;
-    border : 1px solid #D6D9DC;
+    width: 99%;
+    border: 1px solid #d6d9dc;
     border-radius: 0.3rem;
     margin: 1rem 0 1rem 1rem;
   }
-  button{
-  color: ${(props)=>props.themeState === 'light' ? '#D6D9DC' : '#60666c'};
-  background-color: ${(props)=>props.themeState==='light'? '#ffffff' : '#2D2D2D'};
-  border: none;
-  &:hover{
-    color: #0a95ff;;
+  button {
+    color: ${(props) => (props.themeState === 'light' ? '#D6D9DC' : '#60666c')};
+    background-color: ${(props) =>
+      props.themeState === 'light' ? '#ffffff' : '#2D2D2D'};
+    border: none;
+    &:hover {
+      color: #0a95ff;
+    }
   }
-}
 `;
 
 export default OpinionCard;
