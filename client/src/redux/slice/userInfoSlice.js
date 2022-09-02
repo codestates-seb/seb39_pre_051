@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 const initialToken = localStorage.getItem('token')
-const initialEmail = localStorage.getItem('emil')
+const initialEmail = localStorage.getItem('email')
 const LOGIN_URL = '/users/login'
 export const logIn = createAsyncThunk(
     'userInfo/logIn',
@@ -37,7 +37,7 @@ export const userInfoSlice = createSlice({
             state.token = null
             state.isLoggedIn = false
             localStorage.removeItem('token')
-            localStorage.removeItem('emil')
+            localStorage.removeItem('email')
         }
     },
     extraReducers: (builder) => {
@@ -50,7 +50,7 @@ export const userInfoSlice = createSlice({
             state.email  = action.payload.memberEmail
             // state.profileImage = action.payload.memberProfileImage
             // state.token = action.payload.memberToken
-            localStorage.setItem('emil',action.payload.memberEmail)
+            localStorage.setItem('email',action.payload.memberEmail)
             localStorage.setItem('token', '1234')
             state.token = '1234'
             state.isLoggedIn = true
