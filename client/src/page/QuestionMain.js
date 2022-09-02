@@ -32,7 +32,7 @@ const QuestionMain = () => {
             <Card />
             <Pagination
               total='150'
-              limit={size}
+              size={size}
               page={page}
               setPage={setPage}
               setSize={setSize}
