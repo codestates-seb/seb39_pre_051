@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import Comment from './Comment';
 import { useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import {addQuestionComment, addAnswerComment} from '../redux/slice/questionSlice'
 
 const OpinionCard = ({
   id,
@@ -10,15 +11,42 @@ const OpinionCard = ({
   modifiedAt,
   writer,
   comment,
+  questionId,
   isQuestion,
 }) => {
   const commentInput = useRef();
   const themeState = useSelector((state)=>state.themeSlice).theme
-
-  const handleCommentSubmit =(e) => {
+  const userState = useSelector((state)=>state.userInfoSlice)
+  const dispatch = useDispatch()
+  console.log(userState.email, email)
+  const handleCommentSubmit =(e, id) => {
     e.preventDefault();
     const enteredComment = commentInput.current.value
-    console.log(enteredComment)
+    //입력값이 없을 경우
+    if(!enteredComment){
+      console.log('댓글 입력하세요');
+      commentInput.current.value = ''
+      return
+    }
+    if(isQuestion){
+      console.log(`${id}번 질문에 대한 댓글 ${enteredComment}입니다.`)
+      dispatch(addQuestionComment({questionId : id, questionComment : {
+        // questionCommentWriter : userState.displayName,
+        questionCommentWriter : userState.email,
+        questionCommentContent : enteredComment,
+        token : userState.token
+      }}))
+      commentInput.current.value = ''
+    } else{
+      console.log(`${questionId}번 질문 ${id}번 답변에 대한 댓글 ${enteredComment}입니다.`)
+      dispatch(addAnswerComment({questionId, answerId : id, answerComment: {
+        answerCommentWriter : userState.displayName,
+        // answerCommentWriter : userState.email,
+        answerCommentContent : enteredComment,
+        token : userState.token
+      }}))
+      commentInput.current.value = ''
+    }
   }
   
   const handleEnterPress = (e) => {
@@ -29,7 +57,7 @@ const OpinionCard = ({
     }
   }
   return (
-    <OpinionLayout key={id}>
+    <OpinionLayout>
       <OpinionContainer>
         <VoteContainer>
           <button>⬆︎</button>
@@ -40,6 +68,7 @@ const OpinionCard = ({
           <ContentContainer>
             <Content>{content}</Content>
             <ContentInfoContainer>
+              {userState.email === email && <><span>edit</span><span>delete</span></>} 
               <ContentInfo themeState={themeState}>
                 <InfoModified themeState={themeState}>{modifiedAt}</InfoModified>
                 <InfoBox themeState={themeState}>
@@ -56,6 +85,7 @@ const OpinionCard = ({
                     key={el.questionCommentId}
                     id={el.questionCommentId}
                     writer={el.questionCommentWriter}
+                    email={el.questionCommentEmail}
                     content={el.questionCommentContent}
                     likes={el.questionCommentLikes}
                     modifiedAt={el.questionCommentModifiedAt}
@@ -63,9 +93,10 @@ const OpinionCard = ({
                 ))
               : comment.map((el) => (
                   <Comment
-                    key={el.answerCommentId}
+                    key={el.answerCommentId + 200}
                     id={el.answerCommentId}
                     writer={el.answerCommentWriter}
+                    email={el.answerCommentEmail}
                     content={el.answerCommentContent}
                     likes={el.answerCommentLikes}
                     modifiedAt={el.answerCommentModifiedAt}
@@ -73,7 +104,7 @@ const OpinionCard = ({
                 ))}
           </CommentLayout>
           <AddCommentContainer themeState={themeState}>
-            <form onSubmit={(e) => handleCommentSubmit(e)}>
+            <form onSubmit={(e) => handleCommentSubmit(e, id)}>
               <input type='text' ref={commentInput} onKeyDown={handleEnterPress}></input>
               <button>Add a comment</button>
             </form>
@@ -128,7 +159,7 @@ const ContentInfoContainer = styled.div`
   display:flex;
   margin: 1.6rem 0;
   padding: 0.4rem 0 0 0;
-  justify-content: flex-end;
+  justify-content: space-between;
 `
 
 const ContentInfo = styled.div`

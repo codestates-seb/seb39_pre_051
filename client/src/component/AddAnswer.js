@@ -16,16 +16,23 @@ import {
   faUndo,
 } from '@fortawesome/free-solid-svg-icons';
 import { useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
+import {createAnswer} from '../redux/slice/questionSlice'
 
-const AddAnswer = () => {
+const AddAnswer = ({questionId}) => {
   const textAreaInput = useRef();
   const themeState = useSelector((state) => state.themeSlice).theme;
+  const userState = useSelector((state) => state.userInfoSlice)
+  const dispatch = useDispatch();
 
   const handleAnswerSubmit = (e) => {
     e.preventDefault();
     const enteredAnswer = textAreaInput.current.value;
-    console.log(enteredAnswer);
+    dispatch(createAnswer({questionId, answer : {
+      answerWriter : userState.email,
+      //식별하기 위해서는 email도 필요할 듯
+      answerContent : enteredAnswer,
+    }, token : userState.token}))
   };
   return (
     <AddAnswerLayout>
