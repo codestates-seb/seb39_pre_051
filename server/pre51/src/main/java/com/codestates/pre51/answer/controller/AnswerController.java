@@ -35,6 +35,8 @@ public class AnswerController {
     private final QuestionCommentService questionCommentService;
     @PostConstruct
     public void init()   {
+
+        // ****************************************** 1번 게시물 ******************************************
         Question question = Question.builder()
                 .questionWriterId(0)
                 .questionTitle("spring boot에서 Controller 의 역할")
@@ -62,7 +64,7 @@ public class AnswerController {
         AnswerComment answerComment = AnswerComment.builder()
                 .answerCommentWriterId(3)
                 .answerComments(answer)
-                .answerCommentContent("신고했습니다")
+                .answerCommentContent("이런 댓글은 삭제해주세요.")
                 .answerCommentCreatedAt(LocalDateTime.now())
                 .build();
         answerCommentService.createAnswerComment(answerComment);
@@ -82,6 +84,81 @@ public class AnswerController {
                 .answerCommentCreatedAt(LocalDateTime.now())
                 .build();
         answerCommentService.createAnswerComment(answerComment);
+
+        // ****************************************** 2번 게시물 ******************************************
+
+        question = Question.builder()
+                .questionWriterId(0)
+                .questionTitle("Spring Boot JPA 질문드립니다")
+                .questionContent("현재 프리 프로젝트 진행 중 JPA 관련하여 질문드립니다.\n" +
+                        "\n" +
+                        "Question과 Answer, Comment 세가지 도메인으로 개발하고 있습니다.\n" +
+                        "\n" +
+                        "Question은 Answer, Comment 로 이루어진 List 를,\n" +
+                        "Answer 은 Comment 로 이루어진 list 를 가지도록 엔티티 맵핑을 하였습니다.\n" +
+                        "\n" +
+                        "문제는 POSTMAN을 통해 데이터 조회 결과에 answer의 List 가 보이지 않습니다.")
+                .questionCreatedAt(LocalDateTime.now())
+                .build();
+        questionService.createQuestion(question);
+
+        questionComment = QuestionComment.builder()
+                .questionCommentWriterId(1)
+                .questionCommentContent("질문에 코드를 첨부해주세요")
+                .questionCommentCreatedAt(LocalDateTime.now())
+                .questionComments(question)
+                .build();
+        questionCommentService.createQuestionComment(questionComment);
+
+        answer = Answer.builder()
+                .answerContent("Question, Answer 각 Entity에 해당하는 @OneToMany 의 @JsonIgnore를 제거해 보시기 바랍니다" +
+                        "(해당 애노테이션이 붙어 있으면 Json으로 파싱할때 그 부분은 Json 처리가 되지 않기 때문에 문제가 발생합니다.)")
+                .answerWriterId(4)
+                .answerCreatedAt(LocalDateTime.now())
+                .answerQuestions(question)
+                .build();
+        answerService.createAnswer(answer);
+
+        answerComment = AnswerComment.builder()
+                .answerCommentWriterId(5)
+                .answerComments(answer)
+                .answerCommentContent("말씀하신 @JsonIgnore 어노테이션이 문제였습니다. " +
+                        "Answer 엔티티에 붙어있던 answerComments 리스트에 어노테이션을 붙여놔서 보이지 않았던 것 같습니다.")
+                .answerCommentCreatedAt(LocalDateTime.now())
+                .build();
+        answerCommentService.createAnswerComment(answerComment);
+
+        // ****************************************** 3번 게시물 ******************************************
+
+        question = Question.builder()
+                .questionWriterId(1)
+                .questionTitle("데일리 코딩 48번 질문있습니다. ")
+                .questionContent("큐를 이용한, 너비우선탐색으로 모든 조합을 구하는 로직을 이용했습니다. 시간이 초과 이슈가 있어서, 탐색하기전에 오름차순으로 정렬을하여 조합의 합이 bound를 넘어서면 탐색을 멈추게 했습니다. 시간초과 문제가 많이 발생하는데, 어떻게 접근하는게 좋을까요? 약간의 조언을 얻을 수 있다면 좋겠습니다.")
+                .questionCreatedAt(LocalDateTime.now())
+                .build();
+        questionService.createQuestion(question);
+
+        answer = Answer.builder()
+                .answerContent("현재 48번 문제의 경우, 부분집합의 합을 구하는 대표적인 문제입니다. 지금 작성해주신 코드는, 해당 입력된 배열의 크기에 따라 모든 부분집합을 구하면서 결과를 탐색해 나가는 과정을 거치고 있습니다. 현재 이미 계산된 값도 다시 while문을 통해 계산하고, 큐에 저장하는 과정을 거치고 있습니다.배열의 크기가 늘어날수록 큐에 데이터가 쌓이는 양이 늘어나게 됩니다. 배열이 커질수록 결과물을 찾아내는데 시간이 기하급수적으로 증가하게 됩니다.")
+                .answerWriterId(4)
+                .answerCreatedAt(LocalDateTime.now())
+                .answerQuestions(question)
+                .build();
+        answerService.createAnswer(answer);
+
+        // ****************************************** 4번 게시물 ******************************************
+
+        question = Question.builder()
+                .questionWriterId(1)
+                .questionTitle("WSL Linux에 생성한 자바 프로젝트 실행 문제")
+                .questionContent("wsl linux쪽에서 작업을 해서 개발 관련 프로그램이나 프로젝트 등을 linux쪽에 두고 관리하고 있습니다. " +
+                        "자바와 IntelliJ를 처음 사용해보아서 윈도우에 설치하고 프로젝트 생성은 linux쪽에 생성하고 IntelliJ로 해당 프로젝트를 열어서 " +
+                        "실행했을 때 제대로 실행되지 않았습니다. " +
+                        "wsl 환경에서 intelliJ를 통해 Java를 실행하려면 따로 환경설정을 해주어야 하는 것 같은데 " +
+                        "앞으로 진행할 커리큘럼에서 사용하는 프로그램들이 다 윈도우 개발환경에서 이루어지는지 궁금합니다.")
+                .questionCreatedAt(LocalDateTime.now())
+                .build();
+        questionService.createQuestion(question);
     }
 
     public AnswerController(AnswerService answerService, AnswerMapper answerMapper, QuestionService questionService, AnswerCommentService answerCommentService, QuestionCommentService questionCommentService){

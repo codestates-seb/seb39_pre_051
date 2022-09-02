@@ -51,6 +51,6 @@ public class Answer {
     @JsonIgnore
     private Question answerQuestions;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "answerComments",fetch = FetchType.LAZY)
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "answerComments")
     private List<AnswerComment> answerAnswerComments = new ArrayList<>();
 }
