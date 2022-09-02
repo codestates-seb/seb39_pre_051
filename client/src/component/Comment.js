@@ -1,6 +1,23 @@
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 const Comment = (props) => {
+  const userState = useSelector((state)=>state.userInfoSlice)
+  const themeState = useSelector((state)=>state.themeSlice).theme
+
+  const handleDelete = async() => {
+    console.log(props.id, props.isQuestion)
+    if(props.isQuestion){
+      console.log(`/questionComments/${props.id}`)
+      const response = await axios.delete(`/questionComments/${props.id}`)
+      return response 
+    } else{
+      console.log(`/answerComments/${props.id}`)
+      const response = await axios.delete(`/answerComments/${props.id}`)
+      return response 
+    }
+  }
   return (
     <CommentLayout key={props.id}>
       <CommetnLikes>
@@ -12,6 +29,12 @@ const Comment = (props) => {
           {' '}
           - <a href='/'> {props.writer}</a>
           <CommentSpan id='modifiedAt'>{props.modifiedAt}</CommentSpan>
+          {userState.email===props.email && (
+            <>
+            <CommentSpan id='editdelete' themeState={themeState}>edit</CommentSpan>
+            <CommentSpan id='editdelete' themeState={themeState} onClick={() =>handleDelete() }>delete</CommentSpan>
+            </>
+          )}
         </CommentInfo>
       </CommentContainer>
     </CommentLayout>
@@ -45,7 +68,16 @@ const CommentSpan = styled.span`
     margin-right: 0.3rem;
   }
   &#modifiedAt {
+    font-size: 1rem;
     color: #9199a1;
+  }
+  &#editdelete{
+    font-size: 1rem;
+    margin: 0 0.1rem;
+    color: ${(props)=> props.themeState ==='light' ? '#6a737c' : '#ACB3B9' };
+    :hover{
+      color: ${(props)=> props.themeState ==='light' ? '#0a95ff' : '#9FA6Ad' };
+    }
   }
 `;
 
