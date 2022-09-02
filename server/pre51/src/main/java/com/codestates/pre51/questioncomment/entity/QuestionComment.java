@@ -1,6 +1,5 @@
 package com.codestates.pre51.questioncomment.entity;
 
-import com.codestates.pre51.answer.entity.Answer;
 import com.codestates.pre51.question.entity.Question;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;

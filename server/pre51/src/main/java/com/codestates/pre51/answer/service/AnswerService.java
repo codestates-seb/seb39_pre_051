@@ -5,6 +5,7 @@ import com.codestates.pre51.answer.repository.AnswerRepository;
 import com.codestates.pre51.question.entity.Question;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class AnswerService {
     public Answer updateAnswer(Answer answer) {
         Answer findAnswer = answerRepository.findByAnswerId(answer.getAnswerId());
         findAnswer.setAnswerContent(answer.getAnswerContent());
-
+        findAnswer.setAnswerModifiedAt(LocalDateTime.now());
         return answerRepository.save(findAnswer);
     }
 
