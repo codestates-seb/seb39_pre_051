@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
@@ -24,16 +25,15 @@ public class QuestionController {
 
     private final QuestionMapper questionMapper;
 
-    private final AnswerService answerService;
 
-    public QuestionController(QuestionService questionService, QuestionMapper questionMapper, AnswerService answerService) {
+
+    public QuestionController(QuestionService questionService, QuestionMapper questionMapper) {
         this.questionService = questionService;
         this.questionMapper=questionMapper;
-        this.answerService=answerService;
     }
 
     @ApiOperation
-    (value="모든 게시글 조회" , notes="페이징 page, size 로 전체 질문 목록을 반환한다.")
+    (value="모든 질문 조회" , notes="페이징 page, size 로 전체 질문 목록을 반환한다.")
     @GetMapping("")
     public ResponseEntity getQuestions(@Positive @RequestParam int page,
                                        @Positive @RequestParam int size){
@@ -104,18 +104,19 @@ public class QuestionController {
 
     }
 
-    /*
-
-    @PatchMapping("/{question-id}")
+    @PatchMapping("/{question-id}/{answer-id}")
     @ApiOperation(value="질문의 답변 채택" , notes="질문-식별자, 답변-식별자 필요")
     public ResponseEntity selectBestAnswer(
             @PathVariable("question-id") @ApiParam(name = "질문_식별자") @Positive long questionId,
-            @RequestBody QuestionDTO.Patch requestBody){
+            @PathVariable("answer-id") @ApiParam(name="채택할 답변의 식별자") @Positive long answerId){
 
+        Question question = questionService.findQuestion(questionId);
+        Question updateQuestion =
+                questionService.selectAnswer(question,answerId);
 
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(
+                new SingleResponseDTO<>(questionMapper.questionToQuestionResponse(updateQuestion)),
+                HttpStatus.OK);
 
     }
-    */
 }

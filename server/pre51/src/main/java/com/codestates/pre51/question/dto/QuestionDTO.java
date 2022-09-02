@@ -67,7 +67,7 @@ public class QuestionDTO {
         private LocalDateTime questionCreatedAt;
         private LocalDateTime questionModifiedAt;
         private long questionBestAnswerId;
-        private Time questionAnsweredAt;
+        private LocalDateTime questionAnsweredAt;
         private List<QuestionComment> questionQuestionComments;
         private List<Answer> questionAnswers;
     }

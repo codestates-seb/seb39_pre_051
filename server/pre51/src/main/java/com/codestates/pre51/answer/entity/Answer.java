@@ -44,7 +44,6 @@ public class Answer {
     private LocalDateTime answerCreatedAt;
 
     @Column(name="answer_modified_at")
-    @LastModifiedDate
     private LocalDateTime answerModifiedAt;
 
     @ManyToOne
@@ -52,7 +51,6 @@ public class Answer {
     @JsonIgnore
     private Question answerQuestions;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "answerComments",fetch = FetchType.LAZY)
-    @JsonIgnore
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "answerComments")
     private List<AnswerComment> answerAnswerComments = new ArrayList<>();
 }

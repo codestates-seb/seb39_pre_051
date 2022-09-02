@@ -41,7 +41,8 @@ public class Question {
     @Column(nullable = false, columnDefinition = "TEXT", name="question_content")
     private String questionContent;
 
-    @Column(nullable = false, columnDefinition = "INT(4) default '0'", name="question_likes")
+//    @Column(nullable = false, columnDefinition = "INT(4) default '0'", name="question_likes")
+    @Column(nullable = false, columnDefinition = "INT", name="question_likes")
     private long questionLikes;
 
     @Column(nullable = false, name="question_created_at")
@@ -49,15 +50,13 @@ public class Question {
     private LocalDateTime questionCreatedAt;
 
     @Column(name="question_modified_at")
-    @LastModifiedDate
     private LocalDateTime questionModifiedAt;
 
     @Column(name="question_best_answer_id")
     private long questionBestAnswerId;
 
     @Column(name="question_answered_at")
-    @Timestamp
-    private Time questionAnsweredAt;
+    private LocalDateTime questionAnsweredAt;
 
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "answerQuestions")
     @JsonIgnore

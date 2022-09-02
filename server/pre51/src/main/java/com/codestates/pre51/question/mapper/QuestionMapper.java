@@ -3,6 +3,7 @@ package com.codestates.pre51.question.mapper;
 import com.codestates.pre51.question.dto.QuestionDTO;
 import com.codestates.pre51.question.entity.Question;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 

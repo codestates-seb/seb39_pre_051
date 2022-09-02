@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class QuestionService {
     private final QuestionRepository questionRepository;
@@ -33,12 +35,19 @@ public class QuestionService {
         Question findQuestion = questionRepository.findByQuestionId(question.getQuestionId());
         findQuestion.setQuestionContent(question.getQuestionContent());
         findQuestion.setQuestionTitle(question.getQuestionTitle());
-
+        findQuestion.setQuestionModifiedAt(LocalDateTime.now());
         return questionRepository.save(findQuestion);
     }
 
     public void deleteQuestion(long questionId){
         Question question = questionRepository.findByQuestionId(questionId);
         questionRepository.delete(question);
+    }
+
+    public Question selectAnswer(Question question,long answerId){
+        Question findQuestion = questionRepository.findByQuestionId(question.getQuestionId());
+        findQuestion.setQuestionBestAnswerId(answerId);
+        findQuestion.setQuestionAnsweredAt(LocalDateTime.now());
+        return questionRepository.save(findQuestion);
     }
 }
