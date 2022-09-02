@@ -7,12 +7,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faStackExchange } from '@fortawesome/free-brands-svg-icons';
 import styled from 'styled-components';
-import {useDispatch,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import DarkModeSwitch from './DarkModeSwitch';
 import { useState } from 'react';
 import { logOut } from '../redux/slice/userInfoSlice';
 import { useNavigate } from 'react-router-dom';
-
 
 const TopBar = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
@@ -26,11 +25,10 @@ const TopBar = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleLogOut  = () => {
-    dispatch(logOut())
-    navigate('/')
-  }
-
+  const handleLogOut = () => {
+    dispatch(logOut());
+    navigate('/');
+  };
 
   return (
     <Header themeState={themeState}>
@@ -94,7 +92,7 @@ const TopBar = () => {
                           ></path>
                         </svg>
                       </a>
-                      <span onClick={()=>handleLogOut()}>log out</span>
+                      <span onClick={() => handleLogOut()}>log out</span>
                     </LogoutDorpDownItem>
                   </LogOutDropDown>
                 </div>
@@ -296,15 +294,17 @@ const LogOutDropDown = styled.ul`
 const LogoutDorpDownItem = styled.div`
   display: ${(props) => (props.isOpen ? 'block' : 'none')};
   position: absolute;
-  background-color: ${(props) =>props.themeState === 'light' ? '#f8f9f9' : '#393939'};
-  color:${(props) => props.themeState === 'light' ? 'hsl(206,100%,40%)' : '#328DD2'};
+  background-color: ${(props) =>
+    props.themeState === 'light' ? '#f8f9f9' : '#393939'};
+  color: ${(props) =>
+    props.themeState === 'light' ? 'hsl(206,100%,40%)' : '#328DD2'};
   min-width: 160px;
   margin-left: -150px;
   margin-top: 15px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   padding: 12px 16px;
   z-index: 1;
-  a{
+  a {
     margin-right: 1.5rem;
   }
 `;
