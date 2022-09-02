@@ -3,23 +3,35 @@ import { useSelector } from 'react-redux';
 
 const tagArray = ['java', 'javascript', 'python', 'GO', 'C++'];
 
-const Card = () => {
-  const themeState = useSelector((state)=>state.themeSlice).theme
+const Card = ({
+  questionId,
+  questionTitle,
+  questionWriterId,
+  questionContent,
+  questionLikes,
+  questionAnswers,
+  questionCreatedAt,
+}) => {
+  const themeState = useSelector((state) => state.themeSlice).theme;
   return (
     <CardLayout>
       <CardContainer>
         <VoteContainer>
-          <Votes themeState={themeState}>0 votes</Votes>
-          <Answers>0 answers</Answers>
+          <Votes themeState={themeState}>{questionLikes} votes</Votes>
+          <Answers>{questionAnswers} answers</Answers>
           <Views>0 views</Views>
         </VoteContainer>
         <QuestionContainer>
-          <QuestionTitle href='naver.com'>질문 제목</QuestionTitle>
-          <QuestionSummary>질문 요약</QuestionSummary>
+          <QuestionTitle href={`/questions/${questionId}`}>
+            {questionTitle}
+          </QuestionTitle>
+          <QuestionSummary>{questionContent}</QuestionSummary>
           <QuestionInfoContainer>
             <TagWrapper>
               {tagArray.map((el, key) => (
-                <Tag key={key} themeState={themeState}>{el}</Tag>
+                <Tag key={key} themeState={themeState}>
+                  {el}
+                </Tag>
               ))}
             </TagWrapper>
             <InfoWrapper>
@@ -27,8 +39,8 @@ const Card = () => {
                 src='https://w7.pngwing.com/pngs/981/645/png-transparent-default-profile-united-states-computer-icons-desktop-free-high-quality-person-icon-miscellaneous-silhouette-symbol.png'
                 alt='프로필사진'
               ></img>
-              <Writer href='naver,com'>작성자</Writer>
-              <CreatedAt>작성 일자</CreatedAt>
+              <Writer href='naver,com'>{questionWriterId}</Writer>
+              <CreatedAt>{questionCreatedAt}</CreatedAt>
             </InfoWrapper>
           </QuestionInfoContainer>
         </QuestionContainer>
@@ -59,7 +71,7 @@ const VoteContainer = styled.div`
   }
 `;
 const Votes = styled.div`
-  color: ${(props)=>props.themeState ==='light' ? '#0c0d0e' : '#F2F2F3'};
+  color: ${(props) => (props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3')};
 `;
 const Answers = styled.div``;
 const Views = styled.div``;
@@ -89,9 +101,12 @@ const QuestionInfoContainer = styled.div`
 const TagWrapper = styled.div``;
 
 const Tag = styled.a`
-  border: ${(props)=>props.themeState==='light' ? '1px solid #ffffff' : 'none'};
-  color : ${(props)=>props.themeState ==='light' ? 'hsl(205, 47%, 41%)' : '#CDE1EE'};
-  background-color: ${(props)=>props.themeState ==='light' ? 'hsl(205, 46%, 92%)' : 'hsl(205,14%,28%)'};
+  border: ${(props) =>
+    props.themeState === 'light' ? '1px solid #ffffff' : 'none'};
+  color: ${(props) =>
+    props.themeState === 'light' ? 'hsl(205, 47%, 41%)' : '#CDE1EE'};
+  background-color: ${(props) =>
+    props.themeState === 'light' ? 'hsl(205, 46%, 92%)' : 'hsl(205,14%,28%)'};
   padding: 0.5rem 0.6rem;
   text-align: center;
 `;

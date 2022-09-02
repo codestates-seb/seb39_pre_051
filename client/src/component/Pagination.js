@@ -3,21 +3,23 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useEffect } from 'react';
 
-const Pagination = ({ total, size, page, setPage }) => {
+const Pagination = ({ total, size, page, setPage, setSize, setTotal }) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
 
   const numPages = Math.ceil(total / size);
 
   const handleOnClick = (e) => {
     setPage(Number(e.target.innerText));
-    console.log(e.target.innerText);
   };
-  console.log('page: ' + page);
 
   useEffect(() => {
     axios
       .get(`/questions?size=${size}&page=${page}`)
-      .then((res) => console.log(res))
+      .then((res) => {
+        setTotal(Number(res.data.pageInfo.totalElements));
+        setSize(size);
+        setPage(page);
+      })
       .catch((err) => console.log(err));
   }, [size, page]);
 
@@ -88,6 +90,19 @@ const Pagination = ({ total, size, page, setPage }) => {
                 </Button>
               ))}
           </>
+        ) : numPages <= 5 ? (
+          Array(numPages)
+            .fill()
+            .map((_, i) => (
+              <Button
+                key={i + 1}
+                onClick={handleOnClick}
+                aria-current={page === i + 1 ? 'page' : null}
+                themeState={themeState}
+              >
+                {i + 1}
+              </Button>
+            ))
         ) : (
           <>
             {Array(5)
@@ -133,7 +148,7 @@ const Nav = styled.nav`
   margin: 1.6rem;
 `;
 
-const Button = styled.button`
+const Button = styled.a`
   border: ${(props) =>
     props.themeState === 'light' ? '1px solid #d6d9dc' : '1px solid #4a4e51'};
   border-radius: 0.3rem;
@@ -143,6 +158,7 @@ const Button = styled.button`
   color: ${(props) => (props.themeState === 'light' ? '#3f4042' : '#b4b5b7')};
   font-size: 1.3rem;
   line-height: 1.9rem;
+  text-decoration: none;
 
   &:hover {
     background-color: ${(props) =>

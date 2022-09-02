@@ -21,6 +21,7 @@ import {
 import { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Ask = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
@@ -30,10 +31,14 @@ const Ask = () => {
   const [questionContent, setBody] = useState('');
   const [questionTag, setTag] = useState('');
 
+  const inputTitleRef = useRef(null);
+  const inputTagRef = useRef(null);
   const textAreaRef = useRef(null);
   const resizeRef = useRef(null);
   const previousClient = useRef(0);
   const defaultOffsetHeight = useRef(0);
+
+  const navigate = useNavigate();
 
   const handleMouseDown = (e) => {
     setDrag(true);
@@ -78,9 +83,8 @@ const Ask = () => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    return axios
+  const handleSubmit = () => {
+    axios
       .post('/questions/ask', { questionTitle, questionContent, questionTag })
       .then((res) => console.log(res))
       .catch((err) => {
@@ -88,16 +92,21 @@ const Ask = () => {
           console.log(`url: ${err.config.url}  data: ${err.config.data}`);
         }
       });
+
+    navigate('/questions');
+
+    return;
   };
 
-  console.log(
-    'title:' +
-      questionTitle +
-      ' body:' +
-      questionContent +
-      ' tag:' +
-      questionTag
-  );
+  const handleDiscard = (e) => {
+    e.preventDefault();
+    inputTitleRef.current.value = '';
+    inputTagRef.current.value = '';
+    textAreaRef.current.value = '';
+    setTitle('');
+    setBody('');
+    setTag('');
+  };
 
   return (
     <>
@@ -115,8 +124,10 @@ const Ask = () => {
             </QusetionTitleLabel>
             <QuestionTitleInput
               id='title'
+              ref={inputTitleRef}
               type='text'
               placeholder='e.g. Is there an R function for finding the index of an element in a vector?'
+              value={questionTitle}
               themeState={themeState}
               onChange={onChange}
             />
@@ -211,6 +222,7 @@ const Ask = () => {
                 id='body'
                 ref={textAreaRef}
                 style
+                value={questionContent}
                 onChange={(e) => setBody(e.target.value)}
               />
               <QuestionBodyResize
@@ -228,8 +240,10 @@ const Ask = () => {
             </QuestionTagsLabel>
             <QuestionTagsInput
               id='label'
+              ref={inputTagRef}
               type='text'
               placeholder='e.g. (ruby-on-rails .net sql-server)'
+              value={questionTag}
               themeState={themeState}
               onChange={onChange}
             />
@@ -242,11 +256,16 @@ const Ask = () => {
             borderColor='#7AA7C7'
             marginRight='0.4rem'
             themeState={themeState}
-            onClick={handleSubmit}
+            onClick={() => handleSubmit()}
           >
-            Review your question
+            Post your question
           </QuestionSubmitButton>
-          <QuestionSubmitButton id='discard' color='#C22E32' background='none'>
+          <QuestionSubmitButton
+            id='discard'
+            color='#C22E32'
+            background='none'
+            onClick={handleDiscard}
+          >
             Discard draft
           </QuestionSubmitButton>
         </QuestionSubmitContainer>
@@ -489,7 +508,7 @@ const QuestionSubmitContainer = styled.div`
   font-size: 2.5rem;
 `;
 
-const QuestionSubmitButton = styled.div`
+const QuestionSubmitButton = styled.a`
   padding: 0.8rem 1.04rem;
   font-size: 1.3rem;
   line-height: 1.5;
