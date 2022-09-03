@@ -5,6 +5,7 @@ import com.codestates.pre51.users.entity.User;
 import com.codestates.pre51.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,9 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+
     public User createUser(User user) {
 
         // 회원 미존재
@@ -29,6 +33,8 @@ public class UserService {
         if (findUser != null)
             throw new IllegalStateException("이미 가입된 회원입니다.");
 
+        user.setMemberPassword(bCryptPasswordEncoder.encode(user.getMemberPassword()));
+        user.setRoles("ROLE_USER");
         // DB에 회원 정보 저장
         return userRepository.save(user);
     }

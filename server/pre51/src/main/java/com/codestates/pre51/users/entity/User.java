@@ -4,6 +4,9 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,12 +25,17 @@ public class User {
     @Column
     private String memberName;
 
-    @Column(unique = true)
     private String memberEmail;
 
     private String memberPassword;
 
-    private String memberToken;
-
     private LocalDateTime memberCreatedAt;
+    private String roles;
+
+    public List<String> getRoleList() {
+        if (this.roles.length() > 0) {
+            return Arrays.asList(this.roles.split(","));
+        }
+        return new ArrayList<>();
+    }
 }
