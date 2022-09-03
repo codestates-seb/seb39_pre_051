@@ -3,18 +3,20 @@ package com.codestates.pre51.answer.service;
 import com.codestates.pre51.answer.entity.Answer;
 import com.codestates.pre51.answer.repository.AnswerRepository;
 import com.codestates.pre51.question.entity.Question;
+import com.codestates.pre51.users.entity.User;
+import com.codestates.pre51.users.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class AnswerService {
     private final AnswerRepository answerRepository;
-    
-    public AnswerService(AnswerRepository answerRepository){
+    private final UserRepository userRepository;
+    public AnswerService(AnswerRepository answerRepository, UserRepository userRepository){
         this.answerRepository=answerRepository;
+        this.userRepository = userRepository;
     }
     
     public List<Answer> findAnswers(){
@@ -31,7 +33,11 @@ public class AnswerService {
     public Answer createAnswer(Answer answer) {
         return answerRepository.save(answer);
     }
-
+    public Answer createAnswer(Answer answer,long answerWriterId) {
+        User user = userRepository.findByUserId(answerWriterId);
+        answer.setAnswerWriter(user);
+        return answerRepository.save(answer);
+    }
     public Answer findQuestionsAnswers(Answer answer) {
         return answerRepository.save(answer);
     }

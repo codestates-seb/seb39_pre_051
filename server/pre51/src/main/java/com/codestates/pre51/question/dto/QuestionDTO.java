@@ -6,6 +6,7 @@ import com.codestates.pre51.answer.dto.AnswerDTO;
 import com.codestates.pre51.answer.entity.Answer;
 import com.codestates.pre51.answercomment.entity.AnswerComment;
 import com.codestates.pre51.questioncomment.entity.QuestionComment;
+import com.codestates.pre51.users.entity.User;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -66,9 +67,10 @@ public class QuestionDTO {
 
 
         private long questionWriterId;
+        private User questionWriter;
         private String questionTitle;
         private String questionContent;
-        private long questionLikes;
+        private long questionLikesCount;
         private LocalDateTime questionCreatedAt;
         private LocalDateTime questionModifiedAt;
         private long questionBestAnswerId;

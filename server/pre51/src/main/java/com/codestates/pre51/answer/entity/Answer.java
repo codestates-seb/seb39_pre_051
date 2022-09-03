@@ -1,6 +1,7 @@
 package com.codestates.pre51.answer.entity;
 
 import com.codestates.pre51.answercomment.entity.AnswerComment;
+import com.codestates.pre51.answerlikes.entity.AnswerLikes;
 import com.codestates.pre51.questioncomment.entity.QuestionComment;
 import com.codestates.pre51.question.entity.Question;
 import com.codestates.pre51.users.entity.User;
@@ -38,16 +39,17 @@ public class Answer {
 
     //@Column(nullable = false, columnDefinition = "INT(4) default '0'", name="answer_likes")
     @Column(nullable = false, columnDefinition = "INT", name="answer_likes")
-    private long answerLikes;
+    private long answerLikesCount;
 
     @Column(nullable = false, name="answer_created_at")
     @CreatedDate
     private LocalDateTime answerCreatedAt;
 
     @Column(name="answer_modified_at")
+    @CreatedDate
     private LocalDateTime answerModifiedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="question_id")
     @JsonIgnore
     private Question answerQuestions;
@@ -55,7 +57,10 @@ public class Answer {
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "answerComments")
     private List<AnswerComment> answerAnswerComments = new ArrayList<>();
 
+    @OneToOne(cascade = {CascadeType.ALL})
+    private AnswerLikes answerLikes;
+
     @ManyToOne
     @JoinColumn(name="user_id")
-    private User user;
+    private User answerWriter;
 }
