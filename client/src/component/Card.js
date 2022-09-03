@@ -13,6 +13,17 @@ const Card = ({
   questionCreatedAt,
 }) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
+
+  const year = questionCreatedAt[0];
+  const month = questionCreatedAt[1];
+  const day = questionCreatedAt[2];
+  const hour =
+    questionCreatedAt[3] > 12
+      ? '오후 ' + (questionCreatedAt[3] - 12)
+      : '오전 ' + questionCreatedAt[3];
+  const min = questionCreatedAt[4];
+  const sec = questionCreatedAt[5];
+
   return (
     <CardLayout>
       <CardContainer>
@@ -40,7 +51,7 @@ const Card = ({
                 alt='프로필사진'
               ></img>
               <Writer href='naver,com'>{questionWriterId}</Writer>
-              <CreatedAt>{questionCreatedAt}</CreatedAt>
+              <CreatedAt>{`${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`}</CreatedAt>
             </InfoWrapper>
           </QuestionInfoContainer>
         </QuestionContainer>
@@ -66,6 +77,8 @@ const VoteContainer = styled.div`
   color: #6a737c;
   margin: 0 1.6rem 0.4rem 0;
   width: 10.8rem;
+  min-width: 7.5rem;
+
   div {
     margin: 0.6rem 0;
   }
@@ -86,7 +99,14 @@ const QuestionTitle = styled.a`
   margin: 0.6rem 0;
 `;
 const QuestionSummary = styled.div`
-  margin: 0.6rem 0;
+  margin: 0.7rem 0;
+  line-height: 1.4rem;
+  max-height: 2.6rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 `;
 
 const QuestionInfoContainer = styled.div`

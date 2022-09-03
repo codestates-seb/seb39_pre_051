@@ -13,18 +13,15 @@ import axios from 'axios';
 const QuestionMain = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
 
-  const [loading, setLoading] = useState(true);
-
   const [page, setPage] = useState(1);
-  const [size, setSize] = useState(1);
-  const [total, setTotal] = useState(150);
+  const [size, setSize] = useState(15);
+  const [total, setTotal] = useState(1);
   const [data, setData] = useState([]);
 
   useEffect(() => {
     axios
       .get(`/questions?size=${size}&page=${page}`)
       .then((res) => {
-        setLoading(false);
         //pagination
         setTotal(Number(res.data.pageInfo.totalElements));
         setPage(page);
@@ -33,7 +30,7 @@ const QuestionMain = () => {
         setData(res.data.data);
       })
       .catch((err) => console.log(err));
-  }, [page, size, loading]);
+  }, [page, size]);
 
   return (
     <>
