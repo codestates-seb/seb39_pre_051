@@ -9,6 +9,7 @@ import com.codestates.pre51.questioncomment.entity.QuestionComment;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.sql.Time;
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ public class QuestionDTO {
     @Getter
     @AllArgsConstructor
     @Setter
+    @NoArgsConstructor
     public static class Post{
 
         //@NotBlank
@@ -35,6 +37,7 @@ public class QuestionDTO {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Patch{
 
         private long questionId;
@@ -48,6 +51,7 @@ public class QuestionDTO {
     @Getter
     @AllArgsConstructor
     @Setter
+    @NoArgsConstructor
     public static class Delete{
         private long questionId;
     }
@@ -55,6 +59,7 @@ public class QuestionDTO {
     @Getter
     @AllArgsConstructor
     @Setter
+    @NoArgsConstructor
     public static class Response{
         @ApiModelProperty(value="게시글의 식별자 ID")
         private long questionId;

@@ -48,7 +48,9 @@ public class QuestionController {
     @GetMapping("/{question-id}")
     public ResponseEntity getQuestion(@PathVariable("question-id") @ApiParam(name = "질문_식별자") long questionId){
         Question question = questionService.findQuestion(questionId);
-
+        if(question==null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(
                 new SingleResponseDTO<>(questionMapper.questionToQuestionResponse(question))
                 ,HttpStatus.OK);

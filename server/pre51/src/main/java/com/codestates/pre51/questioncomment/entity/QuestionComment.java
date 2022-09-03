@@ -3,6 +3,7 @@ package com.codestates.pre51.questioncomment.entity;
 import com.codestates.pre51.question.entity.Question;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -41,7 +42,6 @@ public class QuestionComment {
 
     @ManyToOne
     @JoinColumn(name="question_comment_question_id")
-    @JsonIgnore
     private Question questionComments;
 
 }
