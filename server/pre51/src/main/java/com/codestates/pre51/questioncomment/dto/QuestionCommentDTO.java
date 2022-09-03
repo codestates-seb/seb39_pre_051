@@ -4,6 +4,7 @@ import com.codestates.pre51.answer.entity.Answer;
 import com.codestates.pre51.question.entity.Question;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ public class QuestionCommentDTO {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Post{
         private long questionCommentWriterId;
 
@@ -23,6 +25,7 @@ public class QuestionCommentDTO {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Patch{
         private long questionCommentId;
         private String questionCommentContent;
@@ -31,6 +34,7 @@ public class QuestionCommentDTO {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Response{
         private long questionCommentId;
         private long questionCommentWriterId;
