@@ -9,77 +9,6 @@ import AddAnswer from '../component/AddAnswer';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { readQuestion } from '../redux/slice/questionSlice';
-import axios from 'axios';
-
-const question = [
-  {
-    questionId: 0,
-    questionWriter: 'kyle1030',
-    questionEmail: 'test1@gmail.com',
-    questionContent:
-      'I do not  kno nI do not  know howktI do not  know how to do ',
-    questionLikes: 25,
-    questionCreatedAt: '2025년 10월 20일',
-    questionModifiedAt: '2025년 3월 14일',
-    questionTitle: 'How to do I do not  know',
-    questionComment: [
-      {
-        questionCommentId: 0,
-        questionCommentWriter: 'Robin',
-        questionCommentEmail:'test1@gmail.com',
-        questionCommentContent:
-          'HelloI do not  know how to do javascriptI do not  know how to do javascriptI do not  know how to do javascriptI do not  know how to do javascriptI do not  know how to do javascriptI do not  know how to do javascriptI do not  know how to do javascriptI do not  know how to do javascriptI do not  know how to do javascriptI do not  know how to do javascriptI do not  know how to do javascriptI do not  know how to do javascriptI do not  know how to do javascriptI do not  know how to do javascriptI do not  know how to do javascriptI do not  know how to do javascriptI do not  know how to do javascript',
-        questionCommentLikes: 6,
-        questionCommentCreatedAt: '2023년 2월 12일',
-      },
-    ],
-    answer: [
-      {
-        answerId: 0,
-        answerWriter: 'john',
-        answerEmail:'test1@gmail.com',
-        answerContent: 'It is not a big problem',
-        answerLikes: 5,
-        answerCreatedAt: '’2022년 3월 12일',
-        answerComment: [
-          {
-            answerCommentId: 0,
-            answerCommentWriter: 'Scholes',
-            answerCommentContent: 'Good For you',
-            answerCommentEmail:'test1@gmail.com',
-            answerCommentLikes: 3,
-            answerCommentModifiedAt: '2023년 3월 15일',
-            answerCommentCreatedAt: '2034년 12월',
-          },
-          {
-            answerCommentId: 1,
-            answerCommentWriter: 'Scholes',
-            answerCommentContent: 'Good For you',
-            answerCommentLikes: 3,
-            answerCommentModifiedAt: '2023년 3월 15일',
-            answerCommentCreatedAt: '2034년 12월',
-          },
-          {
-            answerCommentId: 2,
-            answerCommentWriter: 'Scholes',
-            answerCommentContent: 'Good For you',
-            answerCommentLikes: 3,
-            answerCommentModifiedAt: '2023년 3월 15일',
-            answerCommentCreatedAt: '2034년 12월',
-          },
-        ],
-      },
-      {
-        answerId: 1,
-        answerWriter: 'kate',
-        answerContent: 'you can do it',
-        answerLikes: 335,
-        answerCreatedAt: '2022년 3월 12일',
-        answerComment: [],
-      },
-    ],
-  },
-];
 
 
 const Question = () => {
@@ -88,18 +17,58 @@ const Question = () => {
   const [originalTitle, setOriginalTitle] = useState('')
   const params = useParams();
   const themeState = useSelector((state) => state.themeSlice).theme;
+  const questionState = useSelector((state)=>state.questionSlice)
   const dispatch = useDispatch();
+  const {questionId, questionWriterId, questionContent, questionLikes, questionCreatedAt, questionModifiedAt, questionTitle, questionQuestionComments, questionAnswers} = questionState
   useEffect(() => {
-    // dispatch(readQuestion(params.questionId))
-    setTitle(question[params.questionId].questionTitle)
-    setOriginalTitle(question[params.questionId].questionTitle)
-    axios
-    .get(`/questions/${params.questionId}`)
-    .then((res)=>{
-      console.log(res)
-    })
-    .catch((err)=>console.log(err))
-  },[]);
+  dispatch(readQuestion(params.questionId))
+  setTitle(questionTitle)
+  setOriginalTitle(questionTitle)
+  },[dispatch, params.questionId, questionTitle]);
+
+  // const [date, setDate] = useState({
+  //   year : null,
+  //   month : null,
+  //   day : null,
+  //   hour : null,
+  //   min : null,
+  //   sec : null
+  // }) 
+
+  // if(questionCreatedAt !==null) {
+  //   setDate({
+  //     year : questionCreatedAt[0] ,
+  //     month : questionCreatedAt[1] ,
+  //     day : questionCreatedAt[2] ,
+  //     hour :
+  //     questionCreatedAt[3] > 12
+  //       ? '오후 ' + (questionCreatedAt[3] - 12)
+  //       : '오전 ' + questionCreatedAt[3],
+  //     min : questionCreatedAt[4],
+  //     sec : questionCreatedAt[5],
+  //   })
+  // }
+
+  let year = null
+  let month = null
+  let day = null
+  let hour = null
+  let min = null
+  let sec = null 
+
+    if(questionCreatedAt !==null) {
+      year = questionCreatedAt[0] 
+      month = questionCreatedAt[1] 
+      day = questionCreatedAt[2] 
+      hour =
+      questionCreatedAt[3] > 12
+        ? '오후 ' + (questionCreatedAt[3] - 12)
+        : '오전 ' + questionCreatedAt[3]
+      min = questionCreatedAt[4]
+      sec = questionCreatedAt[5]
+  }
+
+
 
 
 const handelEditTitle = (e) => {
@@ -108,9 +77,8 @@ const handelEditTitle = (e) => {
 
   const handleQuestionEditMode = () => {
     setQuestionEditMode(!questionEditMode)
-    setTitle(originalTitle)
+    setTitle(questionTitle)
   }
-
   return (
     <>
       <TopBar />
@@ -127,7 +95,7 @@ const handelEditTitle = (e) => {
                   </form>
                 ) : (
                 <>
-                {question[params.questionId].questionTitle}
+                <a href='/questions/questionId'>{questionTitle}</a>
                 </>
                 ) }
                 
@@ -135,41 +103,43 @@ const handelEditTitle = (e) => {
               <AskBtn />
             </TitleContainer>
             <CreatedAt themeState={themeState}>
-              {question[params.questionId].questionCreatedAt}
+            {`${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`}
             </CreatedAt>
           </TitleLayout>
           <OpinionCard
-            key = {question[params.questionId].questionId}
-            id={question[params.questionId].questionId}
-            likes={question[params.questionId].questionLikes}
-            content={question[params.questionId].questionContent}
-            modifiedAt={question[params.questionId].questionModifiedAt}
-            writer={question[params.questionId].questionWriter}
-            email={question[params.questionId].questionEmail}
-            comment={question[params.questionId].questionComment}
+            key = {questionId}
+            id={questionId}
+            likes={questionLikes}
+            content={questionContent}
+            modifiedAt={questionModifiedAt === null ? [] : questionModifiedAt}
+            writer={questionWriterId}
+            // email={questionEmail}
+            email='test1@gmail.com'
+            comment={questionQuestionComments}
             isQuestion={true}
             questionEditMode={questionEditMode}
             handleQuestionEditMode={handleQuestionEditMode}
             title={title}
           />
           <AnswerSummay>
-            {question[params.questionId].answer.length} Answers
+            {questionAnswers.length} Answers
           </AnswerSummay>
-          {question[params.questionId].answer.map((el) => (
+          {questionAnswers.map((el) => (
             <OpinionCard
               key = {el.answerId}
               id={el.answerId}
               likes={el.answerLikes}
               content={el.answerContent}
-              modifiedAt={el.answer_modifiedAt}
-              writer={el.answerWriter}
-              email={el.answerEmail}
-              comment={el.answerComment}
-              questionId = {question[params.questionId].questionId}
+              modifiedAt={el.answerModifiedAt === null ? [] : el.answerModifiedAt}
+              writer={el.answerWriterId}
+              // email={el.answerEmail}
+              email='test1@gmail.com'
+              comment={el.answerAnswerComments}
+              questionId = {questionId}
               isQuestion={false}
             />
           ))}
-          <AddAnswer questionId={params.questionId}/>
+          <AddAnswer questionId={questionId}/>
         </Content>
       </Container>
       <Footer />
@@ -211,11 +181,15 @@ const TitleContainer = styled.div`
 //Title 태그는 실제로는 본인의 질문페이지로 이동하는 a 태그이다 이후 수정할 것.
 const Title = styled.h1`
   font-size: 2.7rem;
-  color: ${(props) => (props.themeState === 'light' ? ' #3b4045' : '#E7E9EB')};
   margin: 0 0 0.8rem 0;
-  width: 80rem;
+  width: 72.5rem;
+  line-height:3.645rem;
   input{
     width:100%;
+  }
+  a{
+    text-decoration: none;
+    color: ${(props) => (props.themeState === 'light' ? ' #3b4045' : '#E7E9EB')};
   }
 `;
 

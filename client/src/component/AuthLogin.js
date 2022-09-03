@@ -25,7 +25,7 @@ const AuthLogin = (props) => {
   });
   const { displayName, email, password, rePassword } = inputValue;
   const dispatch=useDispatch()
-  
+  const navigate = useNavigate()
   const handleInput = (event) => {
     const { name, value } = event.target;
     console.log(name, value);
@@ -109,8 +109,11 @@ const AuthLogin = (props) => {
           memberEmail : email,
           memberPassword : password
         })
+        alert('회원가입이 완료되었습니다!')
+        navigate('/')
         return console.log(response)
       } catch(err) {
+        alert('회원정보를 확인해주세요!')
         console.log('회원가입 error', err);
       }
     }

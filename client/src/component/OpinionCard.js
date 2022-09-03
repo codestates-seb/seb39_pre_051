@@ -3,6 +3,7 @@ import Comment from './Comment';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  readQuestion,
   addQuestionComment,
   addAnswerComment,
 } from '../redux/slice/questionSlice';
@@ -31,11 +32,25 @@ const OpinionCard = ({
   const [text, setText] = useState('');
   const [answerEditMode, setAnswerEditMode] = useState(false);
   const [originalText, setOriginalText] = useState('')
+  const year = modifiedAt[0];
+  const month = modifiedAt[1];
+  const day = modifiedAt[2];
+  const hour =
+    modifiedAt[3] > 12
+      ? '오후 ' + (modifiedAt[3] - 12)
+      : '오전 ' + modifiedAt[3];
+  const min = modifiedAt[4];
+  const sec = modifiedAt[5];
+
+
   useEffect(() => {
     setText(content);
     setOriginalText(content)
-  }, []);
+  }, [content]);
 
+
+
+  // 답변, 질문 코멘트 작성
   const handleCommentSubmit = (e, id) => {
     e.preventDefault();
     const enteredComment = commentInput.current.value;
@@ -47,35 +62,29 @@ const OpinionCard = ({
     }
     if (isQuestion) {
       console.log(`${id}번 질문에 대한 댓글 ${enteredComment}입니다.`);
-      dispatch(
-        addQuestionComment({
-          questionId: id,
-          questionComment: {
-            // questionCommentWriter : userState.displayName,
-            questionCommentWriter: userState.email,
-            questionCommentContent: enteredComment,
-            token: userState.token,
-          },
-        })
-      );
+      console.log(typeof enteredComment)
+      axios.post(`/questionComments/${id}`, {
+        questionCommentWriterId : 1,
+        questionCommentContent : enteredComment
+      }).then((res)=> console.log(res))
+      .catch((err)=>{
+        console.log(err)
+      })
       commentInput.current.value = '';
+      dispatch(readQuestion(questionId))
     } else {
       console.log(
         `${questionId}번 질문 ${id}번 답변에 대한 댓글 ${enteredComment}입니다.`
       );
-      dispatch(
-        addAnswerComment({
-          questionId,
-          answerId: id,
-          answerComment: {
-            answerCommentWriter: userState.displayName,
-            // answerCommentWriter : userState.email,
-            answerCommentContent: enteredComment,
-            token: userState.token,
-          },
-        })
-      );
+      axios.post(`/answerComments/${id}`, {
+        answerCommentWriterId : 2,
+        answerCommentContent : enteredComment
+      }).then((res)=> console.log(res))
+      .catch((err)=> {
+        console.log(err)
+      })
       commentInput.current.value = '';
+      dispatch(readQuestion(questionId))
     }
   };
 
@@ -90,29 +99,25 @@ const OpinionCard = ({
 
   //질문 수정
   const handelQuestionEditSubmit = async(e) => {
-    try{
-      console.log(title, text,id)
-      const response = await axios.patch(`/question/${id}/edit`,{
-        questionTitle : title,
-        questionContent : text
-      })
-      return response
-    }catch(e){
-      console.log(e)
-    }
+    console.log(title, text,id)
+    const response = await axios.patch(`/questions/${id}/edit`,{
+      questionTitle : title,
+      questionContent : text
+    })
+    handleQuestionEditMode()
+    dispatch(readQuestion(questionId))
+    return response
   }
 
 //답변 수정
 const handleAnswerEditSubmit = async() => {
   console.log(text, id)
-  try{
-    const response = await axios.patch(`/answer/${id}/edit`,{
-      answerContent : text
-    })
-    return response
-  } catch(e) {
-    console.log(e)
-  }
+  const response = await axios.patch(`/answer/${id}/edit`,{
+    answerContent : text
+  })
+  handleQuestionEditMode()
+  dispatch(readQuestion(questionId))
+  return response
 }
 
   //질문, 답변 삭제
@@ -130,6 +135,7 @@ const handleAnswerEditSubmit = async() => {
       try{
         console.log(`${questionId}번 질문의 ${id}번 답변 삭제 버튼입니다. `);
         const response = await axios.delete(`/answer/${id}`);
+        dispatch(readQuestion(questionId))
         return response;
       }catch(e){
         console.log(e)
@@ -227,7 +233,7 @@ const handleAnswerEditSubmit = async() => {
 
               <ContentInfo themeState={themeState}>
                 <InfoModified themeState={themeState}>
-                  {modifiedAt}
+                {`${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`}
                 </InfoModified>
                 <InfoBox themeState={themeState}>
                   <img
@@ -245,20 +251,22 @@ const handleAnswerEditSubmit = async() => {
                   <Comment
                     key={el.questionCommentId}
                     id={el.questionCommentId}
-                    writer={el.questionCommentWriter}
-                    email={el.questionCommentEmail}
+                    writer={el.questionCommentWriterId}
+                    // email={el.questionCommentEmail}
+                    email='test1@gmail.com'
                     content={el.questionCommentContent}
-                    likes={el.questionCommentLikes}
+                    // likes={el.questionCommentLikes}
                     modifiedAt={el.questionCommentModifiedAt}
                     isQuestion={isQuestion}
                   />
                 ))
               : comment.map((el) => (
                   <Comment
-                    key={el.answerCommentId + 200}
+                    key={el.answerCommentId}
                     id={el.answerCommentId}
-                    writer={el.answerCommentWriter}
-                    email={el.answerCommentEmail}
+                    writer={el.answerCommentWriterId}
+                    // email={el.answerCommentEmail}
+                    email='test1@gmail.com'
                     content={el.answerCommentContent}
                     likes={el.answerCommentLikes}
                     modifiedAt={el.answerCommentModifiedAt}
