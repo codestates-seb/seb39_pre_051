@@ -9,7 +9,7 @@ import com.codestates.pre51.users.mapper.UserMapper;
 import com.codestates.pre51.users.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +20,11 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
     private final UserMapper mapper;
-
     private TokenProvider tokenProvider;
 
     // 가짜 데이터 넣기
@@ -52,26 +52,23 @@ public class UserController {
     // 회원가입
     @ApiOperation(value="회원 가입", notes = "회원-닉네임, 회원-이메일, 회원-비밀번호를 입력하여 회원가입을 합니다.")
     @PostMapping("/signup")
-    public ResponseEntity postUser(@RequestBody @Valid UserPostDto userPostDto) {
+    public String postUser(@RequestBody @Valid UserPostDto userPostDto) {
         User user = mapper.userPostDtoToUser(userPostDto);
 
         User response = userService.createUser(user);
-        return new ResponseEntity(mapper.memberToMemberResponseDto(response),
-                HttpStatus.CREATED);
+        return "회원가입 완료";
     }
 
     // 로그인
     @PostMapping("/login")
     @ApiOperation(value="로그인", notes = "회원-이메일과 회원-비밀번호를 입력해서 로그인을 합니다.")
-    public ResponseEntity login(@RequestBody @Valid UserLoginDto userLoginDto) {
+    public String login(@RequestBody @Valid UserLoginDto userLoginDto) {
 
         User response = userService.getByCredentials(userLoginDto.getMemberEmail(), userLoginDto.getMemberPassword());
 
-//        String token = tokenProvider.create(response);
-//        response.setToken(token);
-
-        return new ResponseEntity(mapper.memberToMemberResponseDto(response),
-                HttpStatus.CREATED);
+        /*return new ResponseEntity(mapper.memberToMemberResponseDto(response),
+                HttpStatus.CREATED);*/
+        return "로그인 성공";
     }
     @ApiOperation(value="로그아웃")
     @PutMapping("/logout")
@@ -115,5 +112,11 @@ public class UserController {
         userService.deleteUser(userId);
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    // 테스트
+    @PostMapping("/token")
+    public String token() {
+        return "<h1>token</h1>";
     }
 }

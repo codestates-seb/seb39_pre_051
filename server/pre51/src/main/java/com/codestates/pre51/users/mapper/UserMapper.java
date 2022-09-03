@@ -16,8 +16,8 @@ public class UserMapper {
                 userPostDto.getMemberName(),
                 userPostDto.getMemberEmail(),
                 userPostDto.getMemberPassword(),
-                null,
-                LocalDateTime.now());
+                LocalDateTime.now(),
+                     "ROLE_USER");
     }
 
     public User userPatchDtoToUser(UserPatchDto userPatchDto) {
@@ -25,8 +25,8 @@ public class UserMapper {
                 userPatchDto.getMemberName(),
                 null,
                 userPatchDto.getMemberPassword(),
-                null,
-                LocalDateTime.now());
+                LocalDateTime.now(),
+                "ROLE_USER");
     }
 
     public UserResponseDto memberToMemberResponseDto(User user) {
