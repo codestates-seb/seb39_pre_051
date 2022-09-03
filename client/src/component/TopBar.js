@@ -17,6 +17,7 @@ const TopBar = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
   const userState = useSelector((state) => state.userInfoSlice);
   const isLoggedIn = userState.isLoggedIn;
+  const userId = userState.memberId;
   const [isOpen, setIsOpen] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -60,7 +61,7 @@ const TopBar = () => {
           {isLoggedIn ? (
             <>
               <IconWrapper>
-                <a href='/users' id='userInfo'>
+                <a href={`/users/${userId}`} id='userInfo'>
                   <img src={userState.profileImage} alt='프로필사진' />
                 </a>
                 <div id='icon'>

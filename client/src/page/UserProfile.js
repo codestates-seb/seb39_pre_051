@@ -18,19 +18,57 @@ import {
   faSquarePollHorizontal,
   faUndo,
 } from '@fortawesome/free-solid-svg-icons';
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const UserProfile = () => {
+  const user = useSelector((props) => props.userInfoSlice);
+
+  const [userData, setUserData] = useState({});
+  const [displayName, setDisplayName] = useState('');
+
+  useEffect(() => {
+    axios
+      .get(`/users/${user.memberId}`)
+      .then((res) => {
+        setUserData(res.data);
+        setDisplayName(res.data.memberName);
+      })
+      .catch((err) => console.log(err));
+  }, [user.memberId]);
+
+  const handleOnChange = (e) => {
+    setDisplayName(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .patch(`/users/${user.memberId}`, { memberName: displayName })
+      .then((res) => {
+        setUserData({ ...userData, memberName: displayName });
+        console.log(res.data);
+      })
+      .catch((err) => console.log(err));
+
+    alert('Display name has changed');
+    window.scrollTo(0, 0);
+  };
+
   return (
     <>
       <TopBar />
       <Container>
-        <SideBar pageName={'Users'}/>
+        <SideBar pageName={'Users'} />
         <Content>
           <UserProfileDiv>
             <UserProfileImageDiv>
               <UserProfileImage src='https://lh3.googleusercontent.com/a-/AFdZucpIQ6i4DewU4N2dncFukPbb0eF3gkIB9xOsdEFNCw=k-s256' />
             </UserProfileImageDiv>
-            <UserProfileDisplayName>chocolate</UserProfileDisplayName>
+            <UserProfileDisplayName>
+              {userData.memberName}
+            </UserProfileDisplayName>
           </UserProfileDiv>
           <UserProfileButton className='selected'>Settings</UserProfileButton>
           <UserProfileSetting>
@@ -66,7 +104,12 @@ const UserProfile = () => {
                   <UserProfileEditFormTitle htmlFor='displayName'>
                     Display name
                   </UserProfileEditFormTitle>
-                  <UserProfileEditFormInput id='displayName' type='text' />
+                  <UserProfileEditFormInput
+                    id='displayName'
+                    type='text'
+                    value={displayName}
+                    onChange={handleOnChange}
+                  />
                   <UserProfileEditFormTitle htmlFor='location'>
                     Location
                   </UserProfileEditFormTitle>
@@ -135,7 +178,7 @@ const UserProfile = () => {
                   </UserProfileEditFormTitle>
                   <UserProfileEditFormInput id='fullName' type='text' />
                 </UserProfileEditFormContent>
-                <UserProfileEditFormButton>
+                <UserProfileEditFormButton type='submit' onClick={handleSubmit}>
                   Save profile
                 </UserProfileEditFormButton>
                 <UserProfileEditFormButton
@@ -202,8 +245,9 @@ const UserProfileDisplayName = styled.div`
   display: flex;
   align-items: center;
   max-width: 32.4rem;
-  margin: 0.8rem;
-  font-size: 2.6rem;
+  margin: 0.8rem 0 0.8rem 2rem;
+  font-size: 3.2rem;
+  font-weight: 500;
 `;
 
 const UserProfileButton = styled.a`
