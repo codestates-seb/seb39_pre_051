@@ -16,15 +16,23 @@ const Comment = (props) => {
   const handleDelete = async() => {
     console.log(props.id, props.isQuestion)
     if(props.isQuestion){
-      console.log(`/questionComments/${props.id}`)
-      const response = await axios.delete(`/questionComments/${props.id}`)
-      dispatch(readQuestion(questionId))
-      return response 
+      if(window.confirm('정말로 댓글을 삭제하시겠습니까?')){
+        console.log(`/questionComments/${props.id}`)
+        const response = await axios.delete(`/questionComments/${props.id}`)
+        dispatch(readQuestion(questionId))
+        return response 
+      }else{
+        return
+      }
     } else{
-      console.log(`/answerComments/${props.id}`)
-      const response = await axios.delete(`/answerComments/${props.id}`)
-      dispatch(readQuestion(questionId))
-      return response 
+      if(window.confirm('정말로 댓글을 삭제하시겠습니까?')){
+        console.log(`/answerComments/${props.id}`)
+        const response = await axios.delete(`/answerComments/${props.id}`)
+        dispatch(readQuestion(questionId))
+        return response 
+      }else{
+        return
+      }
     }
   }
   const year = props.modifiedAt[0] 
@@ -167,7 +175,7 @@ const CommentInfo = styled.div`
   display: inline-flex;
   text-align: left;
   a {
-    margin-left: 0.3rem;
+    margin: 0 0.3rem;
     text-decoration: none;
     color: hsl(206, 100%, 40%);
   }

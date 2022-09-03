@@ -4,8 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   readQuestion,
-  addQuestionComment,
-  addAnswerComment,
 } from '../redux/slice/questionSlice';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +20,7 @@ const OpinionCard = ({
   isQuestion,
   handleQuestionEditMode,
   questionEditMode,
+  setQuestionEditMode,
   title,
 }) => {
   const commentInput = useRef();
@@ -56,7 +55,7 @@ const OpinionCard = ({
     const enteredComment = commentInput.current.value;
     //입력값이 없을 경우
     if (!enteredComment) {
-      console.log('댓글 입력하세요');
+      alert('댓글 입력하세요');
       commentInput.current.value = '';
       return;
     }
@@ -98,24 +97,22 @@ const OpinionCard = ({
 
 
   //질문 수정
-  const handelQuestionEditSubmit = async(e) => {
-    console.log(title, text,id)
+  const handelQuestionEditSubmit = async() => {
     const response = await axios.patch(`/questions/${id}/edit`,{
       questionTitle : title,
       questionContent : text
     })
-    handleQuestionEditMode()
-    dispatch(readQuestion(questionId))
+    setQuestionEditMode(!questionEditMode)
+    dispatch(readQuestion(id))
     return response
   }
 
 //답변 수정
 const handleAnswerEditSubmit = async() => {
-  console.log(text, id)
   const response = await axios.patch(`/answer/${id}/edit`,{
     answerContent : text
   })
-  handleQuestionEditMode()
+  setAnswerEditMode(!answerEditMode)
   dispatch(readQuestion(questionId))
   return response
 }
@@ -124,19 +121,27 @@ const handleAnswerEditSubmit = async() => {
   const handleDelete = async () => {
     if (isQuestion) {
       try{
-        console.log(`${id}번 질문 삭제 입니다.`);
-        const response = await axios.delete(`/questions/${id}`);
-        navigate('/');
-        return response;
+        if(window.confirm('정말로 질문을 삭제하시겠습니까?')){
+          console.log(`${id}번 질문 삭제 입니다.`);
+          const response = await axios.delete(`/questions/${id}`);
+          navigate('/');
+          return response;
+        }else{
+          return
+        }
       }catch(e){
         console.log(e)
       }
     } else {
       try{
+        if(window.confirm('정말로 답변을 삭제하시겠습니까?')){
         console.log(`${questionId}번 질문의 ${id}번 답변 삭제 버튼입니다. `);
         const response = await axios.delete(`/answer/${id}`);
         dispatch(readQuestion(questionId))
         return response;
+        }else{
+          return
+        }
       }catch(e){
         console.log(e)
       }
@@ -160,13 +165,13 @@ const handleAnswerEditSubmit = async() => {
           <button>⬇︎</button>
         </VoteContainer>
         <OpinionContentContainer>
-          <ContentContainer>
+          <ContentContainer themeState={themeState}>
             {questionEditMode && isQuestion ? (
               <>
                 {/* 질문수정모드 이면서 질문 일 때  */}
                 <form>
                   <label id='editText'/>
-                  <input id='editText'value={text} onChange={handleEditText}/>
+                  <textarea id='editText'value={text} onChange={handleEditText}/>
                 </form>
               </>
             ) : //질문수정모드가아닐때
@@ -175,7 +180,7 @@ const handleAnswerEditSubmit = async() => {
                 {/*질문수정모드가 아니면서 질문이아니면서(답변이면서) 답변 수정모드 일 때*/}
                 <form>
                   <label id='editText'/>
-                  <input id='editText' value={text} onChange={handleEditText}/>
+                  <textarea id='editText' value={text} onChange={handleEditText}/>
                 </form>
               </>
             ) : (
@@ -321,8 +326,11 @@ const ContentContainer = styled.div`
   font-size: 1.5rem;
   padding: 0 1.6rem 0 0;
   margin: 1rem 0;
-  input{
+  textarea{
     width:100%;
+    border: 1px solid #d6d9dc;
+    color : ${(props)=>props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3' };
+    background-color: ${(props)=>props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D' };
   }
 `;
 
