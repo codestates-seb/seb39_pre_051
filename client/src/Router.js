@@ -19,18 +19,17 @@ const Router = () => {
       <Route path='/questions/:questionId' element={<Question />} />
       {isLoggedIn ? (
         <>
-        <Route path='/ask' element={<Ask />} />
-        <Route path='/users' element={<UserProfile />} />
-        <Route path='/users/preferences' element={<UserPreferences />} />
+          <Route path='/ask' element={<Ask />} />
+          <Route path='/users/:userId' element={<UserProfile />} />
+          <Route path='/users/preferences' element={<UserPreferences />} />
         </>
       ) : (
         <>
-        <Route path='/login' element={<Login />} />
-        <Route path='/signup' element={<SignUp />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/signup' element={<SignUp />} />
         </>
-      )
-    }
-    <Route path='*' element={<Navigate replace to="/"/>}/>
+      )}
+      <Route path='*' element={<Navigate replace to='/' />} />
     </Routes>
   );
 };

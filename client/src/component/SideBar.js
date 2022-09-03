@@ -2,30 +2,67 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobeAsia } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
-const SideBar = ({pageName}) => {
+const SideBar = ({ pageName }) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
+
+  const user = useSelector((props) => props.userInfoSlice);
+
+  const [userData, setUserData] = useState({});
+
+  useEffect(() => {
+    axios
+      .get(`/users/${user.memberId}`)
+      .then((res) => setUserData(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+
   return (
     <SideBarDiv>
       <SideBarNav themeState={themeState}>
-        <SideBarA href='/' className={pageName==='Home' ? 'isActive' : 'notActive' } paddingTop='1rem' paddingLeft='1rem' themeState={themeState}>
+        <SideBarA
+          href='/'
+          className={pageName === 'Home' ? 'isActive' : 'notActive'}
+          paddingTop='1rem'
+          paddingLeft='1rem'
+          themeState={themeState}
+        >
           Home
         </SideBarA>
         <div>PUBLIC</div>
-        <SideBarA href='/questions'  className={pageName==='Questions' ? 'isActive' : 'notActive' }  paddingTop='1rem' paddingLeft='0.5rem' themeState={themeState}>
+        <SideBarA
+          href='/questions'
+          className={pageName === 'Questions' ? 'isActive' : 'notActive'}
+          paddingTop='1rem'
+          paddingLeft='0.5rem'
+          themeState={themeState}
+        >
           <FontAwesomeIcon id='faGlobe' icon={faGlobeAsia} />
           Questions
         </SideBarA>
-        <SideBarA href='/tags' className={pageName==='Tags' ? 'isActive' : 'notActive' }  paddingTop='1rem'  paddingLeft='2.1rem' themeState={themeState}>
+        <SideBarA
+          href='/tags'
+          className={pageName === 'Tags' ? 'isActive' : 'notActive'}
+          paddingTop='1rem'
+          paddingLeft='2.1rem'
+          themeState={themeState}
+        >
           Tags
         </SideBarA>
-        <SideBarA href='/users' className={pageName==='Users' ? 'isActive' : 'notActive' } paddingTop='1rem' paddingLeft='2.1rem' themeState={themeState}>
+        <SideBarA
+          href={`/users/${userData.memberId}`}
+          className={pageName === 'Users' ? 'isActive' : 'notActive'}
+          paddingTop='1rem'
+          paddingLeft='2.1rem'
+          themeState={themeState}
+        >
           Users
         </SideBarA>
         <SideBarA
           href='https://stackoverflow.com/jobs/companies'
-          paddingTop='1rem' 
+          paddingTop='1rem'
           paddingLeft='2.1rem'
           themeState={themeState}
         >
@@ -59,13 +96,13 @@ const SideBarNav = styled.nav`
   div {
     color: ${(props) =>
       props.themeState === 'light' ? ' #6a737c;' : 'hsl(210,8%,70%)'};
-    padding:1rem 0 1rem 1rem;
+    padding: 1rem 0 1rem 1rem;
   }
 `;
 
 const SideBarA = styled.a`
   padding: 0;
-  height:3.4rem;
+  height: 3.4rem;
   /* margin: 0 0 1.2rem; */
   list-style: none;
   font-size: 1.6rem;
@@ -81,9 +118,11 @@ const SideBarA = styled.a`
   #faGlobe {
     padding-right: 0.4rem;
   }
-  &.isActive{
-    color:${(props)=>props.themeState==='light' ? '#0C0D0E' : '#F2F2F3 '};
-    background-color: ${(props)=>props.themeState==='light' ? '#F1F2F3' : '#3D3D3D '};
+  &.isActive {
+    color: ${(props) =>
+      props.themeState === 'light' ? '#0C0D0E' : '#F2F2F3 '};
+    background-color: ${(props) =>
+      props.themeState === 'light' ? '#F1F2F3' : '#3D3D3D '};
     border-right: 2px solid var(--color-orange);
   }
 `;
