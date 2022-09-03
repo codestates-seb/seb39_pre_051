@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,11 +33,12 @@ public class UserController {
     public void init()   {
         for (int i=1; i<=10; i++) {
             User user = User.builder()
-                    .memberId(i)
-                    .memberName("김코딩" + i)
-                    .memberEmail("test" + i + "@gmail.com")
-                    .memberPassword("00000000" + i)
-                    .memberCreatedAt(LocalDateTime.now())
+                    .userId(i)
+                    .userName("김코딩" + i)
+                    .userEmail("test" + i + "@gmail.com")
+                    .userPassword("00000000" + i)
+                    .userCreatedAt(LocalDateTime.now())
+                    .userQuestions(new ArrayList<>(){})
                     .build();
             userService.createUser(user);
         }
@@ -64,9 +66,9 @@ public class UserController {
     @ApiOperation(value="로그인", notes = "회원-이메일과 회원-비밀번호를 입력해서 로그인을 합니다.")
     public String login(@RequestBody @Valid UserLoginDto userLoginDto) {
 
-        User response = userService.getByCredentials(userLoginDto.getMemberEmail(), userLoginDto.getMemberPassword());
+        User response = userService.getByCredentials(userLoginDto.getUserEmail(), userLoginDto.getUserPassword());
 
-        /*return new ResponseEntity(mapper.memberToMemberResponseDto(response),
+        /*return new ResponseEntity(mapper.userToUserResponseDto(response),
                 HttpStatus.CREATED);*/
         return "로그인 성공";
     }
@@ -85,7 +87,7 @@ public class UserController {
 
         User response = userService.findUser(userId);
 
-        return new ResponseEntity(mapper.memberToMemberResponseDto(response),
+        return new ResponseEntity(mapper.userToUserResponseDto(response),
                 HttpStatus.OK);
     }
 
@@ -99,7 +101,7 @@ public class UserController {
         userService.updateUser(userId , userPatchDto);
         User response = userService.findUser(userId);
 
-        return new ResponseEntity<>(mapper.memberToMemberResponseDto(response),
+        return new ResponseEntity<>(mapper.userToUserResponseDto(response),
                 HttpStatus.OK);
     }
 

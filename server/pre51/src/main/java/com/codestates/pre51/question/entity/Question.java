@@ -4,6 +4,7 @@ import com.codestates.pre51.answer.entity.Answer;
 
 import com.codestates.pre51.questioncomment.entity.QuestionComment;
 
+import com.codestates.pre51.users.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jdk.jfr.Timestamp;
 import lombok.*;
@@ -65,4 +66,8 @@ public class Question {
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "questionComments")
     @JsonIgnore
     private List<QuestionComment> questionQuestionComments = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
 }

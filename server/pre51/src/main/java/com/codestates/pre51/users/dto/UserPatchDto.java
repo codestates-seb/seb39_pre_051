@@ -9,8 +9,8 @@ import lombok.Setter;
 public class UserPatchDto {
 
     @ApiModelProperty(value = "회원-닉네임")
-    private String memberName;
+    private String userName;
 
     @ApiModelProperty(value = "회원-패스워드")
-    private String memberPassword;
+    private String userPassword;
 }
