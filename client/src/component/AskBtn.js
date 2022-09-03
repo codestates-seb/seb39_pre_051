@@ -11,7 +11,7 @@ const AskBtn = () => {
 };
 
 const AskBtnLayout = styled.div`
-  margin: 0 0 0 1.2rem ;
+  /* margin: 0 0 0 1.2rem ; */
 `
 
 const AskBtnLink = styled.a`
