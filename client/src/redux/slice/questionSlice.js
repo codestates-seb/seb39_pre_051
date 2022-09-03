@@ -5,26 +5,28 @@ let initialState = {
     status:null,
     error:null,
     questionId: null,
-    questionWriter: null,
+    questionWriterId: null,
     questionContent: null,
     questionLikes: null,
     questionCreatedAt: null,
     questionModifiedAt : null,
     questionTitle: null,
-    questionComment: [],
-    answer:[]
+    questionQuestionComments: [],
+    questionAnswers:[]
 }
 
+//질문 R
 export const readQuestion = createAsyncThunk(
     'questions/readQuestion',
     async(questionId) => {
         const response =  await axios.get(`/questions/${questionId}`)
-        const data = await response.data
+        const data = await response.data.data
         console.log(data)
         return data
     }
 )
 
+//답변 C
 export const createAnswer = createAsyncThunk(
     'questions/createAnswer',
     async(answerData) => {
@@ -40,29 +42,22 @@ export const createAnswer = createAsyncThunk(
 export const addQuestionComment = createAsyncThunk(
     'questions/addQuestionComment',
     async(questionCommentData) => {
-        const response = await axios.post(`/questionComments/${questionCommentData.questionId}`,questionCommentData.questionComment, {
-            headers : questionCommentData.token
-        })
+        console.log(questionCommentData.questionId,{"questionCommentWriterId" : questionCommentData.questionComment.questionCommentWriterId,
+        "questionCommentContent" : questionCommentData.questionComment.questionCommentContent})
+        const response = await axios.post(`/questionComments/${questionCommentData.questionId}`,questionCommentData.questionComment)
         const data = await response.data
         console.log(data)
         return data
     }
-    // (questionCommentData) => {
-    //     console.log(questionCommentData)
-    // }
 )
 
 export const addAnswerComment = createAsyncThunk(
     'questions/addAnswerComment',
-    // async(answerCommentData) => {
-    //     const response = await axios.post('/url',answerCommentData.answerComment, {
-    //         headers : answerCommentData.token
-    //     })
-    //     const data = await response.data
-    //     return data
-    // }
-    (answerCommentData)=> {
+    async(answerCommentData) => {
         console.log(answerCommentData)
+        const response = await axios.post(`/answerComments/${answerCommentData.answerId}`,answerCommentData.answerComment)
+        const data = await response.data
+        return data
     }
 )
 
@@ -78,14 +73,15 @@ export const questionSlice = createSlice({
         })
         builder.addCase(readQuestion.fulfilled, (state, action) => {
             state.questionId = action.payload.questionId
-            state.questionWriter = action.payload.questionWriter
+            state.questionWriterId = action.payload.questionWriterId
             state.questionContent = action.payload.questionContent
             state.questionLikes = action.payload.questionLikes
             state.questionCreatedAt = action.payload.questionCreatedAt
             state.questionModifiedAt = action.payload.questionModifiedAt
             state.questionTitle = action.payload.questionTitle
-            state.questionComment = action.payload.questionComment
-            state.answer = action.payload.answer
+            state.questionQuestionComments = action.payload.questionQuestionComments
+            state.questionAnswers = action.payload.questionAnswers
+            // console.log(action.payload.data)
         })
         builder.addCase(readQuestion.rejected, (state,action) => {
             state.status = 'failed'
@@ -100,5 +96,5 @@ export const questionSlice = createSlice({
     }
 })
 
-export const {} = questionSlice.actions
+// export const {} = questionSlice.actions
 export default  questionSlice.reducer

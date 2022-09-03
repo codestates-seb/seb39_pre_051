@@ -7,7 +7,6 @@ import { darkTheme,lightTheme } from './styles/theme';
 const App = () => {
   const state = useSelector((state)=>state.themeSlice)
   const themeObject = state.theme === 'light' ? lightTheme : darkTheme;
-  console.log(state)
   return (
     <BrowserRouter>
       <GlobalStyle theme={themeObject}/>

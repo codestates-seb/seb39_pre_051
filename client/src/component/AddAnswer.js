@@ -17,7 +17,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useRef } from 'react';
 import { useDispatch,useSelector } from 'react-redux';
-import {createAnswer} from '../redux/slice/questionSlice'
+import {readQuestion,createAnswer} from '../redux/slice/questionSlice'
+
 
 const AddAnswer = ({questionId}) => {
   const textAreaInput = useRef();
@@ -29,10 +30,11 @@ const AddAnswer = ({questionId}) => {
     e.preventDefault();
     const enteredAnswer = textAreaInput.current.value;
     dispatch(createAnswer({questionId, answer : {
-      answerWriter : userState.email,
-      //식별하기 위해서는 email도 필요할 듯
+      answerWriterId : 1,
       answerContent : enteredAnswer,
-    }, token : userState.token}))
+    }}))
+    dispatch(readQuestion(questionId))
+    textAreaInput.current.value = ' '
   };
   return (
     <AddAnswerLayout>
