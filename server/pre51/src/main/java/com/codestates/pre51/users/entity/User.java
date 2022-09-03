@@ -1,5 +1,7 @@
 package com.codestates.pre51.users.entity;
 
+import com.codestates.pre51.answer.entity.Answer;
+import com.codestates.pre51.question.entity.Question;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,23 +16,29 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "MEMBER")
+@Table(name = "users")
 public class User {
 
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long memberId;
+    private long userId;
 
     @Column
-    private String memberName;
+    private String userName;
 
-    private String memberEmail;
+    private String userEmail;
 
-    private String memberPassword;
+    private String userPassword;
 
-    private LocalDateTime memberCreatedAt;
+    private LocalDateTime userCreatedAt;
     private String roles;
+
+    @OneToMany(mappedBy = "user")
+    private List<Question> userQuestions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Answer> userAnswers = new ArrayList<>();
 
     public List<String> getRoleList() {
         if (this.roles.length() > 0) {
@@ -38,4 +46,5 @@ public class User {
         }
         return new ArrayList<>();
     }
+
 }

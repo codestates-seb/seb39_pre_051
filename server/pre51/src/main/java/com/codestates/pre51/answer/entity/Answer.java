@@ -3,6 +3,7 @@ package com.codestates.pre51.answer.entity;
 import com.codestates.pre51.answercomment.entity.AnswerComment;
 import com.codestates.pre51.questioncomment.entity.QuestionComment;
 import com.codestates.pre51.question.entity.Question;
+import com.codestates.pre51.users.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -53,4 +54,8 @@ public class Answer {
 
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "answerComments")
     private List<AnswerComment> answerAnswerComments = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
 }

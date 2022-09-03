@@ -19,12 +19,12 @@ import java.io.IOException;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private UserRepository memberRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository memberRepository) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
         super(authenticationManager);
-        this.memberRepository = memberRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String username = JWT.require(Algorithm.HMAC512("cos_jwt_token")).build().verify(jwtToken).getClaim("username").asString();
 
         if (username != null) {
-            User userEntity = memberRepository.findByMemberEmail(username);
+            User userEntity = userRepository.findByUserEmail(username);
 
             PrincipalDetails principalDetails = new PrincipalDetails(userEntity);
             Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
