@@ -38,10 +38,11 @@ public class QuestionCommentController {
     public ResponseEntity postQuestionComment(@RequestBody QuestionCommentDTO.Post requestBody,
                                      @PathVariable("question-id") @ApiParam(name = "질문의 식별자") long question_id){
         QuestionComment questionComment = questionCommentMapper.questionCommentPostToQuestionComment(requestBody);
+        long questionCommentWriterId=questionComment.getQuestionCommentWriterId();
         Question question = questionService.findQuestion(question_id);
         questionComment.setQuestionComments(question);
 
-        QuestionComment createdQuestionComment = questionCommentService.createQuestionComment(questionComment);
+        QuestionComment createdQuestionComment = questionCommentService.createQuestionComment(questionComment,questionCommentWriterId);
         QuestionCommentDTO.Response response = questionCommentMapper.questionCommentToQuestionCommentResponse(createdQuestionComment);
         return new ResponseEntity<>(
                 new SingleResponseDTO<>(response),

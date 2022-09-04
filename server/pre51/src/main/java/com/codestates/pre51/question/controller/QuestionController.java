@@ -62,7 +62,8 @@ public class QuestionController {
     @ApiOperation(value="질문 작성" , notes="질문-작성자-식별자, 질문-제목, 질문-내용 필요")
     public ResponseEntity postQuestion(@RequestBody QuestionDTO.Post requestBody){
         Question question = questionMapper.questionPostToQuestion(requestBody);
-        Question createdQuestion =questionService.createQuestion(question);
+        long questionWriterId = question.getQuestionWriterId();
+        Question createdQuestion =questionService.createQuestion(question,questionWriterId);
         QuestionDTO.Response response = questionMapper.questionToQuestionResponse(createdQuestion);
 
         return new ResponseEntity<>(

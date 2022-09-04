@@ -38,8 +38,8 @@ public class AnswerCommentController {
         AnswerComment answerComment = answerCommentMapper.answerCommentPostToAnswerComment(requestBody);
         Answer answer = answerService.findAnswer(answer_id);
         answerComment.setAnswerComments(answer);
-
-        AnswerComment createdAnswerComment = answerCommentService.createAnswerComment(answerComment);
+        long answerCommentWriterId = answerComment.getAnswerCommentWriterId();
+        AnswerComment createdAnswerComment = answerCommentService.createAnswerComment(answerComment,answerCommentWriterId);
         AnswerCommentDTO.Response response = answerCommentMapper.answerCommentToAnswerCommentResponse(createdAnswerComment);
         return new ResponseEntity<>(
                 new SingleResponseDTO<>(response),

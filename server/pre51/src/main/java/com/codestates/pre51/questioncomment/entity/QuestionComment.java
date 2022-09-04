@@ -1,6 +1,7 @@
 package com.codestates.pre51.questioncomment.entity;
 
 import com.codestates.pre51.question.entity.Question;
+import com.codestates.pre51.users.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
@@ -37,11 +38,14 @@ public class QuestionComment {
     private LocalDateTime questionCommentCreatedAt;
 
     @Column(name="question_comment_modified_at")
-    @LastModifiedDate
+    @CreatedDate
     private LocalDateTime questionCommentModifiedAt;
 
     @ManyToOne
     @JoinColumn(name="question_comment_question_id")
     private Question questionComments;
 
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User questionCommentWriter;
 }

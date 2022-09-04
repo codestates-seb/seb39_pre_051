@@ -2,6 +2,7 @@ package com.codestates.pre51.answercomment.entity;
 
 import com.codestates.pre51.answer.entity.Answer;
 import com.codestates.pre51.question.entity.Question;
+import com.codestates.pre51.users.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -37,9 +38,12 @@ public class AnswerComment {
     private LocalDateTime answerCommentCreatedAt;
 
     @Column(name="answer_comment_modified_at")
-    @LastModifiedDate
+    @CreatedDate
     private LocalDateTime answerCommentModifiedAt;
 
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User answerCommentWriter;
     @ManyToOne
     @JoinColumn(name="answer_answer_id")
     @JsonIgnore

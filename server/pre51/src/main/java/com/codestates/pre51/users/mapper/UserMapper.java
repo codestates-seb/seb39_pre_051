@@ -19,7 +19,10 @@ public class UserMapper {
                 userPostDto.getUserPassword(),
                 LocalDateTime.now(),
                      "ROLE_USER",
-                new ArrayList<>(){});
+                new ArrayList<>(){},
+                new ArrayList<>(){},
+                new ArrayList<>(),
+                new ArrayList<>());
     }
 
     public User userPatchDtoToUser(UserPatchDto userPatchDto) {
@@ -29,6 +32,9 @@ public class UserMapper {
                 userPatchDto.getUserPassword(),
                 LocalDateTime.now(),
                 "ROLE_USER",
+                new ArrayList<>(){},
+                new ArrayList<>(){},
+                new ArrayList<>(){},
                 new ArrayList<>(){});
     }
 
