@@ -54,23 +54,24 @@ public class UserController {
     // 회원가입
     @ApiOperation(value="회원 가입", notes = "회원-닉네임, 회원-이메일, 회원-비밀번호를 입력하여 회원가입을 합니다.")
     @PostMapping("/signup")
-    public String postUser(@RequestBody @Valid UserPostDto userPostDto) {
+    public ResponseEntity postUser(@RequestBody @Valid UserPostDto userPostDto) {
         User user = mapper.userPostDtoToUser(userPostDto);
 
         User response = userService.createUser(user);
-        return "회원가입 완료";
+        return new ResponseEntity(mapper.userToUserResponseDto(response),
+                HttpStatus.CREATED);
     }
 
     // 로그인
     @PostMapping("/login")
     @ApiOperation(value="로그인", notes = "회원-이메일과 회원-비밀번호를 입력해서 로그인을 합니다.")
-    public String login(@RequestBody @Valid UserLoginDto userLoginDto) {
+    public ResponseEntity login(@RequestBody @Valid UserLoginDto userLoginDto) {
 
         User response = userService.getByCredentials(userLoginDto.getUserEmail(), userLoginDto.getUserPassword());
 
-        /*return new ResponseEntity(mapper.userToUserResponseDto(response),
-                HttpStatus.CREATED);*/
-        return "로그인 성공";
+        return new ResponseEntity(mapper.userToUserResponseDto(response),
+                HttpStatus.OK);
+
     }
     @ApiOperation(value="로그아웃")
     @PutMapping("/logout")
