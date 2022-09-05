@@ -18,7 +18,7 @@ import { getUserId } from '../getUserInfo';
 const TopBar = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
   const userState = useSelector((state) => state.userInfoSlice);
-  const isLoggedIn = getUserId()
+  const isLoggedIn = getUserId();
   const userId = userState.memberId;
   const [isOpen, setIsOpen] = useState(null);
   const navigate = useNavigate();
@@ -35,8 +35,9 @@ const TopBar = () => {
     // dispatch(logOut());
     // clearCookie()
     // removeCookie('token')
-    localStorage.clear()
+    localStorage.clear();
     navigate('/');
+    window.location.reload();
   };
 
   return (

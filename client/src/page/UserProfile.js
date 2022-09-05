@@ -21,9 +21,10 @@ import {
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getUserId } from '../getUserInfo';
 
 const UserProfile = () => {
-  const user = useSelector((props) => props.userInfoSlice);
+  const userId = getUserId();
 
   const [userData, setUserData] = useState({});
   const [displayName, setDisplayName] = useState('');
@@ -47,13 +48,13 @@ const UserProfile = () => {
 
   useEffect(() => {
     axios
-      .get(`/users/${user.memberId}`)
+      .get(`/users/${userId}`)
       .then((res) => {
+        setDisplayName(res.data.userName);
         setUserData(res.data);
-        setDisplayName(res.data.memberName);
       })
       .catch((err) => console.log(err));
-  }, [user.memberId]);
+  }, [userId]);
 
   //Display Name 입력을 다루는 함수
   const handleOnChange = (e) => {
@@ -64,25 +65,26 @@ const UserProfile = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (inputValue.password === '' || inputValue.rePassword === '') {
-      alert('input password');
-      return;
-    }
-    if (!passwordValid || !rePasswordValidation) {
-      alert('정규');
-      return;
-    }
     if (isActive) {
+      if (inputValue.password === '' || inputValue.rePassword === '') {
+        alert('input password');
+        return;
+      }
+      if (!passwordValid || !rePasswordValidation) {
+        alert('check valid option');
+        return;
+      }
+
       axios
-        .patch(`/users/${user.memberId}`, {
-          memberName: displayName,
-          memberPassword: password,
+        .patch(`/users/${userId}`, {
+          userName: displayName,
+          userPassword: password,
         })
         .then((res) => {
           setUserData({
             ...userData,
-            memberName: displayName,
-            memberPassword: password,
+            userName: displayName,
+            userPassword: password,
           });
           setIsActive(false);
           console.log(res.data);
@@ -92,12 +94,12 @@ const UserProfile = () => {
       alert('Password has changed');
     } else {
       axios
-        .patch(`/users/${user.memberId}`, {
-          memberName: displayName,
-          memberPassword: password,
+        .patch(`/users/${userId}`, {
+          userName: displayName,
+          userPassword: password,
         })
         .then((res) => {
-          setUserData({ ...userData, memberName: displayName });
+          setUserData({ ...userData, userName: displayName });
           console.log(res.data);
         })
         .catch((err) => console.log(err));
@@ -161,9 +163,7 @@ const UserProfile = () => {
             <UserProfileImageDiv>
               <UserProfileImage src='https://lh3.googleusercontent.com/a-/AFdZucpIQ6i4DewU4N2dncFukPbb0eF3gkIB9xOsdEFNCw=k-s256' />
             </UserProfileImageDiv>
-            <UserProfileDisplayName>
-              {userData.memberName}
-            </UserProfileDisplayName>
+            <UserProfileDisplayName>{userData.userName}</UserProfileDisplayName>
           </UserProfileDiv>
           <UserProfileButton className='selected'>Settings</UserProfileButton>
           <UserProfileSetting>

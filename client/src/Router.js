@@ -10,8 +10,8 @@ import UserPreferences from './page/UserPreferences';
 import { getUserId } from './getUserInfo';
 
 const Router = () => {
-  const isLoggedIn = getUserId()
-  console.log(isLoggedIn)
+  const isLoggedIn = getUserId();
+
   return (
     <Routes>
       <Route path='/' element={<Home />} />

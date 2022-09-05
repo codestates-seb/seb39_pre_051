@@ -21,11 +21,10 @@ const OpinionCard = ({
   setQuestionEditMode,
   title,
   questionWriter,
-  questionBestAnswerId
+  questionBestAnswerId,
 }) => {
   const commentInput = useRef();
   const themeState = useSelector((state) => state.themeSlice).theme;
-  const userState = useSelector((state) => state.userInfoSlice);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [text, setText] = useState('');
@@ -33,9 +32,9 @@ const OpinionCard = ({
   const [originalText, setOriginalText] = useState('');
   const [isClick, setIsClick] = useState(false);
   const [like, setLike] = useState(likes);
-  const userId = getUserId()
-  console.log(userId)
-  console.log(writer)
+  const userId = getUserId();
+  console.log(userId);
+  console.log(writer);
   const year = modifiedAt[0];
   const month = modifiedAt[1];
   const day = modifiedAt[2];
@@ -51,50 +50,60 @@ const OpinionCard = ({
   }, [content]);
 
   // 답변, 질문 코멘트 작성
-  const handleCommentSubmit = async(e, id) => {
+  const handleCommentSubmit = async (e, id) => {
     e.preventDefault();
     const enteredComment = commentInput.current.value;
-    if(window.confirm('You must be logged in to add a comment on Stack Overflow')){
-      navigate('/login')
-      return
-    }
-    //입력값이 없을 경우
-    if (!enteredComment) {
-      alert('댓글 입력하세요');
-      commentInput.current.value = '';
-      return;
-    }
-    if (isQuestion) {
-      console.log(`${id}번 질문에 대한 댓글 ${enteredComment}입니다.`);
-      console.log(typeof enteredComment);
+    if (userId) {
+      //입력값이 없을 경우
+      if (!enteredComment) {
+        alert('댓글 입력하세요');
+        commentInput.current.value = '';
+        return;
+      }
+      if (isQuestion) {
+        console.log(`${id}번 질문에 대한 댓글 ${enteredComment}입니다.`);
+        console.log(typeof enteredComment);
 
-      await axios
-        .post(`/questionComments/${id}`, {
-          questionCommentWriterId: userId,
-          questionCommentContent: enteredComment,
-        })
-        .then((res) => console.log(res))
-        .catch((err) => {
-          console.log(err);
-        });
-      commentInput.current.value = '';
-      dispatch(readQuestion(questionId));
+        await axios
+          .post(`/questionComments/${id}`, {
+            questionCommentWriterId: userId,
+            questionCommentContent: enteredComment,
+          })
+          .then((res) => console.log(res))
+          .catch((err) => {
+            console.log(err);
+          });
+        commentInput.current.value = '';
+        dispatch(readQuestion(id));
+
+        // return response;
+      } else {
+        console.log(
+          `${questionId}번 질문 ${id}번 답변에 대한 댓글 ${enteredComment}입니다.`
+        );
+
+        await axios
+          .post(`/answerComments/${id}`, {
+            answerCommentWriterId: userId,
+            answerCommentContent: enteredComment,
+          })
+          .then((res) => console.log(res))
+          .catch((err) => {
+            console.log(err);
+          });
+        commentInput.current.value = '';
+        dispatch(readQuestion(questionId));
+      }
     } else {
-      console.log(
-        `${questionId}번 질문 ${id}번 답변에 대한 댓글 ${enteredComment}입니다.`
-      );
-
-      await axios
-        .post(`/answerComments/${id}`, {
-          answerCommentWriterId: userId,
-          answerCommentContent: enteredComment,
-        })
-        .then((res) => console.log(res))
-        .catch((err) => {
-          console.log(err);
-        });
-      commentInput.current.value = '';
-      dispatch(readQuestion(questionId));
+      if (
+        window.confirm(
+          'You must be logged in to add a comment on Stack Overflow'
+        )
+      ) {
+        navigate('/login');
+        window.location.reload();
+        return;
+      }
     }
   };
 
@@ -112,10 +121,10 @@ const OpinionCard = ({
       questionTitle: title,
       questionContent: text,
     });
-    
+
     setQuestionEditMode(!questionEditMode);
     dispatch(readQuestion(id));
-    
+
     return response;
   };
 
@@ -137,6 +146,7 @@ const OpinionCard = ({
           console.log(`${id}번 질문 삭제 입니다.`);
           const response = await axios.delete(`/questions/${id}`);
           navigate('/');
+          window.location.reload();
           return response;
         } else {
           return;
@@ -174,17 +184,13 @@ const OpinionCard = ({
     setIsClick(!isClick);
     if (userId) {
       if (isClick) {
-        const response = await axios.patch(
-          `/questionLikes/${id}/${userId}`
-        );
+        const response = await axios.patch(`/questionLikes/${id}/${userId}`);
 
         setLike(like - 1);
 
         return response;
       } else {
-        const response = await axios.patch(
-          `/questionLikes/${id}/${userId}`
-        );
+        const response = await axios.patch(`/questionLikes/${id}/${userId}`);
 
         setLike(like + 1);
 
@@ -192,6 +198,7 @@ const OpinionCard = ({
       }
     } else {
       navigate('/login');
+      window.location.reload();
     }
   };
 
@@ -199,7 +206,6 @@ const OpinionCard = ({
     <OpinionLayout>
       <OpinionContainer>
         <VoteContainer>
-
           <LikesButton onClick={handleQuestionLikes}>
             <svg
               class='svg-icon iconArrowUpLg'
@@ -213,8 +219,7 @@ const OpinionCard = ({
           <div>{likes}</div>
           {isQuestion ? (
             <></>
-          ) : 
-          //답변에대해서
+          ) : //답변에대해서
           userId === writer.userId ? (
             //작성자의 시점
             <BestAnswerMark
@@ -225,11 +230,8 @@ const OpinionCard = ({
             /> //true / 참거짓
           ) : (
             //작성자가 아닐 시
-            <BestAnswerMark
-              isBestAnswer={questionBestAnswerId === id}
-            />
-          ) 
-          }
+            <BestAnswerMark isBestAnswer={questionBestAnswerId === id} />
+          )}
         </VoteContainer>
         <OpinionContentContainer>
           <ContentContainer themeState={themeState}>
@@ -237,8 +239,12 @@ const OpinionCard = ({
               <>
                 {/* 질문수정모드 이면서 질문 일 때  */}
                 <form>
-                  <label id='editText'/>
-                  <textarea id='editText'value={text} onChange={handleEditText}/>
+                  <label id='editText' />
+                  <textarea
+                    id='editText'
+                    value={text}
+                    onChange={handleEditText}
+                  />
                 </form>
               </>
             ) : //질문수정모드가아닐때
@@ -246,15 +252,19 @@ const OpinionCard = ({
               <>
                 {/*질문수정모드가 아니면서 질문이아니면서(답변이면서) 답변 수정모드 일 때*/}
                 <form>
-                  <label id='editText'/>
-                  <textarea id='editText' value={text} onChange={handleEditText}/>
+                  <label id='editText' />
+                  <textarea
+                    id='editText'
+                    value={text}
+                    onChange={handleEditText}
+                  />
                 </form>
               </>
             ) : (
               <>
-                    {/*질문수정모드가 아닐 때, 답변수정모드도 아닐 */}
-                    <Content>{content}</Content>
-                    </>
+                {/*질문수정모드가 아닐 때, 답변수정모드도 아닐 */}
+                <Content>{content}</Content>
+              </>
             )}
             <ContentInfoContainer>
               {userId === writer.userId ? (
@@ -283,7 +293,9 @@ const OpinionCard = ({
                 ) : answerEditMode ? (
                   <>
                     <EditWrapper themeState={themeState}>
-                      <span onClick={()=>handleAnswerEditSubmit()}>수정하기</span>
+                      <span onClick={() => handleAnswerEditSubmit()}>
+                        수정하기
+                      </span>
                       <span onClick={() => handleAnswerEditMode()}>cancel</span>
                     </EditWrapper>
                   </>
@@ -393,8 +405,9 @@ const ContentContainer = styled.div`
     width: 100%;
     border: 1px solid #d6d9dc;
     color: ${(props) => (props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3')};
-    background-color: ${(props) =>props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D'};
-    border-radius:0.3rem;
+    background-color: ${(props) =>
+      props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D'};
+    border-radius: 0.3rem;
   }
 `;
 
@@ -451,8 +464,8 @@ const InfoBox = styled.div`
     font-size: 1.3rem;
     margin: 0 0 0 0.8rem;
   }
-  div{
-    color : hsl(206, 100%, 40%);
+  div {
+    color: hsl(206, 100%, 40%);
   }
 `;
 

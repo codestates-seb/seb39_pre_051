@@ -20,7 +20,19 @@ const Question = () => {
   const questionState = useSelector((state) => state.questionSlice);
   const dispatch = useDispatch();
 
-  const {questionId, questionWriterId, questionContent, questionLikesCount, questionCreatedAt, questionModifiedAt, questionTitle, questionQuestionComments, questionAnswers,questionBestAnswerId, questionWriter} = questionState
+  const {
+    questionId,
+    questionWriterId,
+    questionContent,
+    questionLikesCount,
+    questionCreatedAt,
+    questionModifiedAt,
+    questionTitle,
+    questionQuestionComments,
+    questionAnswers,
+    questionBestAnswerId,
+    questionWriter,
+  } = questionState;
 
   useEffect(() => {
     dispatch(readQuestion(params.questionId));
@@ -67,7 +79,11 @@ const Question = () => {
                 {questionEditMode ? (
                   <form>
                     <label id='editText'></label>
-                    <textarea id='editText' value={title} onChange={handelEditTitle} />
+                    <textarea
+                      id='editText'
+                      value={title}
+                      onChange={handelEditTitle}
+                    />
                   </form>
                 ) : (
                   <>
@@ -89,7 +105,7 @@ const Question = () => {
             modifiedAt={questionModifiedAt}
             writer={questionWriter}
             //email 필요없을지도
-            email={questionWriter.userEmail}
+            // email={questionWriter.userEmail}
             comment={questionQuestionComments}
             isQuestion={true}
             questionEditMode={questionEditMode}
@@ -115,7 +131,7 @@ const Question = () => {
           ))}
           <AddAnswer questionId={questionId} />
         </Content>
-        <SideBarWidget/>
+        <SideBarWidget />
       </Container>
       <Footer />
     </>
@@ -159,12 +175,13 @@ const Title = styled.h1`
   font-size: 2.7rem;
   margin: 0 0 0.8rem 0;
   width: 60rem;
-  line-height:3.645rem;
-  textarea{
-    width:100%;
+  line-height: 3.645rem;
+  textarea {
+    width: 100%;
     border: 1px solid #d6d9dc;
-    color : ${(props)=>props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3' };
-    background-color: ${(props)=>props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D' };
+    color: ${(props) => (props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3')};
+    background-color: ${(props) =>
+      props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D'};
   }
   a {
     text-decoration: none;
