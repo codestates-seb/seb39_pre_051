@@ -37,6 +37,8 @@ public class User {
     private LocalDateTime userCreatedAt;
     private String roles;
 
+    private String imgUrl;
+
     @OneToMany(cascade = {CascadeType.ALL},mappedBy = "questionWriter")
     @JsonIgnore
     private List<Question> userQuestions = new ArrayList<>();
