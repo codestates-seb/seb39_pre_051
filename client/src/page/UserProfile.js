@@ -169,7 +169,7 @@ const UserProfile = () => {
           <UserProfileSetting>
             <UserProfileNav>
               PERSONAL INFORMATION
-              <UserProfileNavItem href='/users' className='selected'>
+              <UserProfileNavItem href={`/users/${userId}`} className='selected'>
                 Edit profile
               </UserProfileNavItem>
               SITE SETTINGS

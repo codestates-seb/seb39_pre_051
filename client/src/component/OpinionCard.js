@@ -33,8 +33,7 @@ const OpinionCard = ({
   const [isClick, setIsClick] = useState(false);
   const [like, setLike] = useState(likes);
   const userId = getUserId();
-  console.log(userId);
-  console.log(writer);
+  console.log(userId, writer.userId)  ;
   const year = modifiedAt[0];
   const month = modifiedAt[1];
   const day = modifiedAt[2];
@@ -220,10 +219,10 @@ const OpinionCard = ({
           {isQuestion ? (
             <></>
           ) : //답변에대해서
-          userId === writer.userId ? (
+          userId === questionWriter ? (
             //작성자의 시점
             <BestAnswerMark
-              isQuestionWriter={userId === writer.userId}
+              isQuestionWriter={userId === questionWriter}
               isBestAnswer={questionBestAnswerId === id}
               questionId={questionId}
               id={id}
