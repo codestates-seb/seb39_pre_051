@@ -19,7 +19,7 @@ const Question = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
   const questionState = useSelector((state)=>state.questionSlice)
   const dispatch = useDispatch();
-  const {questionId, questionWriterId, questionContent, questionLikes, questionCreatedAt, questionModifiedAt, questionTitle, questionQuestionComments, questionAnswers} = questionState
+  const {questionId, questionWriterId, questionContent, questionLikesCount, questionCreatedAt, questionModifiedAt, questionTitle, questionQuestionComments, questionAnswers,questionBestAnswerId, questionWriter} = questionState
   useEffect(() => {
   dispatch(readQuestion(params.questionId))
   setTitle(questionTitle)
@@ -86,18 +86,18 @@ const handelEditTitle = (e) => {
           <OpinionCard
             key = {questionId}
             id={questionId}
-            likes={questionLikes}
+            likes={questionLikesCount}
             content={questionContent}
-            modifiedAt={questionModifiedAt === null ? [] : questionModifiedAt}
-            writer={questionWriterId}
-            // email={questionEmail}
-            email='test1@gmail.com'
+            modifiedAt={questionModifiedAt}
+            writer={questionWriter.userName}
+            email={questionWriter.userEmail}
             comment={questionQuestionComments}
             isQuestion={true}
             questionEditMode={questionEditMode}
             setQuestionEditMode={setQuestionEditMode}
             handleQuestionEditMode={handleQuestionEditMode}
             title={title}
+            questionBestAnswerId={questionBestAnswerId}
           />
           <AnswerSummay>
             {questionAnswers.length} Answers
@@ -106,15 +106,16 @@ const handelEditTitle = (e) => {
             <OpinionCard
               key = {el.answerId}
               id={el.answerId}
-              likes={el.answerLikes}
+              likes={el.answerLikesCount}
               content={el.answerContent}
-              modifiedAt={el.answerModifiedAt === null ? [] : el.answerModifiedAt}
-              writer={el.answerWriterId}
-              // email={el.answerEmail}
-              email='test1@gmail.com'
+              modifiedAt={el.answerModifiedAt}
+              writer={el.answerWriter.userName}
+              email={el.answerWriter.userEmail}
               comment={el.answerAnswerComments}
               questionId = {questionId}
               isQuestion={false}
+              questionWriter={questionWriter.userEmail}
+              questionBestAnswerId={questionBestAnswerId}
             />
           ))}
           <AddAnswer questionId={questionId}/>

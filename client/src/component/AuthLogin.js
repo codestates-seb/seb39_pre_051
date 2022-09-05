@@ -86,7 +86,7 @@ const AuthLogin = (props) => {
   };
 
   //submitHandler
-  const submitHandler = (e) => {
+  const submitHandler = async(e) => {
     e.preventDefault();
     if (props.status === 'login') {
       //로그인 일시
@@ -95,19 +95,23 @@ const AuthLogin = (props) => {
         return
       }
       try{
-        dispatch(logIn({
-          memberEmail : email,
-          memberPassword : password}))
+        // dispatch(logIn({
+        //   userEmail : email,
+        //   userPassword : password}))
+        await axios.post('/users/login',{
+          userEmail: email,
+          userPassword: password
+        }).then((res)=>console.log(res))
       } catch(err) {
         console.log('로그인 error', err)
       }
     } else {
       //회원가입 일시
       try {
-        const response =  axios.post('/users/signup',{
-          memberName : displayName,
-          memberEmail : email,
-          memberPassword : password
+        const response =  await axios.post('/users/signup',{
+          userName : displayName,
+          userEmail : email,
+          userPassword : password
         })
         alert('회원가입이 완료되었습니다!')
         navigate('/')

@@ -16,10 +16,12 @@ export const logIn = createAsyncThunk('userInfo/logIn', async (loginInfo) => {
 let initialState = {
   status: null,
   error: null,
-  isLoggedIn: !!initialToken,
+  // isLoggedIn: !!initialToken,
+  isLoggedIn: false,
   memberId: initailId,
   memberName: initialName,
-  email: initialEmail,
+  // email: initialEmail,
+  email:'test1@gmail.com',
   profileImage:
     'https://creazilla-store.fra1.digitaloceanspaces.com/emojis/58522/orange-square-emoji-clipart-xl.png',
   token: initialToken,
@@ -50,13 +52,13 @@ export const userInfoSlice = createSlice({
       console.log(action.payload);
       // state.profileImage = action.payload.memberProfileImage
       // state.token = action.payload.memberToken
-      localStorage.setItem('email', action.payload.memberEmail);
+      localStorage.setItem('email', action.payload.userEmail);
       localStorage.setItem('memberName', action.payload.memberName);
       localStorage.setItem('memberId', action.payload.memberId);
       localStorage.setItem('token', '1234');
       state.memberId = action.payload.memberId;
       state.memberName = action.payload.memberName;
-      state.email = action.payload.memberEmail;
+      state.email = action.payload.userEmail;
       state.token = '1234';
       state.isLoggedIn = true;
     });
