@@ -18,8 +18,7 @@ import { getUserId } from '../getUserInfo';
 const TopBar = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
   const userState = useSelector((state) => state.userInfoSlice);
-  const isLoggedIn = getUserId();
-  const userId = userState.memberId;
+  const userId = getUserId()
   const [isOpen, setIsOpen] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -67,7 +66,7 @@ const TopBar = () => {
           </TopBarSearchDiv>
         </TopBarForm>
         <TopBarRightNav>
-          {isLoggedIn ? (
+          {userId ? (
             <>
               <IconWrapper>
                 <a href={`/users/${userId}`} id='userInfo'>

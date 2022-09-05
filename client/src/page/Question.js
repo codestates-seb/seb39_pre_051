@@ -127,6 +127,7 @@ const Question = () => {
               questionId={questionId}
               isQuestion={false}
               questionBestAnswerId={questionBestAnswerId}
+              questionWriter={questionWriter.userId}
             />
           ))}
           <AddAnswer questionId={questionId} />

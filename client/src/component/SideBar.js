@@ -53,7 +53,7 @@ const SideBar = ({ pageName }) => {
           Tags
         </SideBarA>
         <SideBarA
-          href={`/users/${userData.memberId}`}
+          href={`/users/${userId}`}
           className={pageName === 'Users' ? 'isActive' : 'notActive'}
           paddingTop='1rem'
           paddingLeft='2.1rem'
