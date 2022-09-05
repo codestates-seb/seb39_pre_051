@@ -2,18 +2,22 @@ package com.codestates.pre51.question.service;
 
 import com.codestates.pre51.question.entity.Question;
 import com.codestates.pre51.question.repository.QuestionRepository;
-import lombok.AllArgsConstructor;
+import com.codestates.pre51.users.entity.User;
+import com.codestates.pre51.users.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class QuestionService {
     private final QuestionRepository questionRepository;
-    public QuestionService(QuestionRepository questionRepository) {
+    private final UserRepository userRepository;
+    public QuestionService(QuestionRepository questionRepository, UserRepository userRepository) {
         this.questionRepository = questionRepository;
+        this.userRepository = userRepository;
     }
 
     public Page<Question> findQuestions(int page, int size){
@@ -26,8 +30,13 @@ public class QuestionService {
         return savedQuestion;
     }
 
-    public Question findQuestion(long questionId) {
+    public Question createQuestion(Question question, long questionWriterId){
+        User user = userRepository.findByUserId(questionWriterId);
+        question.setQuestionWriter(user);
+        return questionRepository.save(question);
+    }
 
+    public Question findQuestion(long questionId) {
         return questionRepository.findByQuestionId(questionId);
     }
 

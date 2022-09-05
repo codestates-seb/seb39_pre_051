@@ -5,6 +5,7 @@ import com.codestates.pre51.users.entity.User;
 import com.codestates.pre51.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,32 +18,37 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+
     public User createUser(User user) {
 
         // 회원 미존재
-        if (user == null || user.getMemberEmail() == null) {
+        if (user == null || user.getUserEmail() == null) {
             throw new RuntimeException("Invalid arguments");
         }
 
         // 기존 이메일 존 / 회원 생성 실패
-        User findUser = userRepository.findByMemberEmail(user.getMemberEmail());
+        User findUser = userRepository.findByUserEmail(user.getUserEmail());
         if (findUser != null)
             throw new IllegalStateException("이미 가입된 회원입니다.");
 
+        user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
+        user.setRoles("ROLE_USER");
         // DB에 회원 정보 저장
         return userRepository.save(user);
     }
 
     public User getByCredentials(String email, String password) {
-        return userRepository.findByMemberEmailAndMemberPassword(email, password);
+        return userRepository.findByUserEmailAndUserPassword(email, password);
     }
 
     public void updateUser(long userId, UserPatchDto user) {
         User findUser = userRepository.findById(userId).get();
-        if (user.getMemberName() != null)
-            findUser.setMemberName(user.getMemberName());
-        if (user.getMemberPassword() != null)
-            findUser.setMemberPassword(user.getMemberPassword());
+        if (user.getUserName() != null)
+            findUser.setUserName(user.getUserName());
+        if (user.getUserPassword() != null)
+            findUser.setUserPassword(user.getUserPassword());
     }
 
     public User findUser(long userId) {

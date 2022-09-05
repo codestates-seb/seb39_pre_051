@@ -9,6 +9,7 @@ import AddAnswer from '../component/AddAnswer';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { readQuestion } from '../redux/slice/questionSlice';
+import SideBarWidget from '../component/SideBarWidget';
 
 const Question = () => {
   const [questionEditMode, setQuestionEditMode] = useState(false);
@@ -18,45 +19,14 @@ const Question = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
   const questionState = useSelector((state) => state.questionSlice);
   const dispatch = useDispatch();
-  const {
-    questionId,
-    questionWriterId,
-    questionContent,
-    questionLikesCount,
-    questionCreatedAt,
-    questionModifiedAt,
-    questionTitle,
-    questionQuestionComments,
-    questionAnswers,
-  } = questionState;
+
+  const {questionId, questionWriterId, questionContent, questionLikesCount, questionCreatedAt, questionModifiedAt, questionTitle, questionQuestionComments, questionAnswers,questionBestAnswerId, questionWriter} = questionState
+
   useEffect(() => {
     dispatch(readQuestion(params.questionId));
     setTitle(questionTitle);
     setOriginalTitle(questionTitle);
   }, [dispatch, params.questionId, questionTitle]);
-
-  // const [date, setDate] = useState({
-  //   year : null,
-  //   month : null,
-  //   day : null,
-  //   hour : null,
-  //   min : null,
-  //   sec : null
-  // })
-
-  // if(questionCreatedAt !==null) {
-  //   setDate({
-  //     year : questionCreatedAt[0] ,
-  //     month : questionCreatedAt[1] ,
-  //     day : questionCreatedAt[2] ,
-  //     hour :
-  //     questionCreatedAt[3] > 12
-  //       ? '오후 ' + (questionCreatedAt[3] - 12)
-  //       : '오전 ' + questionCreatedAt[3],
-  //     min : questionCreatedAt[4],
-  //     sec : questionCreatedAt[5],
-  //   })
-  // }
 
   let year = null;
   let month = null;
@@ -97,11 +67,7 @@ const Question = () => {
                 {questionEditMode ? (
                   <form>
                     <label id='editText'></label>
-                    <input
-                      id='editText'
-                      value={title}
-                      onChange={handelEditTitle}
-                    />
+                    <textarea id='editText' value={title} onChange={handelEditTitle} />
                   </form>
                 ) : (
                   <>
@@ -120,15 +86,16 @@ const Question = () => {
             id={questionId}
             likes={questionLikesCount}
             content={questionContent}
-            modifiedAt={questionModifiedAt === null ? [] : questionModifiedAt}
-            writer={questionWriterId}
-            // email={questionEmail}
-            email='test1@gmail.com'
+            modifiedAt={questionModifiedAt}
+            writer={questionWriter.userName}
+            email={questionWriter.userEmail}
             comment={questionQuestionComments}
             isQuestion={true}
             questionEditMode={questionEditMode}
+            setQuestionEditMode={setQuestionEditMode}
             handleQuestionEditMode={handleQuestionEditMode}
             title={title}
+            questionBestAnswerId={questionBestAnswerId}
           />
           <AnswerSummay>{questionAnswers.length} Answers</AnswerSummay>
           {questionAnswers.map((el) => (
@@ -137,19 +104,19 @@ const Question = () => {
               id={el.answerId}
               likes={el.answerLikesCount}
               content={el.answerContent}
-              modifiedAt={
-                el.answerModifiedAt === null ? [] : el.answerModifiedAt
-              }
-              writer={el.answerWriterId}
-              // email={el.answerEmail}
-              email='test1@gmail.com'
+              modifiedAt={el.answerModifiedAt}
+              writer={el.answerWriter.userName}
+              email={el.answerWriter.userEmail}
               comment={el.answerAnswerComments}
               questionId={questionId}
               isQuestion={false}
+              questionWriter={questionWriter.userEmail}
+              questionBestAnswerId={questionBestAnswerId}
             />
           ))}
           <AddAnswer questionId={questionId} />
         </Content>
+        <SideBarWidget/>
       </Container>
       <Footer />
     </>
@@ -176,7 +143,8 @@ const Content = styled.div`
   border-bottom: 1px solid #d6d9dc;
   /* padding: 2.4rem; */
   padding: 2.4rem 0;
-  max-width: 110rem;
+  width: 72.5rem;
+  /* max-width: 110rem; */
   line-height: 1.7rem;
 `;
 
@@ -191,10 +159,13 @@ const TitleContainer = styled.div`
 const Title = styled.h1`
   font-size: 2.7rem;
   margin: 0 0 0.8rem 0;
-  width: 72.5rem;
-  line-height: 3.645rem;
-  input {
-    width: 100%;
+  width: 60rem;
+  line-height:3.645rem;
+  textarea{
+    width:100%;
+    border: 1px solid #d6d9dc;
+    color : ${(props)=>props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3' };
+    background-color: ${(props)=>props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D' };
   }
   a {
     text-decoration: none;

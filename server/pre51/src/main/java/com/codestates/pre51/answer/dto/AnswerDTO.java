@@ -3,6 +3,7 @@ package com.codestates.pre51.answer.dto;
 import com.codestates.pre51.answercomment.entity.AnswerComment;
 import com.codestates.pre51.questioncomment.entity.QuestionComment;
 import com.codestates.pre51.question.entity.Question;
+import com.codestates.pre51.users.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,8 +45,9 @@ public class AnswerDTO {
     public static class Response{
         private long answerId;
         private long answerWriterId;
+        private User answerWriter;
         private String answerContent;
-        private long answerLikes;
+        private long answerLikesCount;
         private LocalDateTime answerCreatedAt;
         private LocalDateTime answerModifiedAt;
         private List<AnswerComment> answerAnswerComments;

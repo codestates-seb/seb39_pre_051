@@ -12,20 +12,20 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UserResponseDto {
     @ApiModelProperty(value = "회원-식별자")
-    private long memberId;
+    private long userId;
 
     @ApiModelProperty(value = "회원-닉네임")
-    private String memberName;
+    private String userName;
 
     @ApiModelProperty(value = "회원-이메일")
-    private String memberEmail;
+    private String userEmail;
 
     @ApiModelProperty(value = "회원-_패스워드")
-    private String memberPassword;
+    private String userPassword;
 
     @ApiModelProperty(value = "회원-토큰")
-    private String memberToken;
+    private String userToken;
 
     @ApiModelProperty(value = "회원-가입날짜")
-    private LocalDateTime memberCreatedAt;
+    private LocalDateTime userCreatedAt;
 }

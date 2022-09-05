@@ -10,8 +10,11 @@ import com.codestates.pre51.answercomment.service.AnswerCommentService;
 import com.codestates.pre51.dto.SingleResponseDTO;
 import com.codestates.pre51.question.entity.Question;
 import com.codestates.pre51.question.service.QuestionService;
+import com.codestates.pre51.questionLikes.entity.QuestionLikes;
 import com.codestates.pre51.questioncomment.entity.QuestionComment;
 import com.codestates.pre51.questioncomment.service.QuestionCommentService;
+import com.codestates.pre51.users.entity.User;
+import com.codestates.pre51.users.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -33,15 +37,30 @@ public class AnswerController {
     private final AnswerCommentService answerCommentService;
 
     private final QuestionCommentService questionCommentService;
+    private final UserService userService;
+
+
     @PostConstruct
     public void init()   {
 
         // ****************************************** 1번 게시물 ******************************************
+        User user = User.builder()
+                .userId(0)
+                .userName("김코딩" + 11)
+                .userEmail("test" + 11 + "@gmail.com")
+                .userPassword("00000000" + 11)
+                .userCreatedAt(LocalDateTime.now())
+                .userQuestions(new ArrayList<>())
+                .build();
+        userService.createUser(user);
+
         Question question = Question.builder()
-                .questionWriterId(0)
+                .questionWriterId(11)
                 .questionTitle("spring boot에서 Controller 의 역할")
                 .questionContent("spring boot를 처음 공부하고 있는데, controller의 역할이 뭔지 잘 이해가 안갑니다. 알려주세요 ㅠㅠ")
                 .questionCreatedAt(LocalDateTime.now())
+                .questionWriter(user)
+                .questionLikes(new QuestionLikes())
                 .build();
         questionService.createQuestion(question);
 
@@ -50,6 +69,7 @@ public class AnswerController {
                 .questionCommentContent("저도 궁금했는데 얼른 답변이 달렸으면 좋겠네요")
                 .questionCommentCreatedAt(LocalDateTime.now())
                 .questionComments(question)
+                .questionCommentWriter(user)
                 .build();
         questionCommentService.createQuestionComment(questionComment);
 
@@ -58,6 +78,7 @@ public class AnswerController {
                 .answerWriterId(2)
                 .answerCreatedAt(LocalDateTime.now())
                 .answerQuestions(question)
+                .answerWriter(user)
                 .build();
         answerService.createAnswer(answer);
 
@@ -65,6 +86,7 @@ public class AnswerController {
                 .answerCommentWriterId(3)
                 .answerComments(answer)
                 .answerCommentContent("이런 댓글은 삭제해주세요.")
+                .answerCommentWriter(user)
                 .answerCommentCreatedAt(LocalDateTime.now())
                 .build();
         answerCommentService.createAnswerComment(answerComment);
@@ -74,6 +96,7 @@ public class AnswerController {
                 .answerWriterId(4)
                 .answerCreatedAt(LocalDateTime.now())
                 .answerQuestions(question)
+                .answerWriter(user)
                 .build();
         answerService.createAnswer(answer);
 
@@ -82,6 +105,7 @@ public class AnswerController {
                 .answerComments(answer)
                 .answerCommentContent("친절한 답변 감사합니다.")
                 .answerCommentCreatedAt(LocalDateTime.now())
+                .answerCommentWriter(user)
                 .build();
         answerCommentService.createAnswerComment(answerComment);
 
@@ -99,6 +123,7 @@ public class AnswerController {
                         "\n" +
                         "문제는 POSTMAN을 통해 데이터 조회 결과에 answer의 List 가 보이지 않습니다.")
                 .questionCreatedAt(LocalDateTime.now())
+                .questionWriter(user)
                 .build();
         questionService.createQuestion(question);
 
@@ -107,6 +132,7 @@ public class AnswerController {
                 .questionCommentContent("질문에 코드를 첨부해주세요")
                 .questionCommentCreatedAt(LocalDateTime.now())
                 .questionComments(question)
+                .questionCommentWriter(user)
                 .build();
         questionCommentService.createQuestionComment(questionComment);
 
@@ -116,6 +142,7 @@ public class AnswerController {
                 .answerWriterId(4)
                 .answerCreatedAt(LocalDateTime.now())
                 .answerQuestions(question)
+                .answerWriter(user)
                 .build();
         answerService.createAnswer(answer);
 
@@ -125,6 +152,7 @@ public class AnswerController {
                 .answerCommentContent("말씀하신 @JsonIgnore 어노테이션이 문제였습니다. " +
                         "Answer 엔티티에 붙어있던 answerComments 리스트에 어노테이션을 붙여놔서 보이지 않았던 것 같습니다.")
                 .answerCommentCreatedAt(LocalDateTime.now())
+                .answerCommentWriter(user)
                 .build();
         answerCommentService.createAnswerComment(answerComment);
 
@@ -135,6 +163,7 @@ public class AnswerController {
                 .questionTitle("데일리 코딩 48번 질문있습니다. ")
                 .questionContent("큐를 이용한, 너비우선탐색으로 모든 조합을 구하는 로직을 이용했습니다. 시간이 초과 이슈가 있어서, 탐색하기전에 오름차순으로 정렬을하여 조합의 합이 bound를 넘어서면 탐색을 멈추게 했습니다. 시간초과 문제가 많이 발생하는데, 어떻게 접근하는게 좋을까요? 약간의 조언을 얻을 수 있다면 좋겠습니다.")
                 .questionCreatedAt(LocalDateTime.now())
+                .questionWriter(user)
                 .build();
         questionService.createQuestion(question);
 
@@ -143,6 +172,7 @@ public class AnswerController {
                 .answerWriterId(4)
                 .answerCreatedAt(LocalDateTime.now())
                 .answerQuestions(question)
+                .answerWriter(user)
                 .build();
         answerService.createAnswer(answer);
 
@@ -157,16 +187,18 @@ public class AnswerController {
                         "wsl 환경에서 intelliJ를 통해 Java를 실행하려면 따로 환경설정을 해주어야 하는 것 같은데 " +
                         "앞으로 진행할 커리큘럼에서 사용하는 프로그램들이 다 윈도우 개발환경에서 이루어지는지 궁금합니다.")
                 .questionCreatedAt(LocalDateTime.now())
+                .questionWriter(user)
                 .build();
         questionService.createQuestion(question);
     }
 
-    public AnswerController(AnswerService answerService, AnswerMapper answerMapper, QuestionService questionService, AnswerCommentService answerCommentService, QuestionCommentService questionCommentService){
+    public AnswerController(AnswerService answerService, AnswerMapper answerMapper, QuestionService questionService, AnswerCommentService answerCommentService, QuestionCommentService questionCommentService, UserService userService){
         this.answerMapper=answerMapper;
         this.answerService=answerService;
         this.questionService = questionService;
         this.answerCommentService = answerCommentService;
         this.questionCommentService = questionCommentService;
+        this.userService = userService;
     }
 
     @GetMapping("")
@@ -183,10 +215,11 @@ public class AnswerController {
     public ResponseEntity postAnswer(@RequestBody AnswerDTO.Post requestBody,
                                      @PathVariable("question-id") @ApiParam(name = "질문_식별자")long question_id){
         Answer answer = answerMapper.answerPostToAnswer(requestBody);
+        long answerWriterId = answer.getAnswerWriterId();
         Question question = questionService.findQuestion(question_id);
         answer.setAnswerQuestions(question);
 
-        Answer createdAnswer = answerService.createAnswer(answer);
+        Answer createdAnswer = answerService.createAnswer(answer,answerWriterId);
         AnswerDTO.Response response = answerMapper.answerToAnswerResponse(createdAnswer);
 
         return new ResponseEntity<>(

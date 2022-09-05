@@ -2,6 +2,7 @@ package com.codestates.pre51.questioncomment.dto;
 
 import com.codestates.pre51.answer.entity.Answer;
 import com.codestates.pre51.question.entity.Question;
+import com.codestates.pre51.users.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,6 +39,7 @@ public class QuestionCommentDTO {
     public static class Response{
         private long questionCommentId;
         private long questionCommentWriterId;
+        private User questionCommentWriter;
         private String questionCommentContent;
         private LocalDateTime questionCommentCreatedAt;
         private LocalDateTime questionCommentModifiedAt;

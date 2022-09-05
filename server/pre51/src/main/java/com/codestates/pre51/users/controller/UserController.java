@@ -9,7 +9,7 @@ import com.codestates.pre51.users.mapper.UserMapper;
 import com.codestates.pre51.users.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +18,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
     private final UserMapper mapper;
-
     private TokenProvider tokenProvider;
 
     // 가짜 데이터 넣기
@@ -32,11 +33,12 @@ public class UserController {
     public void init()   {
         for (int i=1; i<=10; i++) {
             User user = User.builder()
-                    .memberId(i)
-                    .memberName("김코딩" + i)
-                    .memberEmail("test" + i + "@gmail.com")
-                    .memberPassword("00000000" + i)
-                    .memberCreatedAt(LocalDateTime.now())
+                    .userId(i)
+                    .userName("김코딩" + i)
+                    .userEmail("test" + i + "@gmail.com")
+                    .userPassword("00000000" + i)
+                    .userCreatedAt(LocalDateTime.now())
+                    .userQuestions(new ArrayList<>(){})
                     .build();
             userService.createUser(user);
         }
@@ -52,26 +54,23 @@ public class UserController {
     // 회원가입
     @ApiOperation(value="회원 가입", notes = "회원-닉네임, 회원-이메일, 회원-비밀번호를 입력하여 회원가입을 합니다.")
     @PostMapping("/signup")
-    public ResponseEntity postUser(@RequestBody @Valid UserPostDto userPostDto) {
+    public String postUser(@RequestBody @Valid UserPostDto userPostDto) {
         User user = mapper.userPostDtoToUser(userPostDto);
 
         User response = userService.createUser(user);
-        return new ResponseEntity(mapper.memberToMemberResponseDto(response),
-                HttpStatus.CREATED);
+        return "회원가입 완료";
     }
 
     // 로그인
     @PostMapping("/login")
     @ApiOperation(value="로그인", notes = "회원-이메일과 회원-비밀번호를 입력해서 로그인을 합니다.")
-    public ResponseEntity login(@RequestBody @Valid UserLoginDto userLoginDto) {
+    public String login(@RequestBody @Valid UserLoginDto userLoginDto) {
 
-        User response = userService.getByCredentials(userLoginDto.getMemberEmail(), userLoginDto.getMemberPassword());
+        User response = userService.getByCredentials(userLoginDto.getUserEmail(), userLoginDto.getUserPassword());
 
-//        String token = tokenProvider.create(response);
-//        response.setToken(token);
-
-        return new ResponseEntity(mapper.memberToMemberResponseDto(response),
-                HttpStatus.CREATED);
+        /*return new ResponseEntity(mapper.userToUserResponseDto(response),
+                HttpStatus.CREATED);*/
+        return "로그인 성공";
     }
     @ApiOperation(value="로그아웃")
     @PutMapping("/logout")
@@ -88,7 +87,7 @@ public class UserController {
 
         User response = userService.findUser(userId);
 
-        return new ResponseEntity(mapper.memberToMemberResponseDto(response),
+        return new ResponseEntity(mapper.userToUserResponseDto(response),
                 HttpStatus.OK);
     }
 
@@ -102,7 +101,7 @@ public class UserController {
         userService.updateUser(userId , userPatchDto);
         User response = userService.findUser(userId);
 
-        return new ResponseEntity<>(mapper.memberToMemberResponseDto(response),
+        return new ResponseEntity<>(mapper.userToUserResponseDto(response),
                 HttpStatus.OK);
     }
 
@@ -115,5 +114,11 @@ public class UserController {
         userService.deleteUser(userId);
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    // 테스트
+    @PostMapping("/token")
+    public String token() {
+        return "<h1>token</h1>";
     }
 }

@@ -7,34 +7,43 @@ import com.codestates.pre51.users.entity.User;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Component
 public class UserMapper {
 
     public User userPostDtoToUser(UserPostDto userPostDto) {
         return new User(0L,
-                userPostDto.getMemberName(),
-                userPostDto.getMemberEmail(),
-                userPostDto.getMemberPassword(),
-                null,
-                LocalDateTime.now());
+                userPostDto.getUserName(),
+                userPostDto.getUserEmail(),
+                userPostDto.getUserPassword(),
+                LocalDateTime.now(),
+                     "ROLE_USER",
+                new ArrayList<>(){},
+                new ArrayList<>(){},
+                new ArrayList<>(),
+                new ArrayList<>());
     }
 
     public User userPatchDtoToUser(UserPatchDto userPatchDto) {
         return new User(0L,
-                userPatchDto.getMemberName(),
+                userPatchDto.getUserName(),
                 null,
-                userPatchDto.getMemberPassword(),
-                null,
-                LocalDateTime.now());
+                userPatchDto.getUserPassword(),
+                LocalDateTime.now(),
+                "ROLE_USER",
+                new ArrayList<>(){},
+                new ArrayList<>(){},
+                new ArrayList<>(){},
+                new ArrayList<>(){});
     }
 
-    public UserResponseDto memberToMemberResponseDto(User user) {
-        return new UserResponseDto(user.getMemberId(),
-                user.getMemberName(),
-                user.getMemberEmail(),
-                user.getMemberPassword(),
+    public UserResponseDto userToUserResponseDto(User user) {
+        return new UserResponseDto(user.getUserId(),
+                user.getUserName(),
+                user.getUserEmail(),
+                user.getUserPassword(),
                 null,
-                user.getMemberCreatedAt());
+                user.getUserCreatedAt());
     }
 }

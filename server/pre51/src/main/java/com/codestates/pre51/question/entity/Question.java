@@ -2,8 +2,10 @@ package com.codestates.pre51.question.entity;
 
 import com.codestates.pre51.answer.entity.Answer;
 
+import com.codestates.pre51.questionLikes.entity.QuestionLikes;
 import com.codestates.pre51.questioncomment.entity.QuestionComment;
 
+import com.codestates.pre51.users.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jdk.jfr.Timestamp;
 import lombok.*;
@@ -43,13 +45,14 @@ public class Question {
 
 //    @Column(nullable = false, columnDefinition = "INT(4) default '0'", name="question_likes")
     @Column(nullable = false, columnDefinition = "INT", name="question_likes")
-    private long questionLikes;
+    private long questionLikesCount;
 
     @Column(nullable = false, name="question_created_at")
     @CreatedDate
     private LocalDateTime questionCreatedAt;
 
     @Column(name="question_modified_at")
+    @CreatedDate
     private LocalDateTime questionModifiedAt;
 
     @Column(name="question_best_answer_id")
@@ -65,4 +68,11 @@ public class Question {
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "questionComments")
     @JsonIgnore
     private List<QuestionComment> questionQuestionComments = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User questionWriter;
+
+    @OneToOne(cascade = {CascadeType.ALL})
+    private QuestionLikes questionLikes;
 }
