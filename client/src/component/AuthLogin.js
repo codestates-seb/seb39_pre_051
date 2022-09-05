@@ -8,6 +8,10 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logIn } from '../redux/slice/userInfoSlice';
+import jwt_decode from 'jwt-decode'
+import jwtDecode from 'jwt-decode'; 
+import {Cookies} from 'react-cookie'
+import jwt from 'jwt-decode'
 
 const AuthLogin = (props) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
@@ -17,6 +21,7 @@ const AuthLogin = (props) => {
   const [emailDesc, setEmailDesc] = useState('');
   const [passwordDesc, setPasswordDesc] = useState('');
   const [rePasswordDesc, setRePasswordDesc] = useState('');
+  
   const [inputValue, setInputValue] = useState({
     displayName: '',
     email: '',
@@ -96,10 +101,23 @@ const AuthLogin = (props) => {
       }
 
       try{
-        await axios.post('/users/login',{
+        const response =  await axios.post('/users/login',{
           userEmail: email,
           userPassword: password
-        }).then((res)=>console.log(res))
+        })
+        const data = await response.data
+        const token = data.userToken
+        const userName = data.userName
+        const decoded = jwt_decode(token)
+        console.log(decoded.sub)
+        const cookie = new Cookies()
+        cookie.set('token', token)
+        console.log(data.userName)
+        localStorage.setItem('useId', JSON.stringify(decoded.sub))
+        localStorage.setItem('userName',JSON.stringify(userName))
+        // localStorage.setItem('userImg', JSON.stringify(decoded))
+        alert('Login Success')
+        navigate('/')
       } catch(err) {
         console.log('로그인 error', err)
       }
@@ -369,5 +387,6 @@ const MessageLayout = styled.div`
     color: hsl(206, 100%, 40%);
   }
 `;
+
 
 export default AuthLogin;

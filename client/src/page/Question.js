@@ -87,7 +87,8 @@ const Question = () => {
             likes={questionLikesCount}
             content={questionContent}
             modifiedAt={questionModifiedAt}
-            writer={questionWriter.userName}
+            writer={questionWriter}
+            //email 필요없을지도
             email={questionWriter.userEmail}
             comment={questionQuestionComments}
             isQuestion={true}
@@ -105,12 +106,10 @@ const Question = () => {
               likes={el.answerLikesCount}
               content={el.answerContent}
               modifiedAt={el.answerModifiedAt}
-              writer={el.answerWriter.userName}
-              email={el.answerWriter.userEmail}
+              writer={el.answerWriter}
               comment={el.answerAnswerComments}
               questionId={questionId}
               isQuestion={false}
-              questionWriter={questionWriter.userEmail}
               questionBestAnswerId={questionBestAnswerId}
             />
           ))}
