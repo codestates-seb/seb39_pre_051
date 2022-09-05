@@ -59,6 +59,7 @@ const Home = () => {
                 questionLikesCount={el.questionLikesCount}
                 questionAnswers={el.questionAnswers}
                 questionCreatedAt={el.questionCreatedAt}
+                questionWriter = {el.questionWriter}
               ></Card>
             ))}
             <PaginationWrapper>
