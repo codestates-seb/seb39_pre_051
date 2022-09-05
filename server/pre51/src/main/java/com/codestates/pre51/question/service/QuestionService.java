@@ -25,9 +25,8 @@ public class QuestionService {
     }
 
     public Question createQuestion(Question question){
-        Question savedQuestion = questionRepository.save(question);
 
-        return savedQuestion;
+        return questionRepository.save(question);
     }
 
     public Question createQuestion(Question question, long questionWriterId){
@@ -45,6 +44,7 @@ public class QuestionService {
         findQuestion.setQuestionContent(question.getQuestionContent());
         findQuestion.setQuestionTitle(question.getQuestionTitle());
         findQuestion.setQuestionModifiedAt(LocalDateTime.now());
+        findQuestion.setQuestionTags(question.getQuestionTags());
         return questionRepository.save(findQuestion);
     }
 

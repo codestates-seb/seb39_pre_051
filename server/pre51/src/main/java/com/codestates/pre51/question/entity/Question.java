@@ -7,15 +7,13 @@ import com.codestates.pre51.questioncomment.entity.QuestionComment;
 
 import com.codestates.pre51.users.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jdk.jfr.Timestamp;
+
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +59,9 @@ public class Question {
     @Column(name="question_answered_at")
     private LocalDateTime questionAnsweredAt;
 
+    @Column(name="question_tags")
+    private String questionTags;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "answerQuestions")
     @JsonIgnore
     private List<Answer> questionAnswers = new ArrayList<>();
@@ -75,4 +76,12 @@ public class Question {
 
     @OneToOne(cascade = {CascadeType.ALL})
     private QuestionLikes questionLikes;
+
+    /*
+    @OneToMany
+    @JoinColumn(name="question_tag_id")
+    @JsonIgnore
+    @JsonProperty
+    private List<QuestionTag> questionTags = new ArrayList<>();
+    */
 }

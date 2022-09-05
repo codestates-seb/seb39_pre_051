@@ -1,12 +1,12 @@
 package com.codestates.pre51.question.controller;
 
-import com.codestates.pre51.answer.service.AnswerService;
 import com.codestates.pre51.dto.MultiResponseDTO;
 import com.codestates.pre51.question.dto.QuestionDTO;
 import com.codestates.pre51.question.entity.Question;
 import com.codestates.pre51.question.mapper.QuestionMapper;
 import com.codestates.pre51.dto.SingleResponseDTO;
 import com.codestates.pre51.question.service.QuestionService;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.data.domain.Page;
@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
