@@ -1,11 +1,26 @@
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const AskBtn = () => {
   const themeState = useSelector((state)=>state.themeSlice).theme
+  const userState = useSelector((state)=>state.userInfoSlice)
+  const navigate = useNavigate();
+  const handleNavigateAsk = () => {
+    console.log(userState, !userState.email)
+    if(userState.loggedIn){
+      navigate('/ask')
+    }
+    else{
+      if(window.confirm('You must be logged in to ask a question on Stack Overflow')){
+        navigate('/login')
+        return
+      }
+    }
+  }
   return(
     <AskBtnLayout>
-    <AskBtnLink href='/ask' themeState={themeState}>Ask Question</AskBtnLink>
+    <AskBtnLink themeState={themeState} onClick={()=>handleNavigateAsk()}>Ask Question</AskBtnLink>
   </AskBtnLayout>
   )
 };
@@ -14,7 +29,7 @@ const AskBtnLayout = styled.div`
   /* margin: 0 0 0 1.2rem ; */
 `
 
-const AskBtnLink = styled.a`
+const AskBtnLink = styled.div`
   cursor: pointer;
   background-color:${(props)=>props.themeState==='light' ? '#0a95ff' : '#0C63A9'};
   color: #ffffff;
