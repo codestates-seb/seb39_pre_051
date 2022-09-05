@@ -6,14 +6,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { readQuestion } from '../redux/slice/questionSlice';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import { getUserId } from '../getUserInfo';
 const OpinionCard = ({
   id,
   likes,
   content,
   modifiedAt,
   writer,
-  email,
   comment,
   questionId,
   isQuestion,
@@ -34,6 +33,9 @@ const OpinionCard = ({
   const [originalText, setOriginalText] = useState('');
   const [isClick, setIsClick] = useState(false);
   const [like, setLike] = useState(likes);
+  const userId = getUserId()
+  console.log(userId)
+  console.log(writer)
   const year = modifiedAt[0];
   const month = modifiedAt[1];
   const day = modifiedAt[2];
@@ -43,7 +45,6 @@ const OpinionCard = ({
       : '오전 ' + modifiedAt[3];
   const min = modifiedAt[4];
   const sec = modifiedAt[5];
-
   useEffect(() => {
     setText(content);
     setOriginalText(content);
@@ -69,7 +70,7 @@ const OpinionCard = ({
 
       await axios
         .post(`/questionComments/${id}`, {
-          questionCommentWriterId: 1,
+          questionCommentWriterId: userId,
           questionCommentContent: enteredComment,
         })
         .then((res) => console.log(res))
@@ -85,7 +86,7 @@ const OpinionCard = ({
 
       await axios
         .post(`/answerComments/${id}`, {
-          answerCommentWriterId: 2,
+          answerCommentWriterId: userId,
           answerCommentContent: enteredComment,
         })
         .then((res) => console.log(res))
@@ -171,10 +172,10 @@ const OpinionCard = ({
   //질문에 대한 Like관리 함수
   const handleQuestionLikes = async () => {
     setIsClick(!isClick);
-    if (userState.isLoggedIn === true) {
+    if (userId) {
       if (isClick) {
         const response = await axios.patch(
-          `/questionLikes/${id}/${userState.memberId}`
+          `/questionLikes/${id}/${userId}`
         );
 
         setLike(like - 1);
@@ -182,7 +183,7 @@ const OpinionCard = ({
         return response;
       } else {
         const response = await axios.patch(
-          `/questionLikes/${id}/${userState.memberId}`
+          `/questionLikes/${id}/${userId}`
         );
 
         setLike(like + 1);
@@ -193,8 +194,6 @@ const OpinionCard = ({
       navigate('/login');
     }
   };
-
-  console.log(userState);
 
   return (
     <OpinionLayout>
@@ -211,15 +210,15 @@ const OpinionCard = ({
               <path d='M2 25h32L18 9 2 25Z'></path>
             </svg>
           </LikesButton>
-          <div>{like}</div>
+          <div>{likes}</div>
           {isQuestion ? (
             <></>
           ) : 
           //답변에대해서
-          userState.email === questionWriter ? (
+          userId === writer.userId ? (
             //작성자의 시점
             <BestAnswerMark
-              isQuestionWriter={userState.email === questionWriter}
+              isQuestionWriter={userId === writer.userId}
               isBestAnswer={questionBestAnswerId === id}
               questionId={questionId}
               id={id}
@@ -258,7 +257,7 @@ const OpinionCard = ({
                     </>
             )}
             <ContentInfoContainer>
-              {userState.email === email ? (
+              {userId === writer.userId ? (
                 isQuestion ? (
                   questionEditMode ? (
                     <>
@@ -315,7 +314,7 @@ const OpinionCard = ({
                     src='https://w7.pngwing.com/pngs/981/645/png-transparent-default-profile-united-states-computer-icons-desktop-free-high-quality-person-icon-miscellaneous-silhouette-symbol.png'
                     alt='프로필사진'
                   ></img>
-                  <div id='writer'>{writer}</div>
+                  <div id='writer'>{writer.userName}</div>
                 </InfoBox>
               </ContentInfo>
             </ContentInfoContainer>
@@ -326,10 +325,8 @@ const OpinionCard = ({
                   <Comment
                     key={el.questionCommentId}
                     id={el.questionCommentId}
-                    writer={el.questionCommentWriter.userName}
-                    email='test1@gmail.com'
+                    writer={el.questionCommentWriter}
                     content={el.questionCommentContent}
-                    // likes={el.questionCommentLikes}
                     modifiedAt={el.questionCommentModifiedAt}
                     isQuestion={isQuestion}
                   />
@@ -338,9 +335,7 @@ const OpinionCard = ({
                   <Comment
                     key={el.answerCommentId}
                     id={el.answerCommentId}
-                    writer={el.answerCommentWriter.userName}
-                    // email={el.answerCommentEmail}
-                    email='test1@gmail.com'
+                    writer={el.answerCommentWriter}
                     content={el.answerCommentContent}
                     modifiedAt={el.answerCommentModifiedAt}
                     isQuestion={isQuestion}

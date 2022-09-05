@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import {useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import {readQuestion} from '../redux/slice/questionSlice'
+import { getUserId } from '../getUserInfo';
 const Comment = (props) => {
   const userState = useSelector((state)=>state.userInfoSlice)
   const themeState = useSelector((state)=>state.themeSlice).theme
@@ -12,6 +13,7 @@ const Comment = (props) => {
   const [commentEditMode, setCommentEditMode] = useState(false)
   const [editedComment, setEditedComment] =useState('') 
   const [originalComment, setOriginalComment] = useState('')
+  const userId = getUserId()
 
   const handleDelete = async() => {
     console.log(props.id, props.isQuestion)
@@ -107,9 +109,9 @@ const Comment = (props) => {
         )}
         <CommentInfo>
           {' '}
-          - <div> {props.writer}</div>
+          - <div> {props.writer.userName}</div>
           <CommentSpan id='modifiedAt'>{`${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`}</CommentSpan>
-          {userState.email===props.email ? 
+          {userId===props.writer.userId ? 
     commentEditMode ? (
         <>
         <CommentSpan id='editdelete' themeState={themeState} onClick={()=>handleCommentEditSubmit()}>수정하기</CommentSpan>

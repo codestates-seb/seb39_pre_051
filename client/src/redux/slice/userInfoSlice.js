@@ -18,7 +18,7 @@ let initialState = {
   error: null,
   // isLoggedIn: !!initialToken,
   isLoggedIn: false,
-  memberId: initailId,
+  memberId: 100,
   memberName: initialName,
   // email: initialEmail,
   email:'test1@gmail.com',

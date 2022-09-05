@@ -19,20 +19,21 @@ import { useRef } from 'react';
 import { useDispatch,useSelector } from 'react-redux';
 import {readQuestion,createAnswer} from '../redux/slice/questionSlice'
 import { useNavigate } from 'react-router-dom';
+import { getUserId } from '../getUserInfo';
 
 const AddAnswer = ({questionId}) => {
   const textAreaInput = useRef();
   const themeState = useSelector((state) => state.themeSlice).theme;
-  const userState = useSelector((state) => state.userInfoSlice)
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const answerWriterId =  getUserId()
 
   const handleAnswerSubmit = (e) => {
     e.preventDefault();
-    if(userState.isLoggedIn){
+    if(answerWriterId){
       const enteredAnswer = textAreaInput.current.value;
     dispatch(createAnswer({questionId, answer : {
-      answerWriterId : 1,
+      answerWriterId : answerWriterId,
       answerContent : enteredAnswer,
     }}))
     dispatch(readQuestion(questionId))

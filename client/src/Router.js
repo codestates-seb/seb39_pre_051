@@ -7,11 +7,11 @@ import Question from './page/Question';
 import QuestionMain from './page/QuestionMain';
 import UserProfile from './page/UserProfile';
 import UserPreferences from './page/UserPreferences';
-import { useSelector } from 'react-redux';
+import { getUserId } from './getUserInfo';
 
 const Router = () => {
-  const userState = useSelector((state) => state.userInfoSlice);
-  const isLoggedIn = userState.isLoggedIn;
+  const isLoggedIn = getUserId()
+  console.log(isLoggedIn)
   return (
     <Routes>
       <Route path='/' element={<Home />} />
