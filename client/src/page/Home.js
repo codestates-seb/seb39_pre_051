@@ -27,7 +27,11 @@ const Home = () => {
         setPage(page);
         setSize(size);
         //card에 뿌릴 data
-        setData(res.data.data);
+        setData(
+          res.data.data.sort(
+            (a, b) => b.questionLikesCount - a.questionLikesCount
+          )
+        );
       })
       .catch((err) => console.log(err));
   }, [page, size]);
