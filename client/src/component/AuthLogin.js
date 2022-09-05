@@ -8,10 +8,10 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logIn } from '../redux/slice/userInfoSlice';
-import jwt_decode from 'jwt-decode'
-import jwtDecode from 'jwt-decode'; 
-import {Cookies} from 'react-cookie'
-import jwt from 'jwt-decode'
+import jwt_decode from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
+import { Cookies } from 'react-cookie';
+import jwt from 'jwt-decode';
 
 const AuthLogin = (props) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
@@ -21,7 +21,7 @@ const AuthLogin = (props) => {
   const [emailDesc, setEmailDesc] = useState('');
   const [passwordDesc, setPasswordDesc] = useState('');
   const [rePasswordDesc, setRePasswordDesc] = useState('');
-  
+
   const [inputValue, setInputValue] = useState({
     displayName: '',
     email: '',
@@ -91,7 +91,7 @@ const AuthLogin = (props) => {
   };
 
   //submitHandler
-  const submitHandler = async(e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
     if (props.status === 'login') {
       //로그인 일시
@@ -100,26 +100,27 @@ const AuthLogin = (props) => {
         return;
       }
 
-      try{
-        const response =  await axios.post('/users/login',{
+      try {
+        const response = await axios.post('/users/login', {
           userEmail: email,
-          userPassword: password
-        })
-        const data = await response.data
-        const token = data.userToken
-        const userName = data.userName
-        const decoded = jwt_decode(token)
-        console.log(decoded.sub)
-        const cookie = new Cookies()
-        cookie.set('token', token)
-        console.log(data.userName)
-        localStorage.setItem('useId', JSON.stringify(decoded.sub))
-        localStorage.setItem('userName',JSON.stringify(userName))
+          userPassword: password,
+        });
+        const data = await response.data;
+        const token = data.userToken;
+        const userName = data.userName;
+        const decoded = jwt_decode(token);
+        console.log(decoded.sub);
+        const cookie = new Cookies();
+        cookie.set('token', token);
+        console.log(data.userName);
+        localStorage.setItem('userId', JSON.stringify(decoded.sub));
+        localStorage.setItem('userName', JSON.stringify(userName));
         // localStorage.setItem('userImg', JSON.stringify(decoded))
-        alert('Login Success')
-        navigate('/')
-      } catch(err) {
-        console.log('로그인 error', err)
+        alert('Login Success');
+        navigate('/');
+        window.location.reload();
+      } catch (err) {
+        console.log('로그인 error', err);
       }
     } else {
       //회원가입 일시
@@ -131,10 +132,11 @@ const AuthLogin = (props) => {
         });
         alert('회원가입이 완료되었습니다!');
         navigate('/');
+        window.location.reload();
         return console.log(response);
       } catch (err) {
         alert('회원정보를 확인해주세요!');
-        
+
         console.log('회원가입 error', err);
       }
     }
@@ -387,6 +389,5 @@ const MessageLayout = styled.div`
     color: hsl(206, 100%, 40%);
   }
 `;
-
 
 export default AuthLogin;

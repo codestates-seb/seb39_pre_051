@@ -22,10 +22,11 @@ import { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { getUserId } from '../getUserInfo';
 
 const Ask = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
-  const userState = useSelector((state) => state.userInfoSlice);
+  const userId = getUserId();
   const [hide, setHide] = useState(false);
   const [drag, setDrag] = useState(false);
   const [questionTitle, setTitle] = useState('');
@@ -87,7 +88,7 @@ const Ask = () => {
   const handleSubmit = () => {
     axios
       .post('/questions/ask', {
-        questionWriterId: userState.memberId,
+        questionWriterId: userId,
         questionTitle,
         questionContent,
         questionTag: questionTag.split(',').map((el) => el.replace(/ /g, '')),
@@ -100,6 +101,7 @@ const Ask = () => {
       });
 
     navigate('/questions');
+    window.location.reload();
 
     return;
   };

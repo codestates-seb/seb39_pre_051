@@ -4,20 +4,21 @@ import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getUserId } from '../getUserInfo';
 
 const SideBar = ({ pageName }) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
 
-  const user = useSelector((props) => props.userInfoSlice);
+  const userId = getUserId();
 
   const [userData, setUserData] = useState({});
 
   useEffect(() => {
     axios
-      .get(`/users/${user.memberId}`)
+      .get(`/users/${userId}`)
       .then((res) => setUserData(res.data))
       .catch((err) => console.log(err));
-  }, []);
+  }, [userId]);
 
   return (
     <SideBarDiv>

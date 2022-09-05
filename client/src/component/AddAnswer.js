@@ -16,42 +16,55 @@ import {
   faUndo,
 } from '@fortawesome/free-solid-svg-icons';
 import { useRef } from 'react';
-import { useDispatch,useSelector } from 'react-redux';
-import {readQuestion,createAnswer} from '../redux/slice/questionSlice'
+import { useDispatch, useSelector } from 'react-redux';
+import { readQuestion, createAnswer } from '../redux/slice/questionSlice';
 import { useNavigate } from 'react-router-dom';
 import { getUserId } from '../getUserInfo';
 
-const AddAnswer = ({questionId}) => {
+const AddAnswer = ({ questionId }) => {
   const textAreaInput = useRef();
   const themeState = useSelector((state) => state.themeSlice).theme;
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const answerWriterId =  getUserId()
+  const answerWriterId = getUserId();
 
   const handleAnswerSubmit = (e) => {
     e.preventDefault();
-    if(answerWriterId){
+    if (answerWriterId) {
       const enteredAnswer = textAreaInput.current.value;
-    dispatch(createAnswer({questionId, answer : {
-      answerWriterId : answerWriterId,
-      answerContent : enteredAnswer,
-    }}))
-    dispatch(readQuestion(questionId))
-    textAreaInput.current.value = ' '
-    } else{
-      if(window.confirm('You must be logged in to add an answer on Stack Overflow')){
-        navigate('/login')
-        return
-      }else{
-        textAreaInput.current.value = ' '
-        return
+      dispatch(
+        createAnswer({
+          questionId,
+          answer: {
+            answerWriterId: answerWriterId,
+            answerContent: enteredAnswer,
+          },
+        })
+      );
+      dispatch(readQuestion(questionId));
+      textAreaInput.current.value = ' ';
+    } else {
+      if (
+        window.confirm(
+          'You must be logged in to add an answer on Stack Overflow'
+        )
+      ) {
+        navigate('/login');
+        window.location.reload();
+        return;
+      } else {
+        textAreaInput.current.value = ' ';
+        return;
       }
     }
   };
   return (
     <AddAnswerLayout>
       <HeadLine themeState={themeState}>Your Answer</HeadLine>
-      <QuestionForm themeState={themeState} onSubmit={(e)=>handleAnswerSubmit(e)}>
+      <QuestionForm
+        themeState={themeState}
+        onSubmit={(e) => handleAnswerSubmit(e)}
+      >
         <QuestionBodyContainer>
           <QuestionBodyButton>
             <FontAwesomeIcon className='md-button' icon={faBold} />
@@ -75,13 +88,13 @@ const AddAnswer = ({questionId}) => {
             </QuestionFormattingTipsButton>
           </QuestionBodyButton>
           <QuestionBodyDiv themeState={themeState}>
-              <QuestionBodyTextArea
-                type='text'
-                ref={textAreaInput}
-                themeState={themeState}
-              />
-              <QuestionBodyResize themeState={themeState}></QuestionBodyResize>
-              <button>Post Your Answer</button>
+            <QuestionBodyTextArea
+              type='text'
+              ref={textAreaInput}
+              themeState={themeState}
+            />
+            <QuestionBodyResize themeState={themeState}></QuestionBodyResize>
+            <button>Post Your Answer</button>
           </QuestionBodyDiv>
         </QuestionBodyContainer>
       </QuestionForm>
@@ -100,13 +113,14 @@ const HeadLine = styled.div`
   align-items: center;
   font-size: 2.5rem;
   margin-left: 1.7rem;
-  color : ${(props)=>props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3' };
+  color: ${(props) => (props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3')};
 `;
 
 const QuestionForm = styled.form`
   width: 88rem;
   padding: 1.6rem;
-  background-color: ${(props)=>props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D' };
+  background-color: ${(props) =>
+    props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D'};
 `;
 
 const QuestionBodyContainer = styled.div`
@@ -155,9 +169,11 @@ const QuestionBodyDiv = styled.div`
   position: relative;
   button {
     cursor: pointer;
-    background-color: ${(props) => props.themeState==='light' ? '#0a95ff' : '#0C63A9'};
+    background-color: ${(props) =>
+      props.themeState === 'light' ? '#0a95ff' : '#0C63A9'};
     color: #ffffff;
-    border: ${(props)=>props.themeState ==='light' ? '1px solid #ffffff': 'none'};
+    border: ${(props) =>
+      props.themeState === 'light' ? '1px solid #ffffff' : 'none'};
     border-radius: 0.3rem;
     width: 12.9rem;
     height: 3.78rem;
@@ -174,16 +190,17 @@ const QuestionBodyDiv = styled.div`
 `;
 
 const QuestionBodyTextArea = styled.textarea`
-    padding: 1rem;
-    margin: -0.1rem 0 0;
-    height: 20rem;
-    border: 1px solid #babfc4;
-    line-height: 1.3;
-    width: 100%;
-    font-size: 1.6rem;
-    resize: none;
-    background-color:${(props)=>props.themeState ==='light' ? '#FFFFFF' : '#2D2D2D'};
-    color: ${(props)=>props.themeState ==='light' ? "#0C0D0E" : "#F2F2F3"};
+  padding: 1rem;
+  margin: -0.1rem 0 0;
+  height: 20rem;
+  border: 1px solid #babfc4;
+  line-height: 1.3;
+  width: 100%;
+  font-size: 1.6rem;
+  resize: none;
+  background-color: ${(props) =>
+    props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D'};
+  color: ${(props) => (props.themeState === 'light' ? '#0C0D0E' : '#F2F2F3')};
 `;
 
 const QuestionBodyResize = styled.div`
@@ -194,8 +211,8 @@ const QuestionBodyResize = styled.div`
   margin: -0.3rem 0 0;
   cursor: s-resize;
   overflow: hidden;
-  background-color: ${(props)=> props.themeState ==='light' ? '#f1f2f3' : '#3D3D3C'};
+  background-color: ${(props) =>
+    props.themeState === 'light' ? '#f1f2f3' : '#3D3D3C'};
 `;
-
 
 export default AddAnswer;
