@@ -6,6 +6,7 @@ const tagArray = ['java', 'javascript', 'python', 'GO', 'C++'];
 const Card = ({
   questionId,
   questionTitle,
+  questionWriter,
   questionWriterId,
   questionContent,
   questionLikesCount,
@@ -13,7 +14,7 @@ const Card = ({
   questionCreatedAt,
 }) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
-
+  console.log(questionWriter)
   const year = questionCreatedAt[0];
   const month = questionCreatedAt[1];
   const day = questionCreatedAt[2];
@@ -56,7 +57,7 @@ const Card = ({
                 src='https://w7.pngwing.com/pngs/981/645/png-transparent-default-profile-united-states-computer-icons-desktop-free-high-quality-person-icon-miscellaneous-silhouette-symbol.png'
                 alt='프로필사진'
               ></img>
-              <Writer href='naver,com'>{questionWriterId}</Writer>
+              <Writer href='naver,com'>{questionWriter.userName}</Writer>
               <CreatedAt>{`${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`}</CreatedAt>
             </InfoWrapper>
           </QuestionInfoContainer>
