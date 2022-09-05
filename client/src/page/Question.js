@@ -10,21 +10,30 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { readQuestion } from '../redux/slice/questionSlice';
 
-
 const Question = () => {
-  const [questionEditMode, setQuestionEditMode] = useState(false)
-  const [title, setTitle] = useState('')
-  const [originalTitle, setOriginalTitle] = useState('')
+  const [questionEditMode, setQuestionEditMode] = useState(false);
+  const [title, setTitle] = useState('');
+  const [originalTitle, setOriginalTitle] = useState('');
   const params = useParams();
   const themeState = useSelector((state) => state.themeSlice).theme;
-  const questionState = useSelector((state)=>state.questionSlice)
+  const questionState = useSelector((state) => state.questionSlice);
   const dispatch = useDispatch();
-  const {questionId, questionWriterId, questionContent, questionLikes, questionCreatedAt, questionModifiedAt, questionTitle, questionQuestionComments, questionAnswers} = questionState
+  const {
+    questionId,
+    questionWriterId,
+    questionContent,
+    questionLikesCount,
+    questionCreatedAt,
+    questionModifiedAt,
+    questionTitle,
+    questionQuestionComments,
+    questionAnswers,
+  } = questionState;
   useEffect(() => {
-  dispatch(readQuestion(params.questionId))
-  setTitle(questionTitle)
-  setOriginalTitle(questionTitle)
-  },[dispatch, params.questionId, questionTitle]);
+    dispatch(readQuestion(params.questionId));
+    setTitle(questionTitle);
+    setOriginalTitle(questionTitle);
+  }, [dispatch, params.questionId, questionTitle]);
 
   // const [date, setDate] = useState({
   //   year : null,
@@ -33,7 +42,7 @@ const Question = () => {
   //   hour : null,
   //   min : null,
   //   sec : null
-  // }) 
+  // })
 
   // if(questionCreatedAt !==null) {
   //   setDate({
@@ -49,36 +58,33 @@ const Question = () => {
   //   })
   // }
 
-  let year = null
-  let month = null
-  let day = null
-  let hour = null
-  let min = null
-  let sec = null 
+  let year = null;
+  let month = null;
+  let day = null;
+  let hour = null;
+  let min = null;
+  let sec = null;
 
-    if(questionCreatedAt !==null) {
-      year = questionCreatedAt[0] 
-      month = questionCreatedAt[1] 
-      day = questionCreatedAt[2] 
-      hour =
+  if (questionCreatedAt !== null) {
+    year = questionCreatedAt[0];
+    month = questionCreatedAt[1];
+    day = questionCreatedAt[2];
+    hour =
       questionCreatedAt[3] > 12
         ? '오후 ' + (questionCreatedAt[3] - 12)
-        : '오전 ' + questionCreatedAt[3]
-      min = questionCreatedAt[4]
-      sec = questionCreatedAt[5]
+        : '오전 ' + questionCreatedAt[3];
+    min = questionCreatedAt[4];
+    sec = questionCreatedAt[5];
   }
 
-
-
-
-const handelEditTitle = (e) => {
-  setTitle(e.target.value)
-}
+  const handelEditTitle = (e) => {
+    setTitle(e.target.value);
+  };
 
   const handleQuestionEditMode = () => {
-    setQuestionEditMode(!questionEditMode)
-    setTitle(questionTitle)
-  }
+    setQuestionEditMode(!questionEditMode);
+    setTitle(questionTitle);
+  };
   return (
     <>
       <TopBar />
@@ -91,25 +97,28 @@ const handelEditTitle = (e) => {
                 {questionEditMode ? (
                   <form>
                     <label id='editText'></label>
-                    <input id='editText' value={title} onChange={handelEditTitle} />
+                    <input
+                      id='editText'
+                      value={title}
+                      onChange={handelEditTitle}
+                    />
                   </form>
                 ) : (
-                <>
-                <a href='/questions/questionId'>{questionTitle}</a>
-                </>
-                ) }
-                
+                  <>
+                    <a href='/questions/questionId'>{questionTitle}</a>
+                  </>
+                )}
               </Title>
               <AskBtn />
             </TitleContainer>
             <CreatedAt themeState={themeState}>
-            {`${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`}
+              {`${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`}
             </CreatedAt>
           </TitleLayout>
           <OpinionCard
-            key = {questionId}
+            key={questionId}
             id={questionId}
-            likes={questionLikes}
+            likes={questionLikesCount}
             content={questionContent}
             modifiedAt={questionModifiedAt === null ? [] : questionModifiedAt}
             writer={questionWriterId}
@@ -121,25 +130,25 @@ const handelEditTitle = (e) => {
             handleQuestionEditMode={handleQuestionEditMode}
             title={title}
           />
-          <AnswerSummay>
-            {questionAnswers.length} Answers
-          </AnswerSummay>
+          <AnswerSummay>{questionAnswers.length} Answers</AnswerSummay>
           {questionAnswers.map((el) => (
             <OpinionCard
-              key = {el.answerId}
+              key={el.answerId}
               id={el.answerId}
-              likes={el.answerLikes}
+              likes={el.answerLikesCount}
               content={el.answerContent}
-              modifiedAt={el.answerModifiedAt === null ? [] : el.answerModifiedAt}
+              modifiedAt={
+                el.answerModifiedAt === null ? [] : el.answerModifiedAt
+              }
               writer={el.answerWriterId}
               // email={el.answerEmail}
               email='test1@gmail.com'
               comment={el.answerAnswerComments}
-              questionId = {questionId}
+              questionId={questionId}
               isQuestion={false}
             />
           ))}
-          <AddAnswer questionId={questionId}/>
+          <AddAnswer questionId={questionId} />
         </Content>
       </Container>
       <Footer />
@@ -183,13 +192,14 @@ const Title = styled.h1`
   font-size: 2.7rem;
   margin: 0 0 0.8rem 0;
   width: 72.5rem;
-  line-height:3.645rem;
-  input{
-    width:100%;
+  line-height: 3.645rem;
+  input {
+    width: 100%;
   }
-  a{
+  a {
     text-decoration: none;
-    color: ${(props) => (props.themeState === 'light' ? ' #3b4045' : '#E7E9EB')};
+    color: ${(props) =>
+      props.themeState === 'light' ? ' #3b4045' : '#E7E9EB'};
   }
 `;
 

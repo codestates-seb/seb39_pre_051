@@ -24,8 +24,8 @@ const AuthLogin = (props) => {
     rePassword: '',
   });
   const { displayName, email, password, rePassword } = inputValue;
-  const dispatch=useDispatch()
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleInput = (event) => {
     const { name, value } = event.target;
     console.log(name, value);
@@ -40,7 +40,7 @@ const AuthLogin = (props) => {
   //regNumber는 검사대상 전체(/g)에서 0-9안의 요소가 있는지 확인함
   //regString은 검사대상 전체에서(/g)에서 영어대문자소문자가 있는지 확인함
   //regSpecialCharacter는 검사대상 전체에서 특수문자가 있는지 확인함
-  
+
   const regNumber = /[0-9]/g;
   const regString = /[a-zA-Z]/g;
   const regSpecialCharacter =
@@ -92,28 +92,31 @@ const AuthLogin = (props) => {
       //로그인 일시
       if (!email || !password) {
         console.log('아이디와 비밀번호를 입력하세요!');
-        return
+        return;
       }
-      try{
-        dispatch(logIn({
-          memberEmail : email,
-          memberPassword : password}))
-      } catch(err) {
-        console.log('로그인 error', err)
+      try {
+        dispatch(
+          logIn({
+            userEmail: email,
+            usererPassword: password,
+          })
+        );
+      } catch (err) {
+        console.log('로그인 error', err);
       }
     } else {
       //회원가입 일시
       try {
-        const response =  axios.post('/users/signup',{
-          memberName : displayName,
-          memberEmail : email,
-          memberPassword : password
-        })
-        alert('회원가입이 완료되었습니다!')
-        navigate('/')
-        return console.log(response)
-      } catch(err) {
-        alert('회원정보를 확인해주세요!')
+        const response = axios.post('/users/signup', {
+          userName: displayName,
+          userEmail: email,
+          userPassword: password,
+        });
+        alert('회원가입이 완료되었습니다!');
+        navigate('/');
+        return console.log(response);
+      } catch (err) {
+        alert('회원정보를 확인해주세요!');
         console.log('회원가입 error', err);
       }
     }
@@ -239,9 +242,7 @@ const AuthLogin = (props) => {
             </>
           )}
           <BtnWrapper themeState={themeState}>
-            <button>
-              {props.status === 'login' ? 'Log in' : 'Sign up'}
-            </button>
+            <button>{props.status === 'login' ? 'Log in' : 'Sign up'}</button>
           </BtnWrapper>
         </form>
       </InputSection>
@@ -298,9 +299,9 @@ const InputWrapper = styled.div`
   &#login {
     display: none;
   }
-  div{
+  div {
     color: var(--color-orange);
-    font-weight:600;
+    font-weight: 600;
   }
 `;
 
