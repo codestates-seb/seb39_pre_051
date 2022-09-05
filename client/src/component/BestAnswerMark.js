@@ -3,9 +3,9 @@ import axios from 'axios';
 import {useDispatch} from'react-redux'
 import { readQuestion } from '../redux/slice/questionSlice';
 
+
 const BestAnswerMark = (props) => {
   const dispatch = useDispatch();
-
   const handleBestAnswer = async() => {
     console.log('hello')
     console.log(props.questionId)
@@ -13,7 +13,6 @@ const BestAnswerMark = (props) => {
     .then((res)=>console.log(res))
     dispatch(readQuestion(props.questionId))
   }
-  
   const handleResetBestAnswer = async() => {
     console.log('hello')
     console.log(props.questionId)

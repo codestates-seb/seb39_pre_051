@@ -12,11 +12,13 @@ import DarkModeSwitch from './DarkModeSwitch';
 import { useState } from 'react';
 import { logOut } from '../redux/slice/userInfoSlice';
 import { useNavigate } from 'react-router-dom';
+import { getUserId } from '../getUserInfo';
+// import {removeCookie} from 'react-cookie';
 
 const TopBar = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
   const userState = useSelector((state) => state.userInfoSlice);
-  const isLoggedIn = userState.isLoggedIn;
+  const isLoggedIn = getUserId()
   const userId = userState.memberId;
   const [isOpen, setIsOpen] = useState(null);
   const navigate = useNavigate();
@@ -26,8 +28,14 @@ const TopBar = () => {
     setIsOpen(!isOpen);
   };
 
+  // const clearCookie = () => {
+  //   removeCookie('toekn')
+  // }
   const handleLogOut = () => {
-    dispatch(logOut());
+    // dispatch(logOut());
+    // clearCookie()
+    // removeCookie('token')
+    localStorage.clear()
     navigate('/');
   };
 
