@@ -1,9 +1,10 @@
 package com.codestates.pre51.users.controller;
 
-import com.codestates.pre51.security.TokenProvider;
+import com.codestates.pre51.security.SecurityService;
 import com.codestates.pre51.users.dto.UserLoginDto;
 import com.codestates.pre51.users.dto.UserPatchDto;
 import com.codestates.pre51.users.dto.UserPostDto;
+import com.codestates.pre51.users.dto.UserResponseDto;
 import com.codestates.pre51.users.entity.User;
 import com.codestates.pre51.users.mapper.UserMapper;
 import com.codestates.pre51.users.service.UserService;
@@ -26,7 +27,8 @@ import java.util.ArrayList;
 public class UserController {
     private final UserService userService;
     private final UserMapper mapper;
-    private TokenProvider tokenProvider;
+
+    private SecurityService securityService;
 
     // 가짜 데이터 넣기
     @PostConstruct
@@ -45,32 +47,36 @@ public class UserController {
     }
 
     @Autowired
-    public UserController(UserService userService, UserMapper mapper, TokenProvider tokenProvider) {
+    public UserController(UserService userService, UserMapper mapper, SecurityService securityService) {
         this.userService = userService;
         this.mapper = mapper;
-        this.tokenProvider = tokenProvider;
+        this.securityService=securityService;
     }
 
     // 회원가입
     @ApiOperation(value="회원 가입", notes = "회원-닉네임, 회원-이메일, 회원-비밀번호를 입력하여 회원가입을 합니다.")
     @PostMapping("/signup")
-    public String postUser(@RequestBody @Valid UserPostDto userPostDto) {
+    public ResponseEntity postUser(@RequestBody @Valid UserPostDto userPostDto) {
         User user = mapper.userPostDtoToUser(userPostDto);
 
         User response = userService.createUser(user);
-        return "회원가입 완료";
+        return new ResponseEntity(mapper.userToUserResponseDto(response),
+                HttpStatus.CREATED);
     }
 
     // 로그인
     @PostMapping("/login")
     @ApiOperation(value="로그인", notes = "회원-이메일과 회원-비밀번호를 입력해서 로그인을 합니다.")
-    public String login(@RequestBody @Valid UserLoginDto userLoginDto) {
+    public ResponseEntity login(@RequestBody @Valid UserLoginDto userLoginDto) {
 
         User response = userService.getByCredentials(userLoginDto.getUserEmail(), userLoginDto.getUserPassword());
+        long userId=response.getUserId();
+        String token = securityService.createToken(String.valueOf(userId),(5*1000*60));
+        UserResponseDto userResponseDto = mapper.userToUserResponseDto(response);
+        userResponseDto.setUserToken(token);
+        return new ResponseEntity(userResponseDto,
+                HttpStatus.OK);
 
-        /*return new ResponseEntity(mapper.userToUserResponseDto(response),
-                HttpStatus.CREATED);*/
-        return "로그인 성공";
     }
     @ApiOperation(value="로그아웃")
     @PutMapping("/logout")

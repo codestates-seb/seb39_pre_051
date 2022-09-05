@@ -33,7 +33,7 @@ public class UserService {
         if (findUser != null)
             throw new IllegalStateException("이미 가입된 회원입니다.");
 
-        user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
+        //user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
         user.setRoles("ROLE_USER");
         // DB에 회원 정보 저장
         return userRepository.save(user);
