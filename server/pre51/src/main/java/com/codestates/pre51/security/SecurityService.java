@@ -1,5 +1,6 @@
 package com.codestates.pre51.security;
 
+import com.codestates.pre51.users.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -13,6 +14,11 @@ import java.util.Date;
 @Service
 public class SecurityService {
     private final String SECRET_KEY = "vkaniddpVNKLDVNLnvlkKNDLVkvnlKNDVP124NLDVvkm";
+    private final UserRepository userRepository;
+
+    public SecurityService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     // 로그인 할때 같이
     public String createToken(String subject, long expTime){
@@ -26,6 +32,7 @@ public class SecurityService {
 
         return Jwts.builder()
                 .setSubject(subject)
+                .claim("userImgUrl", userRepository.findByUserId(Long.valueOf(subject)).getUserImgUrl())
                 .signWith(signingKey,signatureAlgorithm)
                 .setExpiration(new Date(System.currentTimeMillis()+expTime))
                 .compact();

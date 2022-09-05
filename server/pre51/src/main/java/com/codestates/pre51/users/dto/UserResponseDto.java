@@ -28,4 +28,7 @@ public class UserResponseDto {
 
     @ApiModelProperty(value = "회원-가입날짜")
     private LocalDateTime userCreatedAt;
+
+    @ApiModelProperty(value = "회원-이미지Url")
+    private String userImgUrl;
 }
