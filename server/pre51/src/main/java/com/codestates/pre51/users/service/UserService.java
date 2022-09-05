@@ -35,6 +35,7 @@ public class UserService {
 
         //user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
         user.setRoles("ROLE_USER");
+        user.setUserImgUrl("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png");
         // DB에 회원 정보 저장
         return userRepository.save(user);
     }
