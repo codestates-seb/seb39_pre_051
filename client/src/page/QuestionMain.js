@@ -27,7 +27,7 @@ const QuestionMain = () => {
         setPage(page);
         setSize(size);
         //card에 뿌릴 data
-        setData(res.data.data);
+        setData(res.data.data.sort((a, b) => b.questionId - a.questionId));
       })
       .catch((err) => console.log(err));
   }, [page, size]);
