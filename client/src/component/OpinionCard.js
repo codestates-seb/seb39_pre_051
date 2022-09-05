@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 import Comment from './Comment';
+import BestAnswerMark from './BestAnswerMark';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  readQuestion,
-} from '../redux/slice/questionSlice';
+import { readQuestion } from '../redux/slice/questionSlice';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,6 +21,8 @@ const OpinionCard = ({
   questionEditMode,
   setQuestionEditMode,
   title,
+  questionWriter,
+  questionBestAnswerId
 }) => {
   const commentInput = useRef();
   const themeState = useSelector((state) => state.themeSlice).theme;
@@ -44,15 +45,17 @@ const OpinionCard = ({
 
   useEffect(() => {
     setText(content);
-    setOriginalText(content)
+    setOriginalText(content);
   }, [content]);
 
-
-
   // 답변, 질문 코멘트 작성
-  const handleCommentSubmit = (e, id) => {
+  const handleCommentSubmit = async(e, id) => {
     e.preventDefault();
     const enteredComment = commentInput.current.value;
+    if(window.confirm('You must be logged in to add a comment on Stack Overflow')){
+      navigate('/login')
+      return
+    }
     //입력값이 없을 경우
     if (!enteredComment) {
       alert('댓글 입력하세요');
@@ -61,29 +64,33 @@ const OpinionCard = ({
     }
     if (isQuestion) {
       console.log(`${id}번 질문에 대한 댓글 ${enteredComment}입니다.`);
-      console.log(typeof enteredComment)
-      axios.post(`/questionComments/${id}`, {
-        questionCommentWriterId : 1,
-        questionCommentContent : enteredComment
-      }).then((res)=> console.log(res))
-      .catch((err)=>{
-        console.log(err)
-      })
+      console.log(typeof enteredComment);
+      await axios
+        .post(`/questionComments/${id}`, {
+          questionCommentWriterId: 1,
+          questionCommentContent: enteredComment,
+        })
+        .then((res) => console.log(res))
+        .catch((err) => {
+          console.log(err);
+        });
       commentInput.current.value = '';
-      dispatch(readQuestion(questionId))
+      dispatch(readQuestion(questionId));
     } else {
       console.log(
         `${questionId}번 질문 ${id}번 답변에 대한 댓글 ${enteredComment}입니다.`
       );
-      axios.post(`/answerComments/${id}`, {
-        answerCommentWriterId : 2,
-        answerCommentContent : enteredComment
-      }).then((res)=> console.log(res))
-      .catch((err)=> {
-        console.log(err)
-      })
+      await axios
+        .post(`/answerComments/${id}`, {
+          answerCommentWriterId: 2,
+          answerCommentContent: enteredComment,
+        })
+        .then((res) => console.log(res))
+        .catch((err) => {
+          console.log(err);
+        });
       commentInput.current.value = '';
-      dispatch(readQuestion(questionId))
+      dispatch(readQuestion(questionId));
     }
   };
 
@@ -97,53 +104,53 @@ const OpinionCard = ({
 
 
   //질문 수정
-  const handelQuestionEditSubmit = async() => {
-    const response = await axios.patch(`/questions/${id}/edit`,{
-      questionTitle : title,
-      questionContent : text
-    })
-    setQuestionEditMode(!questionEditMode)
-    dispatch(readQuestion(id))
-    return response
-  }
+  const handelQuestionEditSubmit = async () => {
+    const response = await axios.patch(`/questions/${id}/edit`, {
+      questionTitle: title,
+      questionContent: text,
+    });
+    setQuestionEditMode(!questionEditMode);
+    dispatch(readQuestion(id));
+    return response;
+  };
 
-//답변 수정
-const handleAnswerEditSubmit = async() => {
-  const response = await axios.patch(`/answer/${id}/edit`,{
-    answerContent : text
-  })
-  setAnswerEditMode(!answerEditMode)
-  dispatch(readQuestion(questionId))
-  return response
-}
+  //답변 수정
+  const handleAnswerEditSubmit = async () => {
+    const response = await axios.patch(`/answer/${id}/edit`, {
+      answerContent: text,
+    });
+    setAnswerEditMode(!answerEditMode);
+    dispatch(readQuestion(questionId));
+    return response;
+  };
 
   //질문, 답변 삭제
   const handleDelete = async () => {
     if (isQuestion) {
-      try{
-        if(window.confirm('정말로 질문을 삭제하시겠습니까?')){
+      try {
+        if (window.confirm('Delete this question?')) {
           console.log(`${id}번 질문 삭제 입니다.`);
           const response = await axios.delete(`/questions/${id}`);
           navigate('/');
           return response;
-        }else{
-          return
+        } else {
+          return;
         }
-      }catch(e){
-        console.log(e)
+      } catch (e) {
+        console.log(e);
       }
     } else {
-      try{
-        if(window.confirm('정말로 답변을 삭제하시겠습니까?')){
-        console.log(`${questionId}번 질문의 ${id}번 답변 삭제 버튼입니다. `);
-        const response = await axios.delete(`/answer/${id}`);
-        dispatch(readQuestion(questionId))
-        return response;
-        }else{
-          return
+      try {
+        if (window.confirm('Delete this post?')) {
+          console.log(`${questionId}번 질문의 ${id}번 답변 삭제 버튼입니다. `);
+          const response = await axios.delete(`/answer/${id}`);
+          dispatch(readQuestion(questionId));
+          return response;
+        } else {
+          return;
         }
-      }catch(e){
-        console.log(e)
+      } catch (e) {
+        console.log(e);
       }
     }
   };
@@ -154,8 +161,10 @@ const handleAnswerEditSubmit = async() => {
 
   const handleAnswerEditMode = () => {
     setAnswerEditMode(!answerEditMode);
-    setText(originalText)
+    setText(originalText);
   };
+
+// console.log(email===userState.email, isQuestion)
   return (
     <OpinionLayout>
       <OpinionContainer>
@@ -163,6 +172,25 @@ const handleAnswerEditSubmit = async() => {
           <button>⬆︎</button>
           <div>{likes}</div>
           <button>⬇︎</button>
+          {isQuestion ? (
+            <></>
+          ) : 
+          //답변에대해서
+          userState.email === questionWriter ? (
+            //작성자의 시점
+            <BestAnswerMark
+              isQuestionWriter={userState.email === questionWriter}
+              isBestAnswer={questionBestAnswerId === id}
+              questionId={questionId}
+              id={id}
+            /> //true / 참거짓
+          ) : (
+            //작성자가 아닐 시
+            <BestAnswerMark
+              isBestAnswer={questionBestAnswerId === id}
+            />
+          ) 
+          }
         </VoteContainer>
         <OpinionContentContainer>
           <ContentContainer themeState={themeState}>
@@ -185,9 +213,9 @@ const handleAnswerEditSubmit = async() => {
               </>
             ) : (
               <>
-                {/*질문수정모드가 아닐 때, 답변수정모드도 아닐 */}
-                <Content>{content}</Content>
-              </>
+                    {/*질문수정모드가 아닐 때, 답변수정모드도 아닐 */}
+                    <Content>{content}</Content>
+                    </>
             )}
             <ContentInfoContainer>
               {userState.email === email ? (
@@ -214,7 +242,7 @@ const handleAnswerEditSubmit = async() => {
                 ) : answerEditMode ? (
                   <>
                     <EditWrapper themeState={themeState}>
-                      <span onClick={()=>handleAnswerEditSubmit()}>수정하기</span>
+                    <span onClick={()=>handleAnswerEditSubmit()}>수정하기</span>
                       <span onClick={() => handleAnswerEditMode()}>cancel</span>
                     </EditWrapper>
                   </>
@@ -238,7 +266,7 @@ const handleAnswerEditSubmit = async() => {
 
               <ContentInfo themeState={themeState}>
                 <InfoModified themeState={themeState}>
-                {`${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`}
+                  {`${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`}
                 </InfoModified>
                 <InfoBox themeState={themeState}>
                   <img
@@ -256,8 +284,7 @@ const handleAnswerEditSubmit = async() => {
                   <Comment
                     key={el.questionCommentId}
                     id={el.questionCommentId}
-                    writer={el.questionCommentWriterId}
-                    // email={el.questionCommentEmail}
+                    writer={el.questionCommentWriter.userName}
                     email='test1@gmail.com'
                     content={el.questionCommentContent}
                     // likes={el.questionCommentLikes}
@@ -269,11 +296,10 @@ const handleAnswerEditSubmit = async() => {
                   <Comment
                     key={el.answerCommentId}
                     id={el.answerCommentId}
-                    writer={el.answerCommentWriterId}
+                    writer={el.answerCommentWriter.userName}
                     // email={el.answerCommentEmail}
                     email='test1@gmail.com'
                     content={el.answerCommentContent}
-                    likes={el.answerCommentLikes}
                     modifiedAt={el.answerCommentModifiedAt}
                     isQuestion={isQuestion}
                   />
@@ -326,11 +352,12 @@ const ContentContainer = styled.div`
   font-size: 1.5rem;
   padding: 0 1.6rem 0 0;
   margin: 1rem 0;
-  textarea{
-    width:100%;
+  textarea {
+    width: 100%;
     border: 1px solid #d6d9dc;
-    color : ${(props)=>props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3' };
-    background-color: ${(props)=>props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D' };
+    color: ${(props) => (props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3')};
+    background-color: ${(props) =>props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D'};
+    border-radius:0.3rem;
   }
 `;
 
@@ -386,6 +413,9 @@ const InfoBox = styled.div`
       props.themeState === 'light' ? ':hsl(206,100%,40%)' : '#2F9BFF'};
     font-size: 1.3rem;
     margin: 0 0 0 0.8rem;
+  }
+  div{
+    color : hsl(206, 100%, 40%);
   }
 `;
 
