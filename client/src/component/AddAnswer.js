@@ -18,23 +18,34 @@ import {
 import { useRef } from 'react';
 import { useDispatch,useSelector } from 'react-redux';
 import {readQuestion,createAnswer} from '../redux/slice/questionSlice'
-
+import { useNavigate } from 'react-router-dom';
 
 const AddAnswer = ({questionId}) => {
   const textAreaInput = useRef();
   const themeState = useSelector((state) => state.themeSlice).theme;
   const userState = useSelector((state) => state.userInfoSlice)
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleAnswerSubmit = (e) => {
     e.preventDefault();
-    const enteredAnswer = textAreaInput.current.value;
+    if(userState.isLoggedIn){
+      const enteredAnswer = textAreaInput.current.value;
     dispatch(createAnswer({questionId, answer : {
       answerWriterId : 1,
       answerContent : enteredAnswer,
     }}))
     dispatch(readQuestion(questionId))
     textAreaInput.current.value = ' '
+    } else{
+      if(window.confirm('You must be logged in to add an answer on Stack Overflow')){
+        navigate('/login')
+        return
+      }else{
+        textAreaInput.current.value = ' '
+        return
+      }
+    }
   };
   return (
     <AddAnswerLayout>
