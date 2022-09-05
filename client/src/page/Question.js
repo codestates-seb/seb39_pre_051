@@ -12,50 +12,49 @@ import { readQuestion } from '../redux/slice/questionSlice';
 import SideBarWidget from '../component/SideBarWidget';
 
 const Question = () => {
-  const [questionEditMode, setQuestionEditMode] = useState(false)
-  const [title, setTitle] = useState('')
-  const [originalTitle, setOriginalTitle] = useState('')
+  const [questionEditMode, setQuestionEditMode] = useState(false);
+  const [title, setTitle] = useState('');
+  const [originalTitle, setOriginalTitle] = useState('');
   const params = useParams();
   const themeState = useSelector((state) => state.themeSlice).theme;
-  const questionState = useSelector((state)=>state.questionSlice)
+  const questionState = useSelector((state) => state.questionSlice);
   const dispatch = useDispatch();
+
   const {questionId, questionWriterId, questionContent, questionLikesCount, questionCreatedAt, questionModifiedAt, questionTitle, questionQuestionComments, questionAnswers,questionBestAnswerId, questionWriter} = questionState
+
   useEffect(() => {
-  dispatch(readQuestion(params.questionId))
-  setTitle(questionTitle)
-  setOriginalTitle(questionTitle)
-  },[dispatch, params.questionId, questionTitle]);
+    dispatch(readQuestion(params.questionId));
+    setTitle(questionTitle);
+    setOriginalTitle(questionTitle);
+  }, [dispatch, params.questionId, questionTitle]);
 
-  let year = null
-  let month = null
-  let day = null
-  let hour = null
-  let min = null
-  let sec = null 
+  let year = null;
+  let month = null;
+  let day = null;
+  let hour = null;
+  let min = null;
+  let sec = null;
 
-    if(questionCreatedAt !==null) {
-      year = questionCreatedAt[0] 
-      month = questionCreatedAt[1] 
-      day = questionCreatedAt[2] 
-      hour =
+  if (questionCreatedAt !== null) {
+    year = questionCreatedAt[0];
+    month = questionCreatedAt[1];
+    day = questionCreatedAt[2];
+    hour =
       questionCreatedAt[3] > 12
         ? '오후 ' + (questionCreatedAt[3] - 12)
-        : '오전 ' + questionCreatedAt[3]
-      min = questionCreatedAt[4]
-      sec = questionCreatedAt[5]
+        : '오전 ' + questionCreatedAt[3];
+    min = questionCreatedAt[4];
+    sec = questionCreatedAt[5];
   }
 
-
-
-
-const handelEditTitle = (e) => {
-  setTitle(e.target.value)
-}
+  const handelEditTitle = (e) => {
+    setTitle(e.target.value);
+  };
 
   const handleQuestionEditMode = () => {
-    setQuestionEditMode(!questionEditMode)
-    setTitle(questionTitle)
-  }
+    setQuestionEditMode(!questionEditMode);
+    setTitle(questionTitle);
+  };
   return (
     <>
       <TopBar />
@@ -71,20 +70,19 @@ const handelEditTitle = (e) => {
                     <textarea id='editText' value={title} onChange={handelEditTitle} />
                   </form>
                 ) : (
-                <>
-                <a href='/questions/questionId'>{questionTitle}</a>
-                </>
-                ) }
-                
+                  <>
+                    <a href='/questions/questionId'>{questionTitle}</a>
+                  </>
+                )}
               </Title>
               <AskBtn />
             </TitleContainer>
             <CreatedAt themeState={themeState}>
-            {`${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`}
+              {`${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`}
             </CreatedAt>
           </TitleLayout>
           <OpinionCard
-            key = {questionId}
+            key={questionId}
             id={questionId}
             likes={questionLikesCount}
             content={questionContent}
@@ -99,12 +97,10 @@ const handelEditTitle = (e) => {
             title={title}
             questionBestAnswerId={questionBestAnswerId}
           />
-          <AnswerSummay>
-            {questionAnswers.length} Answers
-          </AnswerSummay>
+          <AnswerSummay>{questionAnswers.length} Answers</AnswerSummay>
           {questionAnswers.map((el) => (
             <OpinionCard
-              key = {el.answerId}
+              key={el.answerId}
               id={el.answerId}
               likes={el.answerLikesCount}
               content={el.answerContent}
@@ -112,13 +108,13 @@ const handelEditTitle = (e) => {
               writer={el.answerWriter.userName}
               email={el.answerWriter.userEmail}
               comment={el.answerAnswerComments}
-              questionId = {questionId}
+              questionId={questionId}
               isQuestion={false}
               questionWriter={questionWriter.userEmail}
               questionBestAnswerId={questionBestAnswerId}
             />
           ))}
-          <AddAnswer questionId={questionId}/>
+          <AddAnswer questionId={questionId} />
         </Content>
         <SideBarWidget/>
       </Container>
@@ -171,9 +167,10 @@ const Title = styled.h1`
     color : ${(props)=>props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3' };
     background-color: ${(props)=>props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D' };
   }
-  a{
+  a {
     text-decoration: none;
-    color: ${(props) => (props.themeState === 'light' ? ' #3b4045' : '#E7E9EB')};
+    color: ${(props) =>
+      props.themeState === 'light' ? ' #3b4045' : '#E7E9EB'};
   }
 `;
 

@@ -31,7 +31,9 @@ const OpinionCard = ({
   const navigate = useNavigate();
   const [text, setText] = useState('');
   const [answerEditMode, setAnswerEditMode] = useState(false);
-  const [originalText, setOriginalText] = useState('')
+  const [originalText, setOriginalText] = useState('');
+  const [isClick, setIsClick] = useState(false);
+  const [like, setLike] = useState(likes);
   const year = modifiedAt[0];
   const month = modifiedAt[1];
   const day = modifiedAt[2];
@@ -41,7 +43,6 @@ const OpinionCard = ({
       : '오전 ' + modifiedAt[3];
   const min = modifiedAt[4];
   const sec = modifiedAt[5];
-
 
   useEffect(() => {
     setText(content);
@@ -65,6 +66,7 @@ const OpinionCard = ({
     if (isQuestion) {
       console.log(`${id}번 질문에 대한 댓글 ${enteredComment}입니다.`);
       console.log(typeof enteredComment);
+
       await axios
         .post(`/questionComments/${id}`, {
           questionCommentWriterId: 1,
@@ -80,6 +82,7 @@ const OpinionCard = ({
       console.log(
         `${questionId}번 질문 ${id}번 답변에 대한 댓글 ${enteredComment}입니다.`
       );
+
       await axios
         .post(`/answerComments/${id}`, {
           answerCommentWriterId: 2,
@@ -102,15 +105,16 @@ const OpinionCard = ({
     }
   };
 
-
   //질문 수정
   const handelQuestionEditSubmit = async () => {
     const response = await axios.patch(`/questions/${id}/edit`, {
       questionTitle: title,
       questionContent: text,
     });
+    
     setQuestionEditMode(!questionEditMode);
     dispatch(readQuestion(id));
+    
     return response;
   };
 
@@ -164,14 +168,50 @@ const OpinionCard = ({
     setText(originalText);
   };
 
-// console.log(email===userState.email, isQuestion)
+  //질문에 대한 Like관리 함수
+  const handleQuestionLikes = async () => {
+    setIsClick(!isClick);
+    if (userState.isLoggedIn === true) {
+      if (isClick) {
+        const response = await axios.patch(
+          `/questionLikes/${id}/${userState.memberId}`
+        );
+
+        setLike(like - 1);
+
+        return response;
+      } else {
+        const response = await axios.patch(
+          `/questionLikes/${id}/${userState.memberId}`
+        );
+
+        setLike(like + 1);
+
+        return response;
+      }
+    } else {
+      navigate('/login');
+    }
+  };
+
+  console.log(userState);
+
   return (
     <OpinionLayout>
       <OpinionContainer>
         <VoteContainer>
-          <button>⬆︎</button>
-          <div>{likes}</div>
-          <button>⬇︎</button>
+
+          <LikesButton onClick={handleQuestionLikes}>
+            <svg
+              class='svg-icon iconArrowUpLg'
+              width='2.4rem'
+              height='2.4rem'
+              viewBox='0 0 36 36'
+            >
+              <path d='M2 25h32L18 9 2 25Z'></path>
+            </svg>
+          </LikesButton>
+          <div>{like}</div>
           {isQuestion ? (
             <></>
           ) : 
@@ -223,7 +263,9 @@ const OpinionCard = ({
                   questionEditMode ? (
                     <>
                       <EditWrapper themeState={themeState}>
-                        <span onClick={() => handelQuestionEditSubmit()}>수정하기</span>
+                        <span onClick={() => handelQuestionEditSubmit()}>
+                          수정하기
+                        </span>
                         <span onClick={() => handleQuestionEditMode()}>
                           cancel
                         </span>
@@ -242,7 +284,7 @@ const OpinionCard = ({
                 ) : answerEditMode ? (
                   <>
                     <EditWrapper themeState={themeState}>
-                    <span onClick={()=>handleAnswerEditSubmit()}>수정하기</span>
+                      <span onClick={()=>handleAnswerEditSubmit()}>수정하기</span>
                       <span onClick={() => handleAnswerEditMode()}>cancel</span>
                     </EditWrapper>
                   </>
@@ -441,6 +483,13 @@ const AddCommentContainer = styled.div`
       color: #0a95ff;
     }
   }
+`;
+
+const LikesButton = styled.button`
+  display: flex;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 `;
 
 export default OpinionCard;

@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
 
 let initialState = {
     status:null,
@@ -19,50 +19,63 @@ let initialState = {
 
 //질문 R
 export const readQuestion = createAsyncThunk(
-    'questions/readQuestion',
-    async(questionId) => {
-        const response =  await axios.get(`/questions/${questionId}`)
-        const data = await response.data.data
-        console.log(data)
-        return data
-    }
-)
+  'questions/readQuestion',
+  async (questionId) => {
+    const response = await axios.get(`/questions/${questionId}`);
+    const data = await response.data.data;
+    console.log(data);
+    return data;
+  }
+);
 
 //답변 C
 export const createAnswer = createAsyncThunk(
-    'questions/createAnswer',
-    async(answerData) => {
-        const response = await axios.post(`/answer/${answerData.questionId}`,answerData.answer, {
-            headers : answerData.token
-        })
-        const data = await response.data
-        console.log(data)
-        return data
-    }
-)
+  'questions/createAnswer',
+  async (answerData) => {
+    const response = await axios.post(
+      `/answer/${answerData.questionId}`,
+      answerData.answer,
+      {
+        headers: answerData.token,
+      }
+    );
+    const data = await response.data;
+    console.log(data);
+    return data;
+  }
+);
 
 export const addQuestionComment = createAsyncThunk(
-    'questions/addQuestionComment',
-    async(questionCommentData) => {
-        console.log(questionCommentData.questionId,{"questionCommentWriterId" : questionCommentData.questionComment.questionCommentWriterId,
-        "questionCommentContent" : questionCommentData.questionComment.questionCommentContent})
-        const response = await axios.post(`/questionComments/${questionCommentData.questionId}`,questionCommentData.questionComment)
-        const data = await response.data
-        console.log(data)
-        return data
-    }
-)
+  'questions/addQuestionComment',
+  async (questionCommentData) => {
+    console.log(questionCommentData.questionId, {
+      questionCommentWriterId:
+        questionCommentData.questionComment.questionCommentWriterId,
+      questionCommentContent:
+        questionCommentData.questionComment.questionCommentContent,
+    });
+    const response = await axios.post(
+      `/questionComments/${questionCommentData.questionId}`,
+      questionCommentData.questionComment
+    );
+    const data = await response.data;
+    console.log(data);
+    return data;
+  }
+);
 
 export const addAnswerComment = createAsyncThunk(
-    'questions/addAnswerComment',
-    async(answerCommentData) => {
-        console.log(answerCommentData)
-        const response = await axios.post(`/answerComments/${answerCommentData.answerId}`,answerCommentData.answerComment)
-        const data = await response.data
-        return data
-    }
-)
-
+  'questions/addAnswerComment',
+  async (answerCommentData) => {
+    console.log(answerCommentData);
+    const response = await axios.post(
+      `/answerComments/${answerCommentData.answerId}`,
+      answerCommentData.answerComment
+    );
+    const data = await response.data;
+    return data;
+  }
+);
 
 export const questionSlice = createSlice({
     name: 'question',
@@ -108,5 +121,4 @@ export const questionSlice = createSlice({
     }
 })
 
-// export const {} = questionSlice.actions
-export default  questionSlice.reducer
+export default questionSlice.reducer;

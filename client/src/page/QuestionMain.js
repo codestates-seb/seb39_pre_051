@@ -32,6 +32,8 @@ const QuestionMain = () => {
       .catch((err) => console.log(err));
   }, [page, size]);
 
+  console.log(data);
+
   return (
     <>
       <TopBar />
@@ -52,19 +54,31 @@ const QuestionMain = () => {
                 questionTitle={el.questionTitle}
                 questionWriterId={el.questionWriterId}
                 questionContent={el.questionContent}
-                questionLikes={el.questionLikes}
-                questionAnswers={el.questionAnswers.length}
+                questionLikesCount={el.questionLikesCount}
+                questionAnswers={el.questionAnswers}
                 questionCreatedAt={el.questionCreatedAt}
               ></Card>
             ))}
-            <Pagination
-              total={total}
-              size={size}
-              page={page}
-              setPage={setPage}
-              setSize={setSize}
-              setTotal={setTotal}
-            />
+            <PaginationWrapper>
+              <Pagination
+                className='pager'
+                total={total}
+                size={size}
+                page={page}
+                setPage={setPage}
+                setSize={setSize}
+                setTotal={setTotal}
+              />
+              <Pagination
+                className='pageSizer'
+                total={total}
+                size={size}
+                page={page}
+                setPage={setPage}
+                setSize={setSize}
+                setTotal={setTotal}
+              />
+            </PaginationWrapper>
           </CardLayout>
         </Content>
         <SideBarWidget />
@@ -112,5 +126,10 @@ const Title = styled.h1`
 //CardLayout
 
 const CardLayout = styled.div``;
+
+const PaginationWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 
 export default QuestionMain;

@@ -25,6 +25,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Ask = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
+  const userState = useSelector((state) => state.userInfoSlice);
   const [hide, setHide] = useState(false);
   const [drag, setDrag] = useState(false);
   const [questionTitle, setTitle] = useState('');
@@ -85,7 +86,12 @@ const Ask = () => {
 
   const handleSubmit = () => {
     axios
-      .post('/questions/ask', { questionTitle, questionContent, questionTag })
+      .post('/questions/ask', {
+        questionWriterId: userState.memberId,
+        questionTitle,
+        questionContent,
+        questionTag: questionTag.split(',').map((el) => el.replace(/ /g, '')),
+      })
       .then((res) => console.log(res))
       .catch((err) => {
         if (err.response.status === 404) {
