@@ -31,7 +31,9 @@ const OpinionCard = ({
   const navigate = useNavigate();
   const [text, setText] = useState('');
   const [answerEditMode, setAnswerEditMode] = useState(false);
-  const [originalText, setOriginalText] = useState('')
+  const [originalText, setOriginalText] = useState('');
+  const [isClick, setIsClick] = useState(false);
+  const [like, setLike] = useState(likes);
   const year = modifiedAt[0];
   const month = modifiedAt[1];
   const day = modifiedAt[2];
@@ -42,13 +44,10 @@ const OpinionCard = ({
   const min = modifiedAt[4];
   const sec = modifiedAt[5];
 
-
   useEffect(() => {
     setText(content);
-    setOriginalText(content)
+    setOriginalText(content);
   }, [content]);
-
-
 
   // 답변, 질문 코멘트 작성
   const handleCommentSubmit = (e, id) => {
@@ -62,29 +61,33 @@ const OpinionCard = ({
     }
     if (isQuestion) {
       console.log(`${id}번 질문에 대한 댓글 ${enteredComment}입니다.`);
-      console.log(typeof enteredComment)
-      axios.post(`/questionComments/${id}`, {
-        questionCommentWriterId : 1,
-        questionCommentContent : enteredComment
-      }).then((res)=> console.log(res))
-      .catch((err)=>{
-        console.log(err)
-      })
+      console.log(typeof enteredComment);
+      axios
+        .post(`/questionComments/${id}`, {
+          questionCommentWriterId: 1,
+          questionCommentContent: enteredComment,
+        })
+        .then((res) => console.log(res))
+        .catch((err) => {
+          console.log(err);
+        });
       commentInput.current.value = '';
-      dispatch(readQuestion(questionId))
+      dispatch(readQuestion(questionId));
     } else {
       console.log(
         `${questionId}번 질문 ${id}번 답변에 대한 댓글 ${enteredComment}입니다.`
       );
-      axios.post(`/answerComments/${id}`, {
-        answerCommentWriterId : 2,
-        answerCommentContent : enteredComment
-      }).then((res)=> console.log(res))
-      .catch((err)=> {
-        console.log(err)
-      })
+      axios
+        .post(`/answerComments/${id}`, {
+          answerCommentWriterId: 2,
+          answerCommentContent: enteredComment,
+        })
+        .then((res) => console.log(res))
+        .catch((err) => {
+          console.log(err);
+        });
       commentInput.current.value = '';
-      dispatch(readQuestion(questionId))
+      dispatch(readQuestion(questionId));
     }
   };
 
@@ -96,49 +99,48 @@ const OpinionCard = ({
     }
   };
 
-
   //질문 수정
-  const handelQuestionEditSubmit = async(e) => {
-    console.log(title, text,id)
-    const response = await axios.patch(`/questions/${id}/edit`,{
-      questionTitle : title,
-      questionContent : text
-    })
-    handleQuestionEditMode()
-    dispatch(readQuestion(questionId))
-    return response
-  }
+  const handelQuestionEditSubmit = async (e) => {
+    console.log(title, text, id);
+    const response = await axios.patch(`/questions/${id}/edit`, {
+      questionTitle: title,
+      questionContent: text,
+    });
+    handleQuestionEditMode();
+    dispatch(readQuestion(questionId));
+    return response;
+  };
 
-//답변 수정
-const handleAnswerEditSubmit = async() => {
-  console.log(text, id)
-  const response = await axios.patch(`/answer/${id}/edit`,{
-    answerContent : text
-  })
-  handleQuestionEditMode()
-  dispatch(readQuestion(questionId))
-  return response
-}
+  //답변 수정
+  const handleAnswerEditSubmit = async () => {
+    console.log(text, id);
+    const response = await axios.patch(`/answer/${id}/edit`, {
+      answerContent: text,
+    });
+    handleQuestionEditMode();
+    dispatch(readQuestion(questionId));
+    return response;
+  };
 
   //질문, 답변 삭제
   const handleDelete = async () => {
     if (isQuestion) {
-      try{
+      try {
         console.log(`${id}번 질문 삭제 입니다.`);
         const response = await axios.delete(`/questions/${id}`);
         navigate('/');
         return response;
-      }catch(e){
-        console.log(e)
+      } catch (e) {
+        console.log(e);
       }
     } else {
-      try{
+      try {
         console.log(`${questionId}번 질문의 ${id}번 답변 삭제 버튼입니다. `);
         const response = await axios.delete(`/answer/${id}`);
-        dispatch(readQuestion(questionId))
+        dispatch(readQuestion(questionId));
         return response;
-      }catch(e){
-        console.log(e)
+      } catch (e) {
+        console.log(e);
       }
     }
   };
@@ -149,15 +151,52 @@ const handleAnswerEditSubmit = async() => {
 
   const handleAnswerEditMode = () => {
     setAnswerEditMode(!answerEditMode);
-    setText(originalText)
+    setText(originalText);
   };
+
+  //질문에 대한 Like관리 함수
+  const handleQuestionLikes = async () => {
+    setIsClick(!isClick);
+    if (userState.isLoggedIn === true) {
+      if (isClick) {
+        const response = await axios.patch(
+          `/questionLikes/${id}/${userState.memberId}`
+        );
+
+        setLike(like - 1);
+
+        return response;
+      } else {
+        const response = await axios.patch(
+          `/questionLikes/${id}/${userState.memberId}`
+        );
+
+        setLike(like + 1);
+
+        return response;
+      }
+    } else {
+      navigate('/login');
+    }
+  };
+
+  console.log(userState);
+
   return (
     <OpinionLayout>
       <OpinionContainer>
         <VoteContainer>
-          <button>⬆︎</button>
-          <div>{likes}</div>
-          <button>⬇︎</button>
+          <LikesButton onClick={handleQuestionLikes}>
+            <svg
+              class='svg-icon iconArrowUpLg'
+              width='2.4rem'
+              height='2.4rem'
+              viewBox='0 0 36 36'
+            >
+              <path d='M2 25h32L18 9 2 25Z'></path>
+            </svg>
+          </LikesButton>
+          <div>{like}</div>
         </VoteContainer>
         <OpinionContentContainer>
           <ContentContainer>
@@ -165,8 +204,8 @@ const handleAnswerEditSubmit = async() => {
               <>
                 {/* 질문수정모드 이면서 질문 일 때  */}
                 <form>
-                  <label id='editText'/>
-                  <input id='editText'value={text} onChange={handleEditText}/>
+                  <label id='editText' />
+                  <input id='editText' value={text} onChange={handleEditText} />
                 </form>
               </>
             ) : //질문수정모드가아닐때
@@ -174,8 +213,8 @@ const handleAnswerEditSubmit = async() => {
               <>
                 {/*질문수정모드가 아니면서 질문이아니면서(답변이면서) 답변 수정모드 일 때*/}
                 <form>
-                  <label id='editText'/>
-                  <input id='editText' value={text} onChange={handleEditText}/>
+                  <label id='editText' />
+                  <input id='editText' value={text} onChange={handleEditText} />
                 </form>
               </>
             ) : (
@@ -190,7 +229,9 @@ const handleAnswerEditSubmit = async() => {
                   questionEditMode ? (
                     <>
                       <EditWrapper themeState={themeState}>
-                        <span onClick={() => handelQuestionEditSubmit()}>수정하기</span>
+                        <span onClick={() => handelQuestionEditSubmit()}>
+                          수정하기
+                        </span>
                         <span onClick={() => handleQuestionEditMode()}>
                           cancel
                         </span>
@@ -209,7 +250,9 @@ const handleAnswerEditSubmit = async() => {
                 ) : answerEditMode ? (
                   <>
                     <EditWrapper themeState={themeState}>
-                      <span onClick={()=>handleAnswerEditSubmit()}>수정하기</span>
+                      <span onClick={() => handleAnswerEditSubmit()}>
+                        수정하기
+                      </span>
                       <span onClick={() => handleAnswerEditMode()}>cancel</span>
                     </EditWrapper>
                   </>
@@ -233,7 +276,7 @@ const handleAnswerEditSubmit = async() => {
 
               <ContentInfo themeState={themeState}>
                 <InfoModified themeState={themeState}>
-                {`${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`}
+                  {`${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`}
                 </InfoModified>
                 <InfoBox themeState={themeState}>
                   <img
@@ -321,8 +364,8 @@ const ContentContainer = styled.div`
   font-size: 1.5rem;
   padding: 0 1.6rem 0 0;
   margin: 1rem 0;
-  input{
-    width:100%;
+  input {
+    width: 100%;
   }
 `;
 
@@ -403,6 +446,13 @@ const AddCommentContainer = styled.div`
       color: #0a95ff;
     }
   }
+`;
+
+const LikesButton = styled.button`
+  display: flex;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 `;
 
 export default OpinionCard;
