@@ -23,8 +23,8 @@ const Question = () => {
   const userId = getUserId();
 
   //태그
-  const [tagsArray, setTagsArr] = useState(['JAVASCRIPT', 'JAVA', 'PYTHON']);
-  const [stringTags, setStringTags] = useState('');
+  const [tagsArray, setTagsArr] = useState([]);
+  const [stringTags, setStringTags]  = useState('')
 
   const {
     questionId,
@@ -38,28 +38,25 @@ const Question = () => {
     questionAnswers,
     questionBestAnswerId,
     questionWriter,
-    // questionTags
+
+    questionTags,
     likesPressedQuestionIdFromToken,
     likesPressedAnswersIdFromToken,
   } = questionState;
 
   useEffect(() => {
-    console.log(userId, params.questionId);
-    if (userId) {
-      dispatch(readQuestion({ questionId: params.questionId, userId }));
+    if(userId){
+      dispatch(readQuestion({questionId : params.questionId, userId}))
       setTitle(questionTitle);
       setOriginalTitle(questionTitle);
-      // const splitTags = questionTags.split(',')
-      // setTagsArr(splitTags)
-    } else {
-      dispatch(readQuestion({ questionId: params.questionId }));
+      setTagsArr(questionTags.split(','))
+    }else{
+      dispatch(readQuestion({questionId:params.questionId}));
       setTitle(questionTitle);
       setOriginalTitle(questionTitle);
-      // const splitTags = questionTags.split(',')
-      // setTagsArr(splitTags)
+      setTagsArr(questionTags.split(','))
     }
   }, [dispatch, params.questionId, questionTitle]);
-
   let year = null;
   let month = null;
   let day = null;
@@ -85,7 +82,8 @@ const Question = () => {
 
   const handleQuestionEditMode = () => {
     setQuestionEditMode(!questionEditMode);
-    setTitle(questionTitle);
+    // setTitle(questionTitle);
+    // setTagsArr(questionTags.split(','))
     //태그
     let string = '';
     tagsArray.map((el) => (string += el + ','));
@@ -128,8 +126,6 @@ const Question = () => {
             content={questionContent}
             modifiedAt={questionModifiedAt}
             writer={questionWriter}
-            //email 필요없을지도
-            // email={questionWriter.userEmail}
             comment={questionQuestionComments}
             isQuestion={true}
             questionEditMode={questionEditMode}
@@ -137,10 +133,10 @@ const Question = () => {
             handleQuestionEditMode={handleQuestionEditMode}
             title={title}
             questionBestAnswerId={questionBestAnswerId}
-            //태그
             tagsArray={tagsArray}
             stringTags={stringTags}
             setStringTags={setStringTags}
+            setTagsArr={setTagsArr}
             //좋아요
             likesPressedQuestionIdFromToken={likesPressedQuestionIdFromToken}
             likesPressedAnswersIdFromToken={likesPressedAnswersIdFromToken}

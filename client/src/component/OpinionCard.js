@@ -3,7 +3,7 @@ import Comment from './Comment';
 import BestAnswerMark from './BestAnswerMark';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { readQuestion } from '../redux/slice/questionSlice';
+import { editQuestion, readQuestion } from '../redux/slice/questionSlice';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { getUserId } from '../getUserInfo';
@@ -26,6 +26,7 @@ const OpinionCard = ({
   tagsArray,
   setStringTags,
   stringTags,
+  setTagsArr,
   //좋아요
   likesPressedQuestionIdFromToken,
   likesPressedAnswersIdFromToken,
@@ -53,10 +54,9 @@ const OpinionCard = ({
       : '오전 ' + modifiedAt[3];
   const min = modifiedAt[4];
   const sec = modifiedAt[5];
-
+  const [test, setTest] = useState()
   //태그
   const handleStringTags = (e) => {
-    console.log(e.target.value);
     setStringTags(e.target.value);
   };
 
@@ -139,7 +139,13 @@ const OpinionCard = ({
       questionTags: stringTags,
     });
     setQuestionEditMode(!questionEditMode);
-    dispatch(readQuestion(id));
+    dispatch(editQuestion({
+      questionTitle: title,
+      questionContent: text,
+      questionTags: stringTags,}))
+      setTest('hello')
+      // dispatch(readQuestion(id));
+    // setTagsArr(stringTags.split(','))
     return response;
   };
 
