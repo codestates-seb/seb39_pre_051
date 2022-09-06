@@ -42,6 +42,7 @@ const Question = () => {
   } = questionState;
 
   useEffect(() => {
+    console.log(userId, params.questionId)
     if(userId){
       dispatch(readQuestion({questionId : params.questionId, userId}))
       setTitle(questionTitle);
