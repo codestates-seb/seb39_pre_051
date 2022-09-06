@@ -33,14 +33,15 @@ public class UserService {
         if (findUser != null)
             throw new IllegalStateException("이미 가입된 회원입니다.");
 
-        //user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
+        user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
         user.setRoles("ROLE_USER");
+        user.setUserImgUrl("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png");
         // DB에 회원 정보 저장
         return userRepository.save(user);
     }
 
-    public User getByCredentials(String email, String password) {
-        return userRepository.findByUserEmailAndUserPassword(email, password);
+    public User findUser(String email) {
+        return userRepository.findByUserEmail(email);
     }
 
     public void updateUser(long userId, UserPatchDto user) {

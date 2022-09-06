@@ -21,39 +21,136 @@ import {
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getUserId } from '../getUserInfo';
 
 const UserProfile = () => {
-  const user = useSelector((props) => props.userInfoSlice);
+  const userId = getUserId();
 
   const [userData, setUserData] = useState({});
   const [displayName, setDisplayName] = useState('');
+  const [isActive, setIsActive] = useState(false);
+  const [passwordValid, setPasswordValid] = useState(false);
+  const [rePasswordValid, setRePasswordValid] = useState(false);
+  const [passwordDesc, setPasswordDesc] = useState('');
+  const [rePasswordDesc, setRePasswordDesc] = useState('');
+  const [inputValue, setInputValue] = useState({
+    password: '',
+    rePassword: '',
+  });
+
+  const { password, rePassword } = inputValue;
+
+  //정규식 조건
+  const regNumber = /[0-9]/g;
+  const regString = /[a-zA-Z]/g;
+  const regSpecialCharacter =
+    /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
 
   useEffect(() => {
     axios
-      .get(`/users/${user.memberId}`)
+      .get(`/users/${userId}`)
       .then((res) => {
+        setDisplayName(res.data.userName);
         setUserData(res.data);
-        setDisplayName(res.data.memberName);
       })
       .catch((err) => console.log(err));
-  }, [user.memberId]);
+  }, [userId]);
 
+  //Display Name 입력을 다루는 함수
   const handleOnChange = (e) => {
     setDisplayName(e.target.value);
   };
 
+  //Display Name과 Password의 변경을 서버에 적용시키는 함수
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .patch(`/users/${user.memberId}`, { memberName: displayName })
-      .then((res) => {
-        setUserData({ ...userData, memberName: displayName });
-        console.log(res.data);
-      })
-      .catch((err) => console.log(err));
 
-    alert('Display name has changed');
+    if (isActive) {
+      if (inputValue.password === '' || inputValue.rePassword === '') {
+        alert('input password');
+        return;
+      }
+      if (!passwordValid || !rePasswordValidation) {
+        alert('check valid option');
+        return;
+      }
+
+      axios
+        .patch(`/users/${userId}`, {
+          userName: displayName,
+          userPassword: password,
+        })
+        .then((res) => {
+          setUserData({
+            ...userData,
+            userName: displayName,
+            userPassword: password,
+          });
+          setIsActive(false);
+          console.log(res.data);
+        })
+        .catch((err) => console.log(err));
+
+      alert('Password has changed');
+    } else {
+      axios
+        .patch(`/users/${userId}`, {
+          userName: displayName,
+          userPassword: password,
+        })
+        .then((res) => {
+          setUserData({ ...userData, userName: displayName });
+          console.log(res.data);
+        })
+        .catch((err) => console.log(err));
+
+      alert('Display name has changed');
+    }
+
     window.scrollTo(0, 0);
+  };
+
+  //Password 변경 버튼 클릭 함수
+  const handleChangePassword = (e) => {
+    setIsActive(true);
+  };
+
+  //변경할 Password의 정규식 검사하는 함수
+  const passwordValidation = () => {
+    if (
+      8 < password.length &&
+      password.length < 20 &&
+      regNumber.test(password) &&
+      regString.test(password) &&
+      regSpecialCharacter.test(password)
+    ) {
+      setPasswordValid(true);
+      setPasswordDesc('');
+    } else {
+      setPasswordValid(false);
+      setPasswordDesc('8자이상 20자이하, 숫자, 문자, 특수문자를 포함해주세요.');
+    }
+  };
+
+  //변경할 Password와 rePassword가 같은지 검사하는 함수
+  const rePasswordValidation = () => {
+    if (rePassword === password) {
+      setRePasswordValid(true);
+      setRePasswordDesc('');
+    } else {
+      setRePasswordValid(false);
+      setRePasswordDesc('입력하신 비밀번호가 같지않습니다.');
+    }
+  };
+
+  //Password와 rePassword의 입력을 다루는 함수
+  const handleInput = (event) => {
+    const { name, value } = event.target;
+    console.log(name, value);
+    setInputValue({
+      ...inputValue,
+      [name]: value,
+    });
   };
 
   return (
@@ -66,15 +163,13 @@ const UserProfile = () => {
             <UserProfileImageDiv>
               <UserProfileImage src='https://lh3.googleusercontent.com/a-/AFdZucpIQ6i4DewU4N2dncFukPbb0eF3gkIB9xOsdEFNCw=k-s256' />
             </UserProfileImageDiv>
-            <UserProfileDisplayName>
-              {userData.memberName}
-            </UserProfileDisplayName>
+            <UserProfileDisplayName>{userData.userName}</UserProfileDisplayName>
           </UserProfileDiv>
           <UserProfileButton className='selected'>Settings</UserProfileButton>
           <UserProfileSetting>
             <UserProfileNav>
               PERSONAL INFORMATION
-              <UserProfileNavItem href='/users' className='selected'>
+              <UserProfileNavItem href={`/users/${userId}`} className='selected'>
                 Edit profile
               </UserProfileNavItem>
               SITE SETTINGS
@@ -156,27 +251,65 @@ const UserProfile = () => {
                 </UserProfileEditFormContent>
                 <UserProfileEditFormHeader>Links</UserProfileEditFormHeader>
                 <UserProfileEditFormContent id='links'>
-                  <UserProfileEditFormTitle htmlFor='websiteLink'>
-                    Website link
-                  </UserProfileEditFormTitle>
-                  <UserProfileEditFormInput id='websiteLink' type='text' />
-                  <UserProfileEditFormTitle htmlFor='twitterLink'>
-                    Twitter link or username
-                  </UserProfileEditFormTitle>
-                  <UserProfileEditFormInput id='twitterLink' type='text' />
-                  <UserProfileEditFormTitle htmlFor='githubLink'>
-                    GitHub link or username
-                  </UserProfileEditFormTitle>
-                  <UserProfileEditFormInput id='githubLink' type='text' />
+                  <div>
+                    <UserProfileEditFormTitle htmlFor='websiteLink'>
+                      Website link
+                    </UserProfileEditFormTitle>
+                    <UserProfileEditFormInput id='websiteLink' type='text' />
+                  </div>
+                  <div>
+                    <UserProfileEditFormTitle htmlFor='twitterLink'>
+                      Twitter link or username
+                    </UserProfileEditFormTitle>
+                    <UserProfileEditFormInput id='twitterLink' type='text' />
+                  </div>
+                  <div>
+                    <UserProfileEditFormTitle htmlFor='githubLink'>
+                      GitHub link or username
+                    </UserProfileEditFormTitle>
+                    <UserProfileEditFormInput id='githubLink' type='text' />
+                  </div>
                 </UserProfileEditFormContent>
                 <UserProfileEditFormHeader>
                   Private information
                 </UserProfileEditFormHeader>
-                <UserProfileEditFormContent>
-                  <UserProfileEditFormTitle htmlFor='fullName'>
-                    Full name
-                  </UserProfileEditFormTitle>
-                  <UserProfileEditFormInput id='fullName' type='text' />
+                <UserProfileEditFormContent id='changePassword'>
+                  {isActive ? (
+                    <>
+                      <div>
+                        <UserProfileEditFormTitle htmlFor='password'>
+                          Password
+                        </UserProfileEditFormTitle>
+                        <UserProfileEditFormInput
+                          id='password'
+                          type='password'
+                          name='password'
+                          onChange={handleInput}
+                          onKeyUp={passwordValidation}
+                          required
+                        />
+                        <div>{passwordDesc}</div>
+                      </div>
+                      <div>
+                        <UserProfileEditFormTitle htmlFor='rePassword'>
+                          Confirm Password
+                        </UserProfileEditFormTitle>
+                        <UserProfileEditFormInput
+                          id='rePassword'
+                          type='password'
+                          name='rePassword'
+                          onChange={handleInput}
+                          onKeyUp={rePasswordValidation}
+                          required
+                        />
+                        <div>{rePasswordDesc}</div>
+                      </div>
+                    </>
+                  ) : (
+                    <UserProfileEditFormButton onClick={handleChangePassword}>
+                      Change Password
+                    </UserProfileEditFormButton>
+                  )}
                 </UserProfileEditFormContent>
                 <UserProfileEditFormButton type='submit' onClick={handleSubmit}>
                   Save profile
@@ -348,6 +481,30 @@ const UserProfileEditFormContent = styled.div`
   padding: 2.4rem;
   border: 1px solid #e3e6e8;
   margin-bottom: 4.8rem;
+
+  &#links {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  &#links div {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.3rem;
+  }
+
+  &#changePassword {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  &#changePassword div {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.3rem;
+  }
 `;
 
 const UserProfileEditFormTitle = styled.label`
@@ -376,10 +533,19 @@ const UserProfileEditFormAvartar = styled.img`
 
 const UserProfileEditFormInput = styled.input`
   max-width: 39rem;
+  min-width: 23rem;
   padding: 0.6rem 0.7rem;
   border: 1px solid #babfc4;
   border-radius: 0.3rem;
   margin-bottom: 1.4rem;
+
+  &#password {
+    min-width: 30rem;
+  }
+
+  &#rePassword {
+    min-width: 33rem;
+  }
 `;
 
 const UserProfileEditFormA = styled.a`

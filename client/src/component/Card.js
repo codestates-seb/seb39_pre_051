@@ -6,14 +6,15 @@ const tagArray = ['java', 'javascript', 'python', 'GO', 'C++'];
 const Card = ({
   questionId,
   questionTitle,
+  questionWriter,
   questionWriterId,
   questionContent,
-  questionLikes,
+  questionLikesCount,
   questionAnswers,
   questionCreatedAt,
 }) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
-
+  console.log(questionWriter)
   const year = questionCreatedAt[0];
   const month = questionCreatedAt[1];
   const day = questionCreatedAt[2];
@@ -28,8 +29,14 @@ const Card = ({
     <CardLayout>
       <CardContainer>
         <VoteContainer>
-          <Votes themeState={themeState}>{questionLikes} votes</Votes>
-          <Answers>{questionAnswers} answers</Answers>
+          <Votes themeState={themeState}>{questionLikesCount} votes</Votes>
+          <Answers themeState={themeState}>
+            {questionAnswers.length > 0 ? (
+              <div>{questionAnswers.length} answers</div>
+            ) : (
+              <>{questionAnswers.length} answers</>
+            )}
+          </Answers>
           <Views>0 views</Views>
         </VoteContainer>
         <QuestionContainer>
@@ -50,7 +57,7 @@ const Card = ({
                 src='https://w7.pngwing.com/pngs/981/645/png-transparent-default-profile-united-states-computer-icons-desktop-free-high-quality-person-icon-miscellaneous-silhouette-symbol.png'
                 alt='프로필사진'
               ></img>
-              <Writer href='naver,com'>{questionWriterId}</Writer>
+              <Writer href='naver,com'>{questionWriter.userName}</Writer>
               <CreatedAt>{`${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`}</CreatedAt>
             </InfoWrapper>
           </QuestionInfoContainer>
@@ -78,19 +85,34 @@ const VoteContainer = styled.div`
   margin: 0 1.6rem 0.4rem 0;
   width: 10.8rem;
   min-width: 7.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 
   div {
-    margin: 0.6rem 0;
+    margin: 0.3rem 0;
   }
 `;
 const Votes = styled.div`
-  color: ${(props) => (props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3')};
+  color: ${(props) => (props.themeState === 'light' ? '#0c0d0e' : '#f2f2f3')};
 `;
-const Answers = styled.div``;
+
+const Answers = styled.div`
+  div {
+    border: ${(props) =>
+      props.themeState === 'light' ? '1px solid #3c8f58' : '1px solid #75c490'};
+    border-radius: 0.3rem;
+    color: ${(props) => (props.themeState === 'light' ? '#3c8f58' : '#75c490')};
+    padding: 0.2rem 0.4rem;
+  }
+`;
+
 const Views = styled.div``;
+
 const QuestionContainer = styled.div`
   padding: 0.4rem;
 `;
+
 const QuestionTitle = styled.a`
   color: hsl(206, 100%, 40%);
   text-decoration: none;
@@ -98,6 +120,7 @@ const QuestionTitle = styled.a`
   line-height: 2.2rem;
   margin: 0.6rem 0;
 `;
+
 const QuestionSummary = styled.div`
   margin: 0.7rem 0;
   line-height: 1.4rem;
@@ -140,11 +163,13 @@ const InfoWrapper = styled.div`
     margin-right: 0.3rem;
   }
 `;
+
 const Writer = styled.a`
   color: hsl(206, 100%, 40%);
   text-decoration: none;
   margin-right: 0.3rem;
 `;
+
 const CreatedAt = styled.div`
   margin-right: 0.3rem;
 `;

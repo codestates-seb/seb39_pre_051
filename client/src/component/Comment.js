@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import {useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import {readQuestion} from '../redux/slice/questionSlice'
+import { getUserId } from '../getUserInfo';
 const Comment = (props) => {
   const userState = useSelector((state)=>state.userInfoSlice)
   const themeState = useSelector((state)=>state.themeSlice).theme
@@ -12,19 +13,28 @@ const Comment = (props) => {
   const [commentEditMode, setCommentEditMode] = useState(false)
   const [editedComment, setEditedComment] =useState('') 
   const [originalComment, setOriginalComment] = useState('')
+  const userId = getUserId()
 
   const handleDelete = async() => {
     console.log(props.id, props.isQuestion)
     if(props.isQuestion){
-      console.log(`/questionComments/${props.id}`)
-      const response = await axios.delete(`/questionComments/${props.id}`)
-      dispatch(readQuestion(questionId))
-      return response 
+      if(window.confirm('Delete this comment?')){
+        console.log(`/questionComments/${props.id}`)
+        const response = await axios.delete(`/questionComments/${props.id}`)
+        dispatch(readQuestion(questionId))
+        return response 
+      }else{
+        return
+      }
     } else{
-      console.log(`/answerComments/${props.id}`)
-      const response = await axios.delete(`/answerComments/${props.id}`)
-      dispatch(readQuestion(questionId))
-      return response 
+      if(window.confirm('Delete this comment?')){
+        console.log(`/answerComments/${props.id}`)
+        const response = await axios.delete(`/answerComments/${props.id}`)
+        dispatch(readQuestion(questionId))
+        return response 
+      }else{
+        return
+      }
     }
   }
   const year = props.modifiedAt[0] 
@@ -71,18 +81,25 @@ const Comment = (props) => {
       return response
     }
   }
-
+  
+  const handleEnterPress = (e) => {
+    if (e.key === 'Enter') {
+      return (e) => handleCommentEditSubmit();
+    } else {
+      return;
+    }
+  };
   return (
     <CommentLayout key={props.id}>
       <CommetnLikes>
         <span>{props.likes}</span>
       </CommetnLikes>
-      <CommentContainer>
+      <CommentContainer themeState={themeState}>
         {commentEditMode ? (
           <>
           <form>
             <label id='editComment' />
-            <input id='editComment' value={editedComment} onChange={handleEditComment}/>
+            <textarea id='editComment' value={editedComment} onChange={handleEditComment} onKeyDown={handleEnterPress}/>
           </form>
           </>
         ) : (
@@ -92,15 +109,9 @@ const Comment = (props) => {
         )}
         <CommentInfo>
           {' '}
-          - <a href='/'> {props.writer}</a>
+          - <div> {props.writer.userName}</div>
           <CommentSpan id='modifiedAt'>{`${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`}</CommentSpan>
-          {/* {userState.email===props.email && (
-            <>
-            <CommentSpan id='editdelete' themeState={themeState} onClick={()=>handleCommentEditMode()}>edit</CommentSpan>
-            <CommentSpan id='editdelete' themeState={themeState} onClick={() =>handleDelete() }>delete</CommentSpan>
-            </>
-          )} */}
-          {userState.email===props.email ? 
+          {userId===props.writer.userId ? 
     commentEditMode ? (
         <>
         <CommentSpan id='editdelete' themeState={themeState} onClick={()=>handleCommentEditSubmit()}>수정하기</CommentSpan>
@@ -143,6 +154,14 @@ const CommentContainer = styled.div`
   width: 100%;
   padding: 0.6rem;
   line-height: 1.82rem;
+  textarea{
+    width:100%;
+    border: 1px solid #d6d9dc;
+    border-radius: 0.3rem;
+    color: ${(props) => (props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3')};
+    background-color: ${(props) =>
+      props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D'};
+  }
 `;
 
 const CommentSpan = styled.span`
@@ -166,8 +185,8 @@ const CommentSpan = styled.span`
 const CommentInfo = styled.div`
   display: inline-flex;
   text-align: left;
-  a {
-    margin-left: 0.3rem;
+  div {
+    margin: 0 0.3rem;
     text-decoration: none;
     color: hsl(206, 100%, 40%);
   }

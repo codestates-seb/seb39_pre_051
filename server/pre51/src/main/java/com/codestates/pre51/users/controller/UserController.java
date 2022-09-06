@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
@@ -29,6 +30,7 @@ public class UserController {
     private final UserMapper mapper;
 
     private SecurityService securityService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     // 가짜 데이터 넣기
     @PostConstruct
@@ -47,10 +49,11 @@ public class UserController {
     }
 
     @Autowired
-    public UserController(UserService userService, UserMapper mapper, SecurityService securityService) {
+    public UserController(UserService userService, UserMapper mapper, SecurityService securityService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userService = userService;
         this.mapper = mapper;
-        this.securityService=securityService;
+        this.securityService = securityService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     // 회원가입
@@ -69,10 +72,14 @@ public class UserController {
     @ApiOperation(value="로그인", notes = "회원-이메일과 회원-비밀번호를 입력해서 로그인을 합니다.")
     public ResponseEntity login(@RequestBody @Valid UserLoginDto userLoginDto) {
 
-        User response = userService.getByCredentials(userLoginDto.getUserEmail(), userLoginDto.getUserPassword());
-        long userId=response.getUserId();
-        String token = securityService.createToken(String.valueOf(userId),(5*1000*60));
-        UserResponseDto userResponseDto = mapper.userToUserResponseDto(response);
+        User findUser = userService.findUser(userLoginDto.getUserEmail());
+        // raw 패스워드와 암호화된 password 비교가능한 메서드
+        if (!bCryptPasswordEncoder.matches(userLoginDto.getUserPassword(), findUser.getUserPassword())) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+
+        String token = securityService.createToken(String.valueOf(findUser.getUserId()),(5*1000*60));
+        UserResponseDto userResponseDto = mapper.userToUserResponseDto(findUser);
         userResponseDto.setUserToken(token);
         return new ResponseEntity(userResponseDto,
                 HttpStatus.OK);
@@ -120,11 +127,5 @@ public class UserController {
         userService.deleteUser(userId);
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
-    }
-
-    // 테스트
-    @PostMapping("/token")
-    public String token() {
-        return "<h1>token</h1>";
     }
 }

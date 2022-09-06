@@ -3,14 +3,30 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useEffect } from 'react';
 
-const Pagination = ({ total, size, page, setPage, setSize, setTotal }) => {
+const Pagination = ({
+  className,
+  total,
+  size,
+  page,
+  setPage,
+  setSize,
+  setTotal,
+}) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
 
   const numPages = Math.ceil(total / size);
 
+  //Pagination 버튼 클릭 이벤트
   const handleOnClick = (e) => {
-    setPage(Number(e.target.innerText));
+    if (className === 'pager') {
+      setPage(Number(e.target.innerText));
+    } else {
+      setPage(1);
+      setSize(Number(e.target.innerText));
+    }
   };
+
+  console.log(className);
 
   useEffect(() => {
     axios
@@ -19,93 +35,82 @@ const Pagination = ({ total, size, page, setPage, setSize, setTotal }) => {
         setTotal(Number(res.data.pageInfo.totalElements));
         setSize(size);
         setPage(page);
+
+        console.log(`size: ${size}, page: ${page}`);
       })
       .catch((err) => console.log(err));
   }, [size, page]);
 
   return (
     <>
-      <Nav>
-        <Button
-          onClick={() => setPage(page - 1)}
-          disabled={page === 1}
-          themeState={themeState}
-        >
-          Prev
-        </Button>
-        {numPages > 5 && page < numPages - 3 && page > 4 ? (
-          <>
-            <Button
-              key={1}
-              onClick={() => setPage(1)}
-              aria-current={page === numPages ? 'page' : null}
-              themeState={themeState}
-            >
-              1
-            </Button>
-            <div>...</div>
-            {Array(5)
-              .fill()
-              .map((_, i) => (
-                <Button
-                  key={page - 2 + i}
-                  onClick={handleOnClick}
-                  aria-current={page - 2 + i === page ? 'page' : null}
-                  themeState={themeState}
-                >
-                  {page - 2 + i}
-                </Button>
-              ))}
-            <div>...</div>
-            <Button
-              key={numPages}
-              onClick={() => setPage(numPages)}
-              aria-current={page === numPages ? 'page' : null}
-              themeState={themeState}
-            >
-              {numPages}
-            </Button>
-          </>
-        ) : numPages > 5 && page >= numPages - 3 && page > 5 ? (
-          <>
-            <Button
-              key={1}
-              onClick={() => setPage(1)}
-              aria-current={page === 1 ? 'page' : null}
-              themeState={themeState}
-            >
-              1
-            </Button>
-            <div>...</div>
-            {Array(5)
-              .fill()
-              .map((_, i) => (
-                <Button
-                  key={numPages - 4 + i}
-                  onClick={handleOnClick}
-                  aria-current={numPages - 4 + i === page ? 'page' : null}
-                  themeState={themeState}
-                >
-                  {numPages - 4 + i}
-                </Button>
-              ))}
-          </>
-        ) : numPages <= 5 ? (
-          Array(numPages)
-            .fill()
-            .map((_, i) => (
+      {className === 'pager' ? (
+        <Nav>
+          <Button
+            onClick={() => setPage(page - 1)}
+            disabled={page === 1}
+            themeState={themeState}
+          >
+            Prev
+          </Button>
+          {numPages > 5 && page < numPages - 3 && page > 4 ? (
+            <>
               <Button
-                key={i + 1}
-                onClick={handleOnClick}
-                aria-current={page === i + 1 ? 'page' : null}
+                key={1}
+                onClick={() => setPage(1)}
+                aria-current={page === numPages ? 'page' : null}
                 themeState={themeState}
               >
-                {i + 1}
+                1
               </Button>
-            ))
-        ) : (
-          <>
-            {Array(5)
+              <div>...</div>
+              {Array(5)
+                .fill()
+                .map((_, i) => (
+                  <Button
+                    key={page - 2 + i}
+                    onClick={handleOnClick}
+                    aria-current={page - 2 + i === page ? 'page' : null}
+                    themeState={themeState}
+                  >
+                    {page - 2 + i}
+                  </Button>
+                ))}
+              <div>...</div>
+              <Button
+                key={numPages}
+                onClick={() => setPage(numPages)}
+                aria-current={page === numPages ? 'page' : null}
+                themeState={themeState}
+              >
+                {numPages}
+              </Button>
+            </>
+          ) : numPages > 5 && page >= numPages - 3 && page > 5 ? (
+            <>
+              <Button
+                key={1}
+                onClick={() => setPage(1)}
+                aria-current={page === 1 ? 'page' : null}
+                themeState={themeState}
+              >
+                1
+              </Button>
+              <div>...</div>
+              {Array(5)
+                .fill()
+                .map((_, i) => (
+                  <Button
+                    key={numPages - 4 + i}
+                    onClick={handleOnClick}
+                    aria-current={numPages - 4 + i === page ? 'page' : null}
+                    themeState={themeState}
+                  >
+                    {numPages - 4 + i}
+                  </Button>
+                ))}
+            </>
+          ) : numPages <= 5 ? (
+            Array(numPages)
               .fill()
               .map((_, i) => (
                 <Button
@@ -116,26 +121,55 @@ const Pagination = ({ total, size, page, setPage, setSize, setTotal }) => {
                 >
                   {i + 1}
                 </Button>
-              ))}
-            <div>...</div>
+              ))
+          ) : (
+            <>
+              {Array(5)
+                .fill()
+                .map((_, i) => (
+                  <Button
+                    key={i + 1}
+                    onClick={handleOnClick}
+                    aria-current={page === i + 1 ? 'page' : null}
+                    themeState={themeState}
+                  >
+                    {i + 1}
+                  </Button>
+                ))}
+              <div>...</div>
+              <Button
+                key={numPages}
+                onClick={() => setPage(numPages)}
+                aria-current={page === numPages ? 'page' : null}
+                themeState={themeState}
+              >
+                {numPages}
+              </Button>
+            </>
+          )}
+          <Button
+            onClick={() => setPage(page + 1)}
+            disabled={page === numPages}
+            themeState={themeState}
+          >
+            Next
+          </Button>
+        </Nav>
+      ) : (
+        <Nav>
+          {[15, 30, 50].map((el) => (
             <Button
-              key={numPages}
-              onClick={() => setPage(numPages)}
-              aria-current={page === numPages ? 'page' : null}
+              key={el}
+              onClick={handleOnClick}
+              aria-current={el === size ? 'size' : null}
               themeState={themeState}
             >
-              {numPages}
+              {el}
             </Button>
-          </>
-        )}
-        <Button
-          onClick={() => setPage(page + 1)}
-          disabled={page === numPages}
-          themeState={themeState}
-        >
-          Next
-        </Button>
-      </Nav>
+          ))}
+          <div>per page</div>
+        </Nav>
+      )}
     </>
   );
 };
@@ -146,6 +180,11 @@ const Nav = styled.nav`
   align-items: center;
   gap: 0.3rem;
   margin: 1.6rem;
+
+  div {
+    font-size: 1.4rem;
+    margin-left: 0.5rem;
+  }
 `;
 
 const Button = styled.a`

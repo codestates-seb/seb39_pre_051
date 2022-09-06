@@ -2,8 +2,10 @@ import styled from 'styled-components';
 import TopBar from '../component/TopBar';
 import Footer from '../component/Footer';
 import SideBar from '../component/SideBar';
+import { getUserId } from '../getUserInfo';
 
 const UserProfile = () => {
+  const userId = getUserId()
   return (
     <>
       <TopBar />
@@ -20,7 +22,7 @@ const UserProfile = () => {
           <UserProfileSetting>
             <UserProfileNav>
               PERSONAL INFORMATION
-              <UserProfileNavItem href='/users'>
+              <UserProfileNavItem href={`/users/${userId}`}>
                 Edit profile
               </UserProfileNavItem>
               SITE SETTINGS

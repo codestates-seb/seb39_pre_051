@@ -27,14 +27,21 @@ const QuestionMain = () => {
         setPage(page);
         setSize(size);
         //card에 뿌릴 data
-        setData(res.data.data);
+        setData(res.data.data.sort((a, b) => b.questionId - a.questionId));
+
+        localStorage.setItem(
+          'data',
+          JSON.stringify(
+            res.data.data.filter((el) => delete el.questionWriter.userPassword)
+          )
+        );
       })
       .catch((err) => console.log(err));
   }, [page, size]);
 
   return (
     <>
-      <TopBar />
+      <TopBar data={data} setData={setData} />
       <Container>
         <SideBar pageName={'Questions'} />
         <Content>
@@ -52,19 +59,32 @@ const QuestionMain = () => {
                 questionTitle={el.questionTitle}
                 questionWriterId={el.questionWriterId}
                 questionContent={el.questionContent}
-                questionLikes={el.questionLikes}
-                questionAnswers={el.questionAnswers.length}
+                questionLikesCount={el.questionLikesCount}
+                questionAnswers={el.questionAnswers}
                 questionCreatedAt={el.questionCreatedAt}
+                questionWriter={el.questionWriter}
               ></Card>
             ))}
-            <Pagination
-              total={total}
-              size={size}
-              page={page}
-              setPage={setPage}
-              setSize={setSize}
-              setTotal={setTotal}
-            />
+            <PaginationWrapper>
+              <Pagination
+                className='pager'
+                total={total}
+                size={size}
+                page={page}
+                setPage={setPage}
+                setSize={setSize}
+                setTotal={setTotal}
+              />
+              <Pagination
+                className='pageSizer'
+                total={total}
+                size={size}
+                page={page}
+                setPage={setPage}
+                setSize={setSize}
+                setTotal={setTotal}
+              />
+            </PaginationWrapper>
           </CardLayout>
         </Content>
         <SideBarWidget />
@@ -112,5 +132,10 @@ const Title = styled.h1`
 //CardLayout
 
 const CardLayout = styled.div``;
+
+const PaginationWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 
 export default QuestionMain;

@@ -10,25 +10,49 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import DarkModeSwitch from './DarkModeSwitch';
 import { useState } from 'react';
-import { logOut } from '../redux/slice/userInfoSlice';
 import { useNavigate } from 'react-router-dom';
+import { getUserId } from '../getUserInfo';
+import { removeCookie } from '../utils/cookie';
 
-const TopBar = () => {
+const TopBar = ({ data, setData }) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
   const userState = useSelector((state) => state.userInfoSlice);
-  const isLoggedIn = userState.isLoggedIn;
-  const userId = userState.memberId;
+  const userId = getUserId();
   const [isOpen, setIsOpen] = useState(null);
+  const [search, setSearch] = useState('');
+
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
   const handleLogOut = () => {
-    dispatch(logOut());
+    removeCookie()
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userName');
     navigate('/');
+    window.location.reload();
+  };
+
+  // 질문 검색 입력창 관리 함수
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+
+    if (e.target.value === '') {
+      setData(JSON.parse(localStorage.getItem('data')));
+      //window.location.reload();
+    }
+  };
+
+  // 질문 검색 엔터 시 검색되도록 하는 함수
+  const handleEnterPress = (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      setData(
+        data.filter((el) => el.questionTitle.toLowerCase().includes(search))
+      );
+    }
   };
 
   return (
@@ -53,12 +77,19 @@ const TopBar = () => {
         </TobBarLeftNav>
         <TopBarForm id='search'>
           <TopBarSearchDiv>
-            <TopBarInput type='text' placeholder='Search...' />
+            <TopBarInput
+              id='searchInput'
+              type='text'
+              placeholder='Search...'
+              value={search}
+              onChange={handleSearch}
+              onKeyDown={handleEnterPress}
+            />
             <FontAwesomeIcon id='searchIcon' icon={faSearch} />
           </TopBarSearchDiv>
         </TopBarForm>
         <TopBarRightNav>
-          {isLoggedIn ? (
+          {userId ? (
             <>
               <IconWrapper>
                 <a href={`/users/${userId}`} id='userInfo'>
@@ -151,6 +182,8 @@ const Header = styled.header`
   align-items: center;
   background-color: ${(props) =>
     props.themeState === 'light' ? '#f8f9f9' : '#393939'};
+    @media (max-width: 64rem){
+    }
 `;
 
 const TopBarLogoA = styled.a`
@@ -204,7 +237,9 @@ const TopBarSearchDiv = styled.div`
   align-items: center;
   position: relative;
   flex-grow: 1;
-
+  @media (max-width:64rem){
+    display:none
+  };
   #searchIcon {
     position: absolute;
     top: 50%;

@@ -9,76 +9,77 @@ import AddAnswer from '../component/AddAnswer';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { readQuestion } from '../redux/slice/questionSlice';
-
+import SideBarWidget from '../component/SideBarWidget';
+import { getUserId } from '../getUserInfo';
 
 const Question = () => {
-  const [questionEditMode, setQuestionEditMode] = useState(false)
-  const [title, setTitle] = useState('')
-  const [originalTitle, setOriginalTitle] = useState('')
+  const [questionEditMode, setQuestionEditMode] = useState(false);
+  const [title, setTitle] = useState('');
+  const [originalTitle, setOriginalTitle] = useState('');
   const params = useParams();
   const themeState = useSelector((state) => state.themeSlice).theme;
-  const questionState = useSelector((state)=>state.questionSlice)
+  const questionState = useSelector((state) => state.questionSlice);
   const dispatch = useDispatch();
-  const {questionId, questionWriterId, questionContent, questionLikes, questionCreatedAt, questionModifiedAt, questionTitle, questionQuestionComments, questionAnswers} = questionState
+  const userId = getUserId()
+
+  //태그
+  const [tagsArray, setTagsArr] = useState(['JAVASCRIPT', 'JAVA', 'PYTHON']);
+  const [stringTags, setStringTags]  = useState('')
+
+  const {
+    questionId,
+    questionWriterId,
+    questionContent,
+    questionLikesCount,
+    questionCreatedAt,
+    questionModifiedAt,
+    questionTitle,
+    questionQuestionComments,
+    questionAnswers,
+    questionBestAnswerId,
+    questionWriter,
+    // questionTags
+  } = questionState;
+
   useEffect(() => {
-  dispatch(readQuestion(params.questionId))
-  setTitle(questionTitle)
-  setOriginalTitle(questionTitle)
-  },[dispatch, params.questionId, questionTitle]);
+    dispatch(readQuestion(params.questionId));
+    setTitle(questionTitle);
+    setOriginalTitle(questionTitle);
+    // const splitTags = questionTags.split(',')
+    // setTagsArr(splitTags)
+  }, [dispatch, params.questionId, questionTitle]);
 
-  // const [date, setDate] = useState({
-  //   year : null,
-  //   month : null,
-  //   day : null,
-  //   hour : null,
-  //   min : null,
-  //   sec : null
-  // }) 
+  let year = null;
+  let month = null;
+  let day = null;
+  let hour = null;
+  let min = null;
+  let sec = null;
 
-  // if(questionCreatedAt !==null) {
-  //   setDate({
-  //     year : questionCreatedAt[0] ,
-  //     month : questionCreatedAt[1] ,
-  //     day : questionCreatedAt[2] ,
-  //     hour :
-  //     questionCreatedAt[3] > 12
-  //       ? '오후 ' + (questionCreatedAt[3] - 12)
-  //       : '오전 ' + questionCreatedAt[3],
-  //     min : questionCreatedAt[4],
-  //     sec : questionCreatedAt[5],
-  //   })
-  // }
-
-  let year = null
-  let month = null
-  let day = null
-  let hour = null
-  let min = null
-  let sec = null 
-
-    if(questionCreatedAt !==null) {
-      year = questionCreatedAt[0] 
-      month = questionCreatedAt[1] 
-      day = questionCreatedAt[2] 
-      hour =
+  if (questionCreatedAt !== null) {
+    year = questionCreatedAt[0];
+    month = questionCreatedAt[1];
+    day = questionCreatedAt[2];
+    hour =
       questionCreatedAt[3] > 12
         ? '오후 ' + (questionCreatedAt[3] - 12)
-        : '오전 ' + questionCreatedAt[3]
-      min = questionCreatedAt[4]
-      sec = questionCreatedAt[5]
+        : '오전 ' + questionCreatedAt[3];
+    min = questionCreatedAt[4];
+    sec = questionCreatedAt[5];
   }
 
-
-
-
-const handelEditTitle = (e) => {
-  setTitle(e.target.value)
-}
+  const handelEditTitle = (e) => {
+    setTitle(e.target.value);
+  };
 
   const handleQuestionEditMode = () => {
-    setQuestionEditMode(!questionEditMode)
-    setTitle(questionTitle)
-  }
+    setQuestionEditMode(!questionEditMode);
+    setTitle(questionTitle);
+    //태그
+    let string = ''
+    tagsArray.map((el)=>string+=el+',')
+    setStringTags(string.slice(0,-1))
+  };
   return (
     <>
       <TopBar />
@@ -91,56 +92,64 @@ const handelEditTitle = (e) => {
                 {questionEditMode ? (
                   <form>
                     <label id='editText'></label>
-                    <input id='editText' value={title} onChange={handelEditTitle} />
+                    <textarea
+                      id='editText'
+                      value={title}
+                      onChange={handelEditTitle}
+                    />
                   </form>
                 ) : (
-                <>
-                <a href='/questions/questionId'>{questionTitle}</a>
-                </>
-                ) }
-                
+                  <>
+                    <a href='/questions/questionId'>{questionTitle}</a>
+                  </>
+                )}
               </Title>
               <AskBtn />
             </TitleContainer>
             <CreatedAt themeState={themeState}>
-            {`${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`}
+              {`${year}년 ${month}월 ${day}일 ${hour}시 ${min}분 ${sec}초`}
             </CreatedAt>
           </TitleLayout>
           <OpinionCard
-            key = {questionId}
+            key={questionId}
             id={questionId}
-            likes={questionLikes}
+            likes={questionLikesCount}
             content={questionContent}
-            modifiedAt={questionModifiedAt === null ? [] : questionModifiedAt}
-            writer={questionWriterId}
-            // email={questionEmail}
-            email='test1@gmail.com'
+            modifiedAt={questionModifiedAt}
+            writer={questionWriter}
+            //email 필요없을지도
+            // email={questionWriter.userEmail}
             comment={questionQuestionComments}
             isQuestion={true}
             questionEditMode={questionEditMode}
+            setQuestionEditMode={setQuestionEditMode}
             handleQuestionEditMode={handleQuestionEditMode}
             title={title}
+            questionBestAnswerId={questionBestAnswerId}
+            //태그
+            tagsArray={tagsArray}
+            stringTags={stringTags}
+            setStringTags={setStringTags}
           />
-          <AnswerSummay>
-            {questionAnswers.length} Answers
-          </AnswerSummay>
+          <AnswerSummay>{questionAnswers.length} Answers</AnswerSummay>
           {questionAnswers.map((el) => (
             <OpinionCard
-              key = {el.answerId}
+              key={el.answerId}
               id={el.answerId}
-              likes={el.answerLikes}
+              likes={el.answerLikesCount}
               content={el.answerContent}
-              modifiedAt={el.answerModifiedAt === null ? [] : el.answerModifiedAt}
-              writer={el.answerWriterId}
-              // email={el.answerEmail}
-              email='test1@gmail.com'
+              modifiedAt={el.answerModifiedAt}
+              writer={el.answerWriter}
               comment={el.answerAnswerComments}
-              questionId = {questionId}
+              questionId={questionId}
               isQuestion={false}
+              questionBestAnswerId={questionBestAnswerId}
+              questionWriter={questionWriter.userId}
             />
           ))}
-          <AddAnswer questionId={questionId}/>
+          <AddAnswer questionId={questionId} />
         </Content>
+        <SideBarWidget />
       </Container>
       <Footer />
     </>
@@ -164,10 +173,11 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   border-left: 1px solid #d6d9dc;
-  border-bottom: 1px solid #d6d9dc;
+  /* border-bottom: 1px solid #d6d9dc; */
   /* padding: 2.4rem; */
   padding: 2.4rem 0;
-  max-width: 110rem;
+  width: 72.5rem;
+  /* max-width: 110rem; */
   line-height: 1.7rem;
 `;
 
@@ -182,14 +192,19 @@ const TitleContainer = styled.div`
 const Title = styled.h1`
   font-size: 2.7rem;
   margin: 0 0 0.8rem 0;
-  width: 72.5rem;
-  line-height:3.645rem;
-  input{
-    width:100%;
+  width: 60rem;
+  line-height: 3.645rem;
+  textarea {
+    width: 100%;
+    border: 1px solid #d6d9dc;
+    color: ${(props) => (props.themeState === 'light' ? '#0c0d0e' : '#F2F2F3')};
+    background-color: ${(props) =>
+      props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D'};
   }
-  a{
+  a {
     text-decoration: none;
-    color: ${(props) => (props.themeState === 'light' ? ' #3b4045' : '#E7E9EB')};
+    color: ${(props) =>
+      props.themeState === 'light' ? ' #3b4045' : '#E7E9EB'};
   }
 `;
 
