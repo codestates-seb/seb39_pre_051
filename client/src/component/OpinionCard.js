@@ -25,7 +25,7 @@ const OpinionCard = ({
   //태그
   tagsArray,
   setStringTags,
-  stringTags
+  stringTags,
 }) => {
   const commentInput = useRef();
   const themeState = useSelector((state) => state.themeSlice).theme;
@@ -37,7 +37,7 @@ const OpinionCard = ({
   const [isClick, setIsClick] = useState(false);
   const [like, setLike] = useState(likes);
   const userId = getUserId();
-  console.log(userId, writer.userId)  ;
+  console.log(userId, writer.userId);
   const year = modifiedAt[0];
   const month = modifiedAt[1];
   const day = modifiedAt[2];
@@ -48,12 +48,11 @@ const OpinionCard = ({
   const min = modifiedAt[4];
   const sec = modifiedAt[5];
 
-//태그
-const handleStringTags = (e) => {
-  console.log(e.target.value)
-  setStringTags(e.target.value)
-}
-
+  //태그
+  const handleStringTags = (e) => {
+    console.log(e.target.value);
+    setStringTags(e.target.value);
+  };
 
   useEffect(() => {
     setText(content);
@@ -131,7 +130,7 @@ const handleStringTags = (e) => {
     const response = await axios.patch(`/questions/${id}/edit`, {
       questionTitle: title,
       questionContent: text,
-      questionTags: stringTags
+      questionTags: stringTags,
     });
     setQuestionEditMode(!questionEditMode);
     dispatch(readQuestion(id));
@@ -216,7 +215,7 @@ const handleStringTags = (e) => {
     <OpinionLayout>
       <OpinionContainer>
         <VoteContainer>
-          <LikesButton onClick={handleQuestionLikes}>
+          <LikesButton themeState={themeState} onClick={handleQuestionLikes}>
             <svg
               class='svg-icon iconArrowUpLg'
               width='2.4rem'
@@ -256,7 +255,11 @@ const handleStringTags = (e) => {
                     onChange={handleEditText}
                   />
                   <label id='input' />
-                  <textarea id='input' value={stringTags} onChange={handleStringTags}/>
+                  <textarea
+                    id='input'
+                    value={stringTags}
+                    onChange={handleStringTags}
+                  />
                 </form>
               </>
             ) : //질문수정모드가아닐때
@@ -274,22 +277,21 @@ const handleStringTags = (e) => {
               </>
             ) : isQuestion ? (
               <>
-              {/*질문수정모드가 아닐 때, 답변수정모드도 아닐 */}
-              <Content>{content}</Content>
-              <div>
-            {tagsArray.map((el, key) => (
-              <Tag key={key} themeState={themeState}>
-                {el}
-              </Tag>
-            ))}
-            </div>
-            </>
+                {/*질문수정모드가 아닐 때, 답변수정모드도 아닐 */}
+                <Content>{content}</Content>
+                <div>
+                  {tagsArray.map((el, key) => (
+                    <Tag key={key} themeState={themeState}>
+                      {el}
+                    </Tag>
+                  ))}
+                </div>
+              </>
             ) : (
               <>
-              <Content>{content}</Content>
+                <Content>{content}</Content>
               </>
-            )
-            }
+            )}
             <ContentInfoContainer>
               {userId === writer.userId ? (
                 isQuestion ? (
@@ -521,6 +523,11 @@ const LikesButton = styled.button`
   display: flex;
   border: none;
   background-color: transparent;
+
+  svg {
+    fill: ${(props) => (props.themeState === 'light' ? '#babfc4' : '#696f75')};
+  }
+
   cursor: pointer;
 `;
 
