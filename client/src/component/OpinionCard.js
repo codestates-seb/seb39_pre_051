@@ -22,6 +22,10 @@ const OpinionCard = ({
   title,
   questionWriter,
   questionBestAnswerId,
+  //태그
+  tagsArray,
+  setStringTags,
+  stringTags
 }) => {
   const commentInput = useRef();
   const themeState = useSelector((state) => state.themeSlice).theme;
@@ -43,6 +47,14 @@ const OpinionCard = ({
       : '오전 ' + modifiedAt[3];
   const min = modifiedAt[4];
   const sec = modifiedAt[5];
+
+//태그
+const handleStringTags = (e) => {
+  console.log(e.target.value)
+  setStringTags(e.target.value)
+}
+
+
   useEffect(() => {
     setText(content);
     setOriginalText(content);
@@ -115,15 +127,14 @@ const OpinionCard = ({
   };
 
   //질문 수정
-  const handelQuestionEditSubmit = async () => {
+  const handleQuestionEditSubmit = async () => {
     const response = await axios.patch(`/questions/${id}/edit`, {
       questionTitle: title,
       questionContent: text,
+      questionTags: stringTags
     });
-
     setQuestionEditMode(!questionEditMode);
     dispatch(readQuestion(id));
-
     return response;
   };
 
@@ -244,6 +255,8 @@ const OpinionCard = ({
                     value={text}
                     onChange={handleEditText}
                   />
+                  <label id='input' />
+                  <textarea id='input' value={stringTags} onChange={handleStringTags}/>
                 </form>
               </>
             ) : //질문수정모드가아닐때
@@ -259,19 +272,31 @@ const OpinionCard = ({
                   />
                 </form>
               </>
+            ) : isQuestion ? (
+              <>
+              {/*질문수정모드가 아닐 때, 답변수정모드도 아닐 */}
+              <Content>{content}</Content>
+              <div>
+            {tagsArray.map((el, key) => (
+              <Tag key={key} themeState={themeState}>
+                {el}
+              </Tag>
+            ))}
+            </div>
+            </>
             ) : (
               <>
-                {/*질문수정모드가 아닐 때, 답변수정모드도 아닐 */}
-                <Content>{content}</Content>
+              <Content>{content}</Content>
               </>
-            )}
+            )
+            }
             <ContentInfoContainer>
               {userId === writer.userId ? (
                 isQuestion ? (
                   questionEditMode ? (
                     <>
                       <EditWrapper themeState={themeState}>
-                        <span onClick={() => handelQuestionEditSubmit()}>
+                        <span onClick={() => handleQuestionEditSubmit()}>
                           수정하기
                         </span>
                         <span onClick={() => handleQuestionEditMode()}>
@@ -497,6 +522,19 @@ const LikesButton = styled.button`
   border: none;
   background-color: transparent;
   cursor: pointer;
+`;
+
+//tag
+
+const Tag = styled.a`
+  border: ${(props) =>
+    props.themeState === 'light' ? '1px solid #ffffff' : 'none'};
+  color: ${(props) =>
+    props.themeState === 'light' ? 'hsl(205, 47%, 41%)' : '#CDE1EE'};
+  background-color: ${(props) =>
+    props.themeState === 'light' ? 'hsl(205, 46%, 92%)' : 'hsl(205,14%,28%)'};
+  padding: 0.5rem 0.6rem;
+  text-align: center;
 `;
 
 export default OpinionCard;

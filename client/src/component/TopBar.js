@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { logOut } from '../redux/slice/userInfoSlice';
 import { useNavigate } from 'react-router-dom';
 import { getUserId } from '../getUserInfo';
-// import {removeCookie} from 'react-cookie';
+import { removeCookie } from '../utils/cookie';
 
 const TopBar = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
@@ -21,20 +21,15 @@ const TopBar = () => {
   const userId = getUserId()
   const [isOpen, setIsOpen] = useState(null);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  // const clearCookie = () => {
-  //   removeCookie('toekn')
-  // }
   const handleLogOut = () => {
-    // dispatch(logOut());
-    // clearCookie()
-    // removeCookie('token')
-    localStorage.clear();
+    removeCookie()
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userName');
     navigate('/');
     window.location.reload();
   };
@@ -159,6 +154,8 @@ const Header = styled.header`
   align-items: center;
   background-color: ${(props) =>
     props.themeState === 'light' ? '#f8f9f9' : '#393939'};
+    @media (max-width: 64rem){
+    }
 `;
 
 const TopBarLogoA = styled.a`
@@ -212,7 +209,9 @@ const TopBarSearchDiv = styled.div`
   align-items: center;
   position: relative;
   flex-grow: 1;
-
+  @media (max-width:64rem){
+    display:none
+  };
   #searchIcon {
     position: absolute;
     top: 50%;
