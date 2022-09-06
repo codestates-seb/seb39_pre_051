@@ -20,11 +20,11 @@ const Question = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
   const questionState = useSelector((state) => state.questionSlice);
   const dispatch = useDispatch();
-  const userId = getUserId()
+  const userId = getUserId();
 
   //태그
   const [tagsArray, setTagsArr] = useState(['JAVASCRIPT', 'JAVA', 'PYTHON']);
-  const [stringTags, setStringTags]  = useState('')
+  const [stringTags, setStringTags] = useState('');
 
   const {
     questionId,
@@ -39,18 +39,20 @@ const Question = () => {
     questionBestAnswerId,
     questionWriter,
     // questionTags
+    likesPressedQuestionIdFromToken,
+    likesPressedAnswersIdFromToken,
   } = questionState;
 
   useEffect(() => {
-    console.log(userId, params.questionId)
-    if(userId){
-      dispatch(readQuestion({questionId : params.questionId, userId}))
+    console.log(userId, params.questionId);
+    if (userId) {
+      dispatch(readQuestion({ questionId: params.questionId, userId }));
       setTitle(questionTitle);
       setOriginalTitle(questionTitle);
       // const splitTags = questionTags.split(',')
       // setTagsArr(splitTags)
-    }else{
-      dispatch(readQuestion({questionId:params.questionId}))
+    } else {
+      dispatch(readQuestion({ questionId: params.questionId }));
       setTitle(questionTitle);
       setOriginalTitle(questionTitle);
       // const splitTags = questionTags.split(',')
@@ -85,9 +87,9 @@ const Question = () => {
     setQuestionEditMode(!questionEditMode);
     setTitle(questionTitle);
     //태그
-    let string = ''
-    tagsArray.map((el)=>string+=el+',')
-    setStringTags(string.slice(0,-1))
+    let string = '';
+    tagsArray.map((el) => (string += el + ','));
+    setStringTags(string.slice(0, -1));
   };
   return (
     <>
@@ -139,13 +141,16 @@ const Question = () => {
             tagsArray={tagsArray}
             stringTags={stringTags}
             setStringTags={setStringTags}
+            //좋아요
+            likesPressedQuestionIdFromToken={likesPressedQuestionIdFromToken}
+            likesPressedAnswersIdFromToken={likesPressedAnswersIdFromToken}
           />
           <AnswerSummay>{questionAnswers.length} Answers</AnswerSummay>
           {questionAnswers.map((el) => (
             <OpinionCard
               key={el.answerId}
               id={el.answerId}
-              likes={el.answerLikesCount}
+              answerLikes={el.answerLikesCount}
               content={el.answerContent}
               modifiedAt={el.answerModifiedAt}
               writer={el.answerWriter}
@@ -154,6 +159,7 @@ const Question = () => {
               isQuestion={false}
               questionBestAnswerId={questionBestAnswerId}
               questionWriter={questionWriter.userId}
+              likesPressedAnswersIdFromToken={likesPressedAnswersIdFromToken}
             />
           ))}
           <AddAnswer questionId={questionId} />
