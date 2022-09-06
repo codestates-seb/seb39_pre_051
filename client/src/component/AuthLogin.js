@@ -7,11 +7,9 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logIn } from '../redux/slice/userInfoSlice';
 import jwt_decode from 'jwt-decode';
-import jwtDecode from 'jwt-decode';
-import { Cookies } from 'react-cookie';
-import jwt from 'jwt-decode';
+import { setCookie } from '../utils/cookie';
+
 
 const AuthLogin = (props) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
@@ -61,7 +59,7 @@ const AuthLogin = (props) => {
       setEmailDesc('');
     } else {
       setEmailValid(false);
-      setEmailDesc('잘못된 양식입니다.');
+      setEmailDesc('Invalid email form.');
     }
   };
 
@@ -77,7 +75,7 @@ const AuthLogin = (props) => {
       setPasswordDesc('');
     } else {
       setPasswordValid(false);
-      setPasswordDesc('8자이상 20자이하, 숫자, 문자, 특수문자를 포함해주세요.');
+      setPasswordDesc('Passwords must contain at least eight characters and less than 20 characters, including at least 1 letter, 1 number and 1 special character.');
     }
   };
   const rePasswordValidation = () => {
@@ -86,7 +84,7 @@ const AuthLogin = (props) => {
       setRePasswordDesc('');
     } else {
       setRePasswordValid(false);
-      setRePasswordDesc('입력하신 비밀번호가 같지않습니다.');
+      setRePasswordDesc('Passwords are different.');
     }
   };
 
@@ -96,7 +94,7 @@ const AuthLogin = (props) => {
     if (props.status === 'login') {
       //로그인 일시
       if (!email || !password) {
-        console.log('아이디와 비밀번호를 입력하세요!');
+        console.log('Enter your Email and password!');
         return;
       }
 
@@ -110,8 +108,7 @@ const AuthLogin = (props) => {
         const userName = data.userName;
         const decoded = jwt_decode(token);
         console.log(decoded.sub);
-        const cookie = new Cookies();
-        cookie.set('token', token);
+        setCookie('token',token)
         console.log(data.userName);
         localStorage.setItem('userId', JSON.stringify(decoded.sub));
         localStorage.setItem('userName', JSON.stringify(userName));
@@ -120,24 +117,29 @@ const AuthLogin = (props) => {
         navigate('/');
         window.location.reload();
       } catch (err) {
+        alert('Check your Email and Password')
         console.log('로그인 error', err);
       }
     } else {
       //회원가입 일시
-      try {
-        const response = axios.post('/users/signup', {
-          userName: displayName,
-          userEmail: email,
-          userPassword: password,
-        });
-        alert('회원가입이 완료되었습니다!');
-        navigate('/');
-        window.location.reload();
-        return console.log(response);
-      } catch (err) {
-        alert('회원정보를 확인해주세요!');
-
-        console.log('회원가입 error', err);
+      if(emailValid && passwordValid && rePasswordValid){
+        try {
+          const response = axios.post('/users/signup', {
+            userName: displayName,
+            userEmail: email,
+            userPassword: password,
+          });
+          alert('SignUp Success');
+          navigate('/');
+          window.location.reload();
+          return console.log(response);
+        } catch (err) {
+          alert('Check valid option');
+  
+          console.log('회원가입 error', err);
+        }
+      } else{
+        window.alert('Check valid option')
       }
     }
   };
