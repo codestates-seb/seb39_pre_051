@@ -12,7 +12,9 @@
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.27.2",
+    "jwt-decode": "^3.1.2",
     "react": "^18.2.0",
+    "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
     "react-redux": "^8.0.2",
@@ -34,6 +36,7 @@
       "react-app/jest"
     ]
   },
+  "proxy": "http://frontend.gonetis.com:8080",
   "browserslist": {
     "production": [
       ">0.2%",
