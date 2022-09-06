@@ -27,9 +27,12 @@ const Home = () => {
         setPage(page);
         setSize(size);
         //card에 뿌릴 data
-        setData(
-          res.data.data.sort(
-            (a, b) => b.questionLikesCount - a.questionLikesCount
+        setData(res.data.data);
+
+        localStorage.setItem(
+          'data',
+          JSON.stringify(
+            res.data.data.filter((el) => delete el.questionWriter.userPassword)
           )
         );
       })
@@ -38,7 +41,7 @@ const Home = () => {
 
   return (
     <>
-      <TopBar />
+      <TopBar data={data} setData={setData} />
       <Container>
         <SideBar pageName={'Home'} />
         <Content>
@@ -59,7 +62,7 @@ const Home = () => {
                 questionLikesCount={el.questionLikesCount}
                 questionAnswers={el.questionAnswers}
                 questionCreatedAt={el.questionCreatedAt}
-                questionWriter = {el.questionWriter}
+                questionWriter={el.questionWriter}
               ></Card>
             ))}
             <PaginationWrapper>

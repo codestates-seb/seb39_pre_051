@@ -15,18 +15,24 @@ import {
   faSquarePollHorizontal,
   faUndo,
 } from '@fortawesome/free-solid-svg-icons';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { readQuestion, createAnswer } from '../redux/slice/questionSlice';
 import { useNavigate } from 'react-router-dom';
 import { getUserId } from '../getUserInfo';
 
 const AddAnswer = ({ questionId }) => {
-  const textAreaInput = useRef();
   const themeState = useSelector((state) => state.themeSlice).theme;
+
+  const [drag, setDrag] = useState(false);
+
+  const textAreaInput = useRef();
+  const resizeRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const answerWriterId = getUserId();
+  const previousClient = useRef(0);
+  const defaultOffsetHeight = useRef(0);
 
   const handleAnswerSubmit = (e) => {
     e.preventDefault();
@@ -58,6 +64,31 @@ const AddAnswer = ({ questionId }) => {
       }
     }
   };
+
+  const handleMouseMove = (e) => {
+    const changeY = e.clientY - previousClient.current;
+
+    const height = (defaultOffsetHeight.current + changeY) / 10;
+
+    textAreaInput.current.style.height = height + 'rem';
+  };
+
+  const handleMouseUp = (e) => {
+    if (drag) {
+      setDrag(false);
+      previousClient.current = { y: 0 };
+      window.removeEventListener('mousemove', handleMouseMove);
+    }
+  };
+
+  const handleMouseDown = (e) => {
+    setDrag(true);
+    previousClient.current = e.clientY;
+    defaultOffsetHeight.current = textAreaInput.current.offsetHeight;
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+  };
+
   return (
     <AddAnswerLayout>
       <HeadLine themeState={themeState}>Your Answer</HeadLine>
@@ -83,9 +114,6 @@ const AddAnswer = ({ questionId }) => {
             />
             <FontAwesomeIcon className='md-button' icon={faUndo} />
             <FontAwesomeIcon className='md-button' icon={faRedo} />
-            <QuestionFormattingTipsButton>
-              Hide formatting tips
-            </QuestionFormattingTipsButton>
           </QuestionBodyButton>
           <QuestionBodyDiv themeState={themeState}>
             <QuestionBodyTextArea
@@ -93,7 +121,11 @@ const AddAnswer = ({ questionId }) => {
               ref={textAreaInput}
               themeState={themeState}
             />
-            <QuestionBodyResize themeState={themeState}></QuestionBodyResize>
+            <QuestionBodyResize
+              themeState={themeState}
+              ref={resizeRef}
+              onMouseDown={handleMouseDown}
+            ></QuestionBodyResize>
             <button>Post Your Answer</button>
           </QuestionBodyDiv>
         </QuestionBodyContainer>
@@ -117,7 +149,7 @@ const HeadLine = styled.div`
 `;
 
 const QuestionForm = styled.form`
-  width: 88rem;
+  width: 72.5rem;
   padding: 1.6rem;
   background-color: ${(props) =>
     props.themeState === 'light' ? '#FFFFFF' : '#2D2D2D'};
@@ -147,22 +179,6 @@ const QuestionBodyButton = styled.div`
   .md-space {
     margin-right: 3.3rem;
   }
-`;
-
-const QuestionFormattingTipsButton = styled.div`
-  display: inline-block;
-  position: relative;
-  left: 21.8rem;
-  bottom: 0.1rem;
-  padding: 0.8rem 1.04rem;
-  font-size: 1.3rem;
-  line-height: 1.5;
-  border: 0.1rem solid transparent;
-  border-radius: 0.3rem;
-  color: #3b4045;
-  background-color: #e3e6e8;
-  text-decoration: none;
-  cursor: pointer;
 `;
 
 const QuestionBodyDiv = styled.div`
@@ -208,7 +224,7 @@ const QuestionBodyResize = styled.div`
   height: 1.1rem;
   border: 1px solid #babfc4;
   border-width: 0 1px 1px;
-  margin: -0.3rem 0 0;
+  margin: -0.6rem 0 0;
   cursor: s-resize;
   overflow: hidden;
   background-color: ${(props) =>

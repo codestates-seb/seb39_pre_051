@@ -28,15 +28,20 @@ const QuestionMain = () => {
         setSize(size);
         //card에 뿌릴 data
         setData(res.data.data.sort((a, b) => b.questionId - a.questionId));
+
+        localStorage.setItem(
+          'data',
+          JSON.stringify(
+            res.data.data.filter((el) => delete el.questionWriter.userPassword)
+          )
+        );
       })
       .catch((err) => console.log(err));
   }, [page, size]);
 
-  console.log(data);
-
   return (
     <>
-      <TopBar />
+      <TopBar data={data} setData={setData} />
       <Container>
         <SideBar pageName={'Questions'} />
         <Content>
