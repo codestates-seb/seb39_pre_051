@@ -6,6 +6,7 @@ export const setCookie = (name, value) => {
     return cookie.set(name, value)
 }
 
-export const removeCookie = (name) => {
-    return Cookies.remove(name)
+
+export const removeCookie = () => {
+    return cookie.remove('token')
 }
