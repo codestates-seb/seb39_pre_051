@@ -5,11 +5,13 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { getUserId } from '../getUserInfo';
+import { useNavigate } from 'react-router-dom';
 
 const SideBar = ({ pageName }) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
 
   const userId = getUserId();
+  const navigate = useNavigate();
 
   const [userData, setUserData] = useState({});
 
@@ -19,6 +21,19 @@ const SideBar = ({ pageName }) => {
       .then((res) => setUserData(res.data))
       .catch((err) => console.log(err));
   }, [userId]);
+
+  const handleNavigateProfile = () => {
+    if (userId) {
+      navigate(`/users/${userId}`);
+      window.location.reload();
+    } else {
+      if (window.confirm('You must be logged in to set up your profile')) {
+        navigate('/login');
+        window.location.reload();
+        return;
+      }
+    }
+  };
 
   return (
     <SideBarDiv>
@@ -53,7 +68,7 @@ const SideBar = ({ pageName }) => {
           Tags
         </SideBarA>
         <SideBarA
-          href={`/users/${userId}`}
+          onClick={handleNavigateProfile}
           className={pageName === 'Users' ? 'isActive' : 'notActive'}
           paddingTop='1rem'
           paddingLeft='2.1rem'
@@ -112,6 +127,7 @@ const SideBarA = styled.a`
   text-decoration: none;
   padding-left: ${(props) => props.paddingLeft || '0'};
   padding-top: ${(props) => props.paddingTop || '0'};
+  cursor: pointer;
   :hover {
     color: ${(props) =>
       props.themeState === 'light' ? ' #6a737c;' : '#f2f3f3'};
