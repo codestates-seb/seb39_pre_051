@@ -7,19 +7,13 @@ const BestAnswerMark = (props) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
   const dispatch = useDispatch();
   const handleBestAnswer = async () => {
-    console.log('hello');
-    console.log(props.questionId);
     await axios
       .patch(`/questions/${props.questionId}/${props.id}`)
-      .then((res) => console.log(res));
+      .then((res) => res);
     dispatch(readQuestion(props.questionId));
   };
   const handleResetBestAnswer = async () => {
-    console.log('hello');
-    console.log(props.questionId);
-    await axios
-      .patch(`/questions/${props.questionId}/0`)
-      .then((res) => console.log(res));
+    await axios.patch(`/questions/${props.questionId}/0`).then((res) => res);
     dispatch(readQuestion(props.questionId));
   };
 

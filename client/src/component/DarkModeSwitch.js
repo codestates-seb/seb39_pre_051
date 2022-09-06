@@ -1,16 +1,23 @@
 import styled from 'styled-components';
-import {useDispatch,useSelector } from 'react-redux';
-import {toggleTheme} from '../redux/slice/themeSlice'
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleTheme } from '../redux/slice/themeSlice';
 
 const DarkModeSwitch = () => {
-  const themeState = useSelector((state)=>state.themeSlice).theme
+  const themeState = useSelector((state) => state.themeSlice).theme;
   const dispatch = useDispatch();
   const handleToggleTheme = () => {
-    dispatch(toggleTheme())
-}
+    dispatch(toggleTheme());
+  };
+
   return (
     <CheckBoxWrapper>
-      <CheckBox id='checkbox' type='checkbox'  className={themeState==='light' ? 'toggle': 'toggle darkmode'  } themeState={themeState} onClick={handleToggleTheme}/>
+      <CheckBox
+        id='checkbox'
+        type='checkbox'
+        className={themeState === 'light' ? 'toggle' : 'toggle darkmode'}
+        themeState={themeState}
+        onClick={handleToggleTheme}
+      />
       <CheckBoxLabel htmlFor='checkbox' />
     </CheckBoxWrapper>
   );
@@ -22,14 +29,14 @@ const CheckBoxWrapper = styled.div`
 const CheckBoxLabel = styled.label`
   position: absolute;
   top: 0;
-  left: 2rem;;
+  left: 2rem;
   width: 4.2rem;
   height: 2.6rem;
   border-radius: 1.5rem;
   background: #bebebe;
   cursor: pointer;
   &::after {
-    content: "";
+    content: '';
     display: block;
     border-radius: 50%;
     width: 1.8rem;
@@ -49,7 +56,7 @@ const CheckBox = styled.input`
   &.darkmode + ${CheckBoxLabel} {
     background: var(--color-orange);
     &::after {
-      content: "";
+      content: '';
       display: block;
       border-radius: 50%;
       width: 1.8rem;

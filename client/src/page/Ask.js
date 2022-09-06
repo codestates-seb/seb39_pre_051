@@ -58,7 +58,7 @@ const Ask = () => {
     textAreaRef.current.style.height = height + 'rem';
   };
 
-  const handleMouseUp = (e) => {
+  const handleMouseUp = () => {
     if (drag) {
       setDrag(false);
       previousClient.current = { y: 0 };
@@ -93,12 +93,8 @@ const Ask = () => {
         questionContent,
         questionTags: questionTag,
       })
-      .then((res) => console.log(res))
-      .catch((err) => {
-        if (err.response.status === 404) {
-          console.log(`url: ${err.config.url}  data: ${err.config.data}`);
-        }
-      });
+      .then((res) => res)
+      .catch((err) => err);
 
     navigate('/questions');
     window.location.reload();

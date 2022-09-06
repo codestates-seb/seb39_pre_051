@@ -36,10 +36,8 @@ const Home = () => {
           )
         );
       })
-      .catch((err) => console.log(err));
+      .catch((err) => err);
   }, [page, size]);
-
-  console.log(data);
 
   return (
     <>

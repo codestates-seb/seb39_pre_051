@@ -19,7 +19,7 @@ const SideBar = ({ pageName }) => {
     axios
       .get(`/users/${userId}`)
       .then((res) => setUserData(res.data))
-      .catch((err) => console.log(err));
+      .catch((err) => err);
   }, [userId]);
 
   const handleNavigateProfile = () => {

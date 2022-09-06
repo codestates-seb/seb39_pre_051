@@ -26,8 +26,6 @@ const Pagination = ({
     }
   };
 
-  console.log(className);
-
   useEffect(() => {
     axios
       .get(`/questions?size=${size}&page=${page}`)
@@ -35,10 +33,8 @@ const Pagination = ({
         setTotal(Number(res.data.pageInfo.totalElements));
         setSize(size);
         setPage(page);
-
-        console.log(`size: ${size}, page: ${page}`);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => err);
   }, [size, page]);
 
   return (

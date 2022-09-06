@@ -5,8 +5,8 @@ import TopBar from '../component/TopBar';
 import SideBar from '../component/SideBar';
 import Pagination from '../component/Pagination';
 import AskBtn from '../component/AskBtn';
-import { useSelector } from 'react-redux';
 import SideBarWidget from '../component/SideBarWidget';
+import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -36,7 +36,7 @@ const QuestionMain = () => {
           )
         );
       })
-      .catch((err) => console.log(err));
+      .catch((err) => err);
   }, [page, size]);
 
   return (

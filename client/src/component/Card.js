@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 
-const tagArray = ['java', 'javascript', 'python', 'GO', 'C++'];
-
 const Card = ({
   questionId,
   questionTitle,
@@ -15,7 +13,6 @@ const Card = ({
   questionTags,
 }) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
-  console.log(questionWriter);
   const year = questionCreatedAt[0];
   const month = questionCreatedAt[1];
   const day = questionCreatedAt[2];

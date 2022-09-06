@@ -18,7 +18,6 @@ import {
   faSquarePollHorizontal,
   faUndo,
 } from '@fortawesome/free-solid-svg-icons';
-import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { getUserId } from '../getUserInfo';
@@ -87,9 +86,8 @@ const UserProfile = () => {
             userPassword: password,
           });
           setIsActive(false);
-          console.log(res.data);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => err);
 
       alert('Password has changed');
     } else {
@@ -100,9 +98,8 @@ const UserProfile = () => {
         })
         .then((res) => {
           setUserData({ ...userData, userName: displayName });
-          console.log(res.data);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => err);
 
       alert('Display name has changed');
     }
@@ -146,7 +143,6 @@ const UserProfile = () => {
   //Password와 rePassword의 입력을 다루는 함수
   const handleInput = (event) => {
     const { name, value } = event.target;
-    console.log(name, value);
     setInputValue({
       ...inputValue,
       [name]: value,
@@ -169,7 +165,10 @@ const UserProfile = () => {
           <UserProfileSetting>
             <UserProfileNav>
               PERSONAL INFORMATION
-              <UserProfileNavItem href={`/users/${userId}`} className='selected'>
+              <UserProfileNavItem
+                href={`/users/${userId}`}
+                className='selected'
+              >
                 Edit profile
               </UserProfileNavItem>
               SITE SETTINGS
