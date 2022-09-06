@@ -37,7 +37,6 @@ const OpinionCard = ({
   const [isClick, setIsClick] = useState(false);
   const [like, setLike] = useState(likes);
   const userId = getUserId();
-  console.log(userId, writer.userId);
   const year = modifiedAt[0];
   const month = modifiedAt[1];
   const day = modifiedAt[2];

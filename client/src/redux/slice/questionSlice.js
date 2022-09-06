@@ -23,14 +23,14 @@ export const readQuestion = createAsyncThunk(
   'questions/readQuestion',
   async (questionInfo) => {
     if(questionInfo.userId){
-    const response = await axios.get(`/questions/${questionInfo.questionId}`,{
-      userId : questionInfo.userId
-    });
+      console.log( questionInfo.userId, typeof questionInfo.userId)
+    const response = await axios.get(`/questions/${questionInfo.questionId}/${questionInfo.userId}`).catch((err)=>console.log(err))
     const data = await response.data.data;
     console.log(data);
     return data;
     }else{
-      const response = await axios.get(`/questions/${questionInfo.questionId}`);
+      console.log(questionInfo)
+      const response = await axios.get(`/questions/${questionInfo.questionId}/0`).catch((err)=>console.log(err))
       const data = await response.data.data;
       console.log(data);
       return data;
