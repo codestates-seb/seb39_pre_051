@@ -3,7 +3,7 @@ import Comment from './Comment';
 import BestAnswerMark from './BestAnswerMark';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { editQuestion, readQuestion } from '../redux/slice/questionSlice';
+import { readQuestion } from '../redux/slice/questionSlice';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { getUserId } from '../getUserInfo';
@@ -54,9 +54,10 @@ const OpinionCard = ({
       : '오전 ' + modifiedAt[3];
   const min = modifiedAt[4];
   const sec = modifiedAt[5];
-  const [test, setTest] = useState()
+
   //태그
   const handleStringTags = (e) => {
+    console.log(e.target.value);
     setStringTags(e.target.value);
   };
 
@@ -139,13 +140,7 @@ const OpinionCard = ({
       questionTags: stringTags,
     });
     setQuestionEditMode(!questionEditMode);
-    dispatch(editQuestion({
-      questionTitle: title,
-      questionContent: text,
-      questionTags: stringTags,}))
-      setTest('hello')
-      // dispatch(readQuestion(id));
-    // setTagsArr(stringTags.split(','))
+    dispatch(readQuestion(id));
     return response;
   };
 
@@ -236,20 +231,20 @@ const OpinionCard = ({
 
       console.log(likesPressedAnswersIdFromToken);
 
-      if (likesPressedAnswersIdFromToken.length === 0) {
+      if (likesPressedAnswersIdFromToken.includes(id)) {
         if (isAnswerClick) {
-          setAnswerLike(answerLike - 1);
+          setAnswerLike(answerLike + 1);
           setIsAnswerClick(!isAnswerClick);
         } else {
-          setAnswerLike(answerLike + 1);
+          setAnswerLike(answerLike - 1);
           setIsAnswerClick(!isAnswerClick);
         }
-      } else if (likesPressedAnswersIdFromToken.includes(id)) {
+      } else {
         if (isAnswerClick) {
-          setAnswerLike(answerLike + 1);
+          setAnswerLike(answerLike - 1);
           setIsAnswerClick(!isAnswerClick);
         } else {
-          setAnswerLike(answerLike - 1);
+          setAnswerLike(answerLike + 1);
           setIsAnswerClick(!isAnswerClick);
         }
       }
