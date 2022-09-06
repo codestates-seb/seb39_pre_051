@@ -81,7 +81,7 @@ public class QuestionController {
         List<AnswerLikes> list = answerLikesService.findAnswerIdsByPresserId(userId);
         List<Long> list1 = new ArrayList<>();
         for(AnswerLikes data : list){
-            list1.add(data.getAnswerLikesId());
+            list1.add(data.getAnswer().getAnswerId());
         }
         questionToQuestionResponse.setLikesPressedAnswersIdFromToken(list1);
         return new ResponseEntity<>(
