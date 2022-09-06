@@ -8,4 +8,6 @@ public interface QuestionLikesRepository extends JpaRepository<QuestionLikes,Lon
     QuestionLikes findByQuestionAndQuestionLikesPresserId(Question question, long questionLikesPresserId);
 
     long countQuestionLikesByQuestion(Question question);
+
+    long countQuestionLikesByQuestionAndQuestionLikesPresserId(Question question, long questionLikesPresserId);
 }

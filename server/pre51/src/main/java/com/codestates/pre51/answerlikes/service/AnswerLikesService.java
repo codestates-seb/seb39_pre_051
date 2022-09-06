@@ -6,6 +6,8 @@ import com.codestates.pre51.answerlikes.entity.AnswerLikes;
 import com.codestates.pre51.answerlikes.repository.AnswerLikesRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AnswerLikesService {
     private final AnswerLikesRepository answerLikesRepository;
@@ -33,4 +35,7 @@ public class AnswerLikesService {
         // 눌렀음
     }
 
+    public List<AnswerLikes> findAnswerIdsByPresserId(long userId) {
+        return answerLikesRepository.findAnswerLikesByAnswerLikesPresserId(userId);
+    }
 }

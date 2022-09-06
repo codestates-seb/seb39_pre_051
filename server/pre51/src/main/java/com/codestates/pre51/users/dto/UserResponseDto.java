@@ -20,8 +20,8 @@ public class UserResponseDto {
     @ApiModelProperty(value = "회원-이메일")
     private String userEmail;
 
-    @ApiModelProperty(value = "회원-_패스워드")
-    private String userPassword;
+//    @ApiModelProperty(value = "회원-_패스워드")
+//    private String userPassword;
 
     @ApiModelProperty(value = "회원-토큰")
     private String userToken;
