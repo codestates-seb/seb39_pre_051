@@ -56,9 +56,9 @@ public class QuestionController {
                 HttpStatus.OK);
     }
     @ApiOperation(value="질문 식별자를 이용한 해당 질문 조회" , notes=" 질문-식별자로 한개의 질문을 반환한다.")
-    @GetMapping("/{question-id}")
+    @GetMapping("/{question-id}/{user-id}")
     public ResponseEntity getQuestion(@PathVariable("question-id") @ApiParam(name = "질문_식별자") long questionId,
-                                      @RequestBody(required = false) UserGetDto userGetDto){
+                                      @PathVariable("user-id") @ApiParam(name = "질문_식별자") long userId){
         Question question = questionService.findQuestion(questionId);
         if(question==null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -66,8 +66,8 @@ public class QuestionController {
 
 
 
+
         // 1. 토큰에 있는 유저가 누른 질문 좋아요 목록
-        long userId = userGetDto.getUserId(); // 토큰으로부터 받은 userid 사용
         // questionLikes에 들어있는 데이터들 중
         // userid가 questionLikesPresserId 와 같은 questionLikes 객체 탐색
         // 그 값들 중 questionId와 같은 게 있으면 해당 번호 리턴 or boolean으로 리턴
