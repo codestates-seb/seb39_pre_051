@@ -20,10 +20,10 @@ const Question = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
   const questionState = useSelector((state) => state.questionSlice);
   const dispatch = useDispatch();
-  const userId = getUserId()
+  const userId = getUserId();
 
   //태그
-  const [tagsArray, setTagsArr] = useState(['JAVASCRIPT', 'JAVA', 'PYTHON']);
+  const [tagsArray, setTagsArr] = useState([]);
   const [stringTags, setStringTags]  = useState('')
 
   const {
@@ -38,17 +38,25 @@ const Question = () => {
     questionAnswers,
     questionBestAnswerId,
     questionWriter,
-    // questionTags
+
+    questionTags,
+    likesPressedQuestionIdFromToken,
+    likesPressedAnswersIdFromToken,
   } = questionState;
 
   useEffect(() => {
-    dispatch(readQuestion(params.questionId));
-    setTitle(questionTitle);
-    setOriginalTitle(questionTitle);
-    // const splitTags = questionTags.split(',')
-    // setTagsArr(splitTags)
+    if(userId){
+      dispatch(readQuestion({questionId : params.questionId, userId}))
+      setTitle(questionTitle);
+      setOriginalTitle(questionTitle);
+      setTagsArr(questionTags.split(','))
+    }else{
+      dispatch(readQuestion({questionId:params.questionId}));
+      setTitle(questionTitle);
+      setOriginalTitle(questionTitle);
+      setTagsArr(questionTags.split(','))
+    }
   }, [dispatch, params.questionId, questionTitle]);
-
   let year = null;
   let month = null;
   let day = null;
@@ -74,11 +82,12 @@ const Question = () => {
 
   const handleQuestionEditMode = () => {
     setQuestionEditMode(!questionEditMode);
-    setTitle(questionTitle);
+    // setTitle(questionTitle);
+    // setTagsArr(questionTags.split(','))
     //태그
-    let string = ''
-    tagsArray.map((el)=>string+=el+',')
-    setStringTags(string.slice(0,-1))
+    let string = '';
+    tagsArray.map((el) => (string += el + ','));
+    setStringTags(string.slice(0, -1));
   };
   return (
     <>
@@ -117,8 +126,6 @@ const Question = () => {
             content={questionContent}
             modifiedAt={questionModifiedAt}
             writer={questionWriter}
-            //email 필요없을지도
-            // email={questionWriter.userEmail}
             comment={questionQuestionComments}
             isQuestion={true}
             questionEditMode={questionEditMode}
@@ -126,17 +133,20 @@ const Question = () => {
             handleQuestionEditMode={handleQuestionEditMode}
             title={title}
             questionBestAnswerId={questionBestAnswerId}
-            //태그
             tagsArray={tagsArray}
             stringTags={stringTags}
             setStringTags={setStringTags}
+            setTagsArr={setTagsArr}
+            //좋아요
+            likesPressedQuestionIdFromToken={likesPressedQuestionIdFromToken}
+            likesPressedAnswersIdFromToken={likesPressedAnswersIdFromToken}
           />
           <AnswerSummay>{questionAnswers.length} Answers</AnswerSummay>
           {questionAnswers.map((el) => (
             <OpinionCard
               key={el.answerId}
               id={el.answerId}
-              likes={el.answerLikesCount}
+              answerLikes={el.answerLikesCount}
               content={el.answerContent}
               modifiedAt={el.answerModifiedAt}
               writer={el.answerWriter}
@@ -145,6 +155,7 @@ const Question = () => {
               isQuestion={false}
               questionBestAnswerId={questionBestAnswerId}
               questionWriter={questionWriter.userId}
+              likesPressedAnswersIdFromToken={likesPressedAnswersIdFromToken}
             />
           ))}
           <AddAnswer questionId={questionId} />

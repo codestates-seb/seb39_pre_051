@@ -3,14 +3,28 @@ import TopBar from '../component/TopBar';
 import Footer from '../component/Footer';
 import SideBar from '../component/SideBar';
 import { getUserId } from '../getUserInfo';
+import { useDispatch, useSelector } from 'react-redux';
+import { darkTheme, lightTheme } from '../redux/slice/themeSlice';
 
 const UserProfile = () => {
-  const userId = getUserId()
+  const themeState = useSelector((state) => state.themeSlice).theme;
+
+  const userId = getUserId();
+  const dispatch = useDispatch();
+
+  const handleTheme = (e) => {
+    if (e.target.id === 'light') {
+      dispatch(lightTheme());
+    } else {
+      dispatch(darkTheme());
+    }
+  };
+
   return (
     <>
       <TopBar />
       <Container>
-        <SideBar pageName={'Users'}/>
+        <SideBar pageName={'Users'} />
         <Content>
           <UserProfileDiv>
             <UserProfileImageDiv>
@@ -49,7 +63,8 @@ const UserProfile = () => {
                         id='light'
                         type='radio'
                         name='theme'
-                        checked='checked'
+                        onClick={handleTheme}
+                        checked={themeState === 'light' ? 'checked' : ''}
                       />
                       <UserProfilePreferencesThemeImageWrapper>
                         <UserProfilePreferencesThemeImage src='https://cdn.sstatic.net/Img/preferences/theme-light.svg?v=2d017a78abab' />
@@ -59,7 +74,13 @@ const UserProfile = () => {
                   </UserProfilePreferencesThemeLabel>
                   <UserProfilePreferencesThemeLabel htmlFor='dark'>
                     <UserProfilePreferencesThemeItem>
-                      <input id='dark' type='radio' name='theme' />
+                      <input
+                        id='dark'
+                        type='radio'
+                        name='theme'
+                        onClick={handleTheme}
+                        checked={themeState === 'dark' ? 'checked' : ''}
+                      />
                       <UserProfilePreferencesThemeImageWrapper>
                         <UserProfilePreferencesThemeImage src='https://cdn.sstatic.net/Img/preferences/theme-dark.svg?v=9a46fd615a91' />
                         Dark

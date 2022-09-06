@@ -3,7 +3,7 @@ import Comment from './Comment';
 import BestAnswerMark from './BestAnswerMark';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { readQuestion } from '../redux/slice/questionSlice';
+import { editQuestion, readQuestion } from '../redux/slice/questionSlice';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { getUserId } from '../getUserInfo';
@@ -25,7 +25,12 @@ const OpinionCard = ({
   //태그
   tagsArray,
   setStringTags,
-  stringTags
+  stringTags,
+  setTagsArr,
+  //좋아요
+  likesPressedQuestionIdFromToken,
+  likesPressedAnswersIdFromToken,
+  answerLikes,
 }) => {
   const commentInput = useRef();
   const themeState = useSelector((state) => state.themeSlice).theme;
@@ -35,9 +40,11 @@ const OpinionCard = ({
   const [answerEditMode, setAnswerEditMode] = useState(false);
   const [originalText, setOriginalText] = useState('');
   const [isClick, setIsClick] = useState(false);
+  const [isAnswerClick, setIsAnswerClick] = useState(false);
   const [like, setLike] = useState(likes);
+  const [answerLike, setAnswerLike] = useState(answerLikes);
+
   const userId = getUserId();
-  console.log(userId, writer.userId)  ;
   const year = modifiedAt[0];
   const month = modifiedAt[1];
   const day = modifiedAt[2];
@@ -47,13 +54,11 @@ const OpinionCard = ({
       : '오전 ' + modifiedAt[3];
   const min = modifiedAt[4];
   const sec = modifiedAt[5];
-
-//태그
-const handleStringTags = (e) => {
-  console.log(e.target.value)
-  setStringTags(e.target.value)
-}
-
+  const [test, setTest] = useState()
+  //태그
+  const handleStringTags = (e) => {
+    setStringTags(e.target.value);
+  };
 
   useEffect(() => {
     setText(content);
@@ -131,10 +136,16 @@ const handleStringTags = (e) => {
     const response = await axios.patch(`/questions/${id}/edit`, {
       questionTitle: title,
       questionContent: text,
-      questionTags: stringTags
+      questionTags: stringTags,
     });
     setQuestionEditMode(!questionEditMode);
-    dispatch(readQuestion(id));
+    dispatch(editQuestion({
+      questionTitle: title,
+      questionContent: text,
+      questionTags: stringTags,}))
+      setTest('hello')
+      // dispatch(readQuestion(id));
+    // setTagsArr(stringTags.split(','))
     return response;
   };
 
@@ -191,42 +202,100 @@ const handleStringTags = (e) => {
 
   //질문에 대한 Like관리 함수
   const handleQuestionLikes = async () => {
-    setIsClick(!isClick);
     if (userId) {
-      if (isClick) {
-        const response = await axios.patch(`/questionLikes/${id}/${userId}`);
+      const response = await axios.patch(`/questionLikes/${id}/${userId}`);
 
-        setLike(like - 1);
-
-        return response;
+      if (likesPressedQuestionIdFromToken === 0) {
+        if (isClick) {
+          setLike(like - 1);
+          setIsClick(!isClick);
+        } else {
+          setLike(like + 1);
+          setIsClick(!isClick);
+        }
       } else {
-        const response = await axios.patch(`/questionLikes/${id}/${userId}`);
-
-        setLike(like + 1);
-
-        return response;
+        if (isClick) {
+          setLike(like + 1);
+          setIsClick(!isClick);
+        } else {
+          setLike(like - 1);
+          setIsClick(!isClick);
+        }
       }
-    } else {
-      navigate('/login');
-      window.location.reload();
+
+      return response;
     }
+    navigate('/login');
+    window.location.reload();
+  };
+
+  //답변에 대한 좋아요
+  const handleAnswersLikes = async () => {
+    if (userId) {
+      const response = await axios.patch(`/answerLikes/${id}/${userId}`);
+
+      console.log(likesPressedAnswersIdFromToken);
+
+      if (likesPressedAnswersIdFromToken.length === 0) {
+        if (isAnswerClick) {
+          setAnswerLike(answerLike - 1);
+          setIsAnswerClick(!isAnswerClick);
+        } else {
+          setAnswerLike(answerLike + 1);
+          setIsAnswerClick(!isAnswerClick);
+        }
+      } else if (likesPressedAnswersIdFromToken.includes(id)) {
+        if (isAnswerClick) {
+          setAnswerLike(answerLike + 1);
+          setIsAnswerClick(!isAnswerClick);
+        } else {
+          setAnswerLike(answerLike - 1);
+          setIsAnswerClick(!isAnswerClick);
+        }
+      }
+
+      return response;
+    }
+    navigate('/login');
+    window.location.reload();
   };
 
   return (
     <OpinionLayout>
       <OpinionContainer>
         <VoteContainer>
-          <LikesButton onClick={handleQuestionLikes}>
-            <svg
-              class='svg-icon iconArrowUpLg'
-              width='2.4rem'
-              height='2.4rem'
-              viewBox='0 0 36 36'
-            >
-              <path d='M2 25h32L18 9 2 25Z'></path>
-            </svg>
-          </LikesButton>
-          <div>{likes}</div>
+          {isQuestion ? (
+            <>
+              <LikesButton
+                themeState={themeState}
+                onClick={handleQuestionLikes}
+              >
+                <svg
+                  class='svg-icon iconArrowUpLg'
+                  width='2.4rem'
+                  height='2.4rem'
+                  viewBox='0 0 36 36'
+                >
+                  <path d='M2 25h32L18 9 2 25Z'></path>
+                </svg>
+              </LikesButton>
+              <div>{like}</div>
+            </>
+          ) : (
+            <>
+              <LikesButton themeState={themeState} onClick={handleAnswersLikes}>
+                <svg
+                  class='svg-icon iconArrowUpLg'
+                  width='2.4rem'
+                  height='2.4rem'
+                  viewBox='0 0 36 36'
+                >
+                  <path d='M2 25h32L18 9 2 25Z'></path>
+                </svg>
+              </LikesButton>
+              <div>{answerLike}</div>
+            </>
+          )}
           {isQuestion ? (
             <></>
           ) : //답변에대해서
@@ -256,7 +325,11 @@ const handleStringTags = (e) => {
                     onChange={handleEditText}
                   />
                   <label id='input' />
-                  <textarea id='input' value={stringTags} onChange={handleStringTags}/>
+                  <textarea
+                    id='input'
+                    value={stringTags}
+                    onChange={handleStringTags}
+                  />
                 </form>
               </>
             ) : //질문수정모드가아닐때
@@ -274,22 +347,21 @@ const handleStringTags = (e) => {
               </>
             ) : isQuestion ? (
               <>
-              {/*질문수정모드가 아닐 때, 답변수정모드도 아닐 */}
-              <Content>{content}</Content>
-              <div>
-            {tagsArray.map((el, key) => (
-              <Tag key={key} themeState={themeState}>
-                {el}
-              </Tag>
-            ))}
-            </div>
-            </>
+                {/*질문수정모드가 아닐 때, 답변수정모드도 아닐 */}
+                <Content>{content}</Content>
+                <div>
+                  {tagsArray.map((el, key) => (
+                    <Tag key={key} themeState={themeState}>
+                      {el}
+                    </Tag>
+                  ))}
+                </div>
+              </>
             ) : (
               <>
-              <Content>{content}</Content>
+                <Content>{content}</Content>
               </>
-            )
-            }
+            )}
             <ContentInfoContainer>
               {userId === writer.userId ? (
                 isQuestion ? (
@@ -374,6 +446,7 @@ const handleStringTags = (e) => {
                     writer={el.answerCommentWriter}
                     content={el.answerCommentContent}
                     modifiedAt={el.answerCommentModifiedAt}
+                    likes={el.answerLikesCount}
                     isQuestion={isQuestion}
                   />
                 ))}
@@ -521,6 +594,11 @@ const LikesButton = styled.button`
   display: flex;
   border: none;
   background-color: transparent;
+
+  svg {
+    fill: ${(props) => (props.themeState === 'light' ? '#babfc4' : '#696f75')};
+  }
+
   cursor: pointer;
 `;
 

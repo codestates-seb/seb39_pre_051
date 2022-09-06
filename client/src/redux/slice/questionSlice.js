@@ -2,30 +2,46 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 let initialState = {
-    status:null,
-    error:null,
-    questionId: null,
-    questionWriterId: null,
-    questionContent: null,
-    questionLikesCount: null,
-    questionCreatedAt:[],
-    questionModifiedAt : [],
-    questionTitle: null,
-    questionQuestionComments: [],
-    questionAnswers:[],
-    questionWriter: {},
-    questionBestAnswerId:null,
-    // questionTags: null
-}
+  status: null,
+  error: null,
+  questionId: null,
+  questionWriterId: null,
+  questionContent: null,
+  questionLikesCount: null,
+  questionCreatedAt: [],
+  questionModifiedAt: [],
+  questionTitle: null,
+  questionQuestionComments: [],
+  questionAnswers: [],
+  questionWriter: {},
+  questionBestAnswerId: null,
+  likesPressedQuestionIdFromToken: 0,
+  likesPressedAnswersIdFromToken: [],
+  questionTags: ''
+};
+
 
 //질문 R
 export const readQuestion = createAsyncThunk(
   'questions/readQuestion',
-  async (questionId) => {
-    const response = await axios.get(`/questions/${questionId}`);
-    const data = await response.data.data;
-    console.log(data);
-    return data;
+  async (questionInfo) => {
+    if (questionInfo.userId) {
+      console.log(questionInfo.userId, typeof questionInfo.userId);
+      const response = await axios
+        .get(`/questions/${questionInfo.questionId}/${questionInfo.userId}`)
+        .catch((err) => console.log(err));
+      const data = await response.data.data;
+      console.log(data);
+      return data;
+    } else {
+      console.log(questionInfo);
+      const response = await axios
+        .get(`/questions/${questionInfo.questionId}/0`)
+        .catch((err) => console.log(err));
+      const data = await response.data.data;
+      console.log(data);
+      return data;
+    }
   }
 );
 
@@ -82,6 +98,12 @@ export const questionSlice = createSlice({
     name: 'question',
     initialState,
     reducers:{
+      editQuestion:(state, action) => {
+        console.log(action.payload)
+        state.questionTitle = action.payload.questionTitle
+        state.questionContent = action.payload.questionContent
+        state.questionTags = action.payload.questiontags
+      }
     },
     extraReducers: (builder) => {
         builder.addCase(readQuestion.pending, (state,action)=>{
@@ -108,7 +130,16 @@ export const questionSlice = createSlice({
             state.questionBestAnswerId=action.payload.questionBestAnswerId
             state.questionQuestionComments = action.payload.questionQuestionComments
             state.questionWriter = action.payload.questionWriter
-            // state.questionTags = action.payload.questionTags
+            if(action.payload.questionTags){
+              state.questionTags = action.payload.questionTags
+            }else{
+              state.questionTags = ''
+            }
+            state.questionWriter = action.payload.questionWriter;
+            state.likesPressedQuestionIdFromToken =
+              action.payload.likesPressedQuestionIdFromToken;
+            state.likesPressedAnswersIdFromToken =
+              action.payload.likesPressedAnswersIdFromToken;
         })
         builder.addCase(readQuestion.rejected, (state,action) => {
             state.status = 'failed'
@@ -123,4 +154,5 @@ export const questionSlice = createSlice({
     }
 })
 
+export const {editQuestion} = questionSlice.actions
 export default questionSlice.reducer;
