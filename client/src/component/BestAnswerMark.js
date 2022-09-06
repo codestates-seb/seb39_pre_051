@@ -1,20 +1,20 @@
 import styled from 'styled-components';
 import axios from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
-import { readQuestion } from '../redux/slice/questionSlice';
+import { useSelector } from 'react-redux';
 
 const BestAnswerMark = (props) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
-  const dispatch = useDispatch();
   const handleBestAnswer = async () => {
     await axios
       .patch(`/questions/${props.questionId}/${props.id}`)
-      .then((res) => res);
-    dispatch(readQuestion(props.questionId));
+      .then((res) => (res));
+      window.location.reload(`/questions/${props.questionId}`)
   };
   const handleResetBestAnswer = async () => {
-    await axios.patch(`/questions/${props.questionId}/0`).then((res) => res);
-    dispatch(readQuestion(props.questionId));
+    await axios
+      .patch(`/questions/${props.questionId}/0`)
+      .then((res) => (res));
+      window.location.reload(`/questions/${props.questionId}`)
   };
 
   return props.isBestAnswer ? (

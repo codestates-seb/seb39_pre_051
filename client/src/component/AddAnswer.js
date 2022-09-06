@@ -47,7 +47,7 @@ const AddAnswer = ({ questionId }) => {
           },
         })
       );
-      dispatch(readQuestion(questionId));
+      window.location.reload(`/questions/${questionId}`)
       textAreaInput.current.value = ' ';
     } else {
       if (

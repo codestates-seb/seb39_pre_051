@@ -57,39 +57,15 @@ export const createAnswer = createAsyncThunk(
   }
 );
 
-export const addQuestionComment = createAsyncThunk(
-  'questions/addQuestionComment',
-  async (questionCommentData) => {
-    const response = await axios.post(
-      `/questionComments/${questionCommentData.questionId}`,
-      questionCommentData.questionComment
-    );
-    const data = await response.data;
-
-    return data;
-  }
-);
-
-export const addAnswerComment = createAsyncThunk(
-  'questions/addAnswerComment',
-  async (answerCommentData) => {
-    const response = await axios.post(
-      `/answerComments/${answerCommentData.answerId}`,
-      answerCommentData.answerComment
-    );
-    const data = await response.data;
-    return data;
-  }
-);
-
 export const questionSlice = createSlice({
-  name: 'question',
-  initialState,
-  reducers: {
-    editQuestion: (state, action) => {
-      state.questionTitle = action.payload.questionTitle;
-      state.questionContent = action.payload.questionContent;
-      state.questionTags = action.payload.questiontags;
+    name: 'question',
+    initialState,
+    reducers:{
+      editQuestion:(state, action) => {
+        state.questionTitle = action.payload.questionTitle
+        state.questionContent = action.payload.questionContent
+        state.questionTags = action.payload.questiontags
+      }
     },
   },
   extraReducers: (builder) => {

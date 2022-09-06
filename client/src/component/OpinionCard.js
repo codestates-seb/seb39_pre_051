@@ -2,8 +2,7 @@ import styled from 'styled-components';
 import Comment from './Comment';
 import BestAnswerMark from './BestAnswerMark';
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { readQuestion } from '../redux/slice/questionSlice';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { getUserId } from '../getUserInfo';
@@ -34,7 +33,6 @@ const OpinionCard = ({
 }) => {
   const commentInput = useRef();
   const themeState = useSelector((state) => state.themeSlice).theme;
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [text, setText] = useState('');
   const [answerEditMode, setAnswerEditMode] = useState(false);
@@ -85,7 +83,7 @@ const OpinionCard = ({
           .then((res) => res)
           .catch((err) => err);
         commentInput.current.value = '';
-        dispatch(readQuestion(id));
+        window.location.reload(`/questions/${questionId}`)
       } else {
         await axios
           .post(`/answerComments/${id}`, {
@@ -95,7 +93,7 @@ const OpinionCard = ({
           .then((res) => res)
           .catch((err) => err);
         commentInput.current.value = '';
-        dispatch(readQuestion(questionId));
+        window.location.reload(`/questions/${questionId}`)
       }
     } else {
       if (
@@ -126,7 +124,7 @@ const OpinionCard = ({
       questionTags: stringTags,
     });
     setQuestionEditMode(!questionEditMode);
-    dispatch(readQuestion(id));
+    window.location.reload(`/questions/${questionId}`)
     return response;
   };
 
@@ -136,7 +134,7 @@ const OpinionCard = ({
       answerContent: text,
     });
     setAnswerEditMode(!answerEditMode);
-    dispatch(readQuestion(questionId));
+    window.location.reload(`/questions/${questionId}`)
     return response;
   };
 
@@ -159,7 +157,7 @@ const OpinionCard = ({
       try {
         if (window.confirm('Delete this post?')) {
           const response = await axios.delete(`/answer/${id}`);
-          dispatch(readQuestion(questionId));
+          window.location.reload(`/questions/${questionId}`)
           return response;
         } else {
           return;

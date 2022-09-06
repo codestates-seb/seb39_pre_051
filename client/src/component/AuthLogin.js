@@ -44,7 +44,7 @@ const AuthLogin = (props) => {
   const regNumber = /[0-9]/g;
   const regString = /[a-zA-Z]/g;
   const regSpecialCharacter =
-    /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
+/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
   const regEmail =
     /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
 
