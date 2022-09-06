@@ -15,7 +15,7 @@ let initialState = {
     questionAnswers:[],
     questionWriter: {},
     questionBestAnswerId:null,
-    // questionTags: null
+    questionTags: ''
 }
 
 //질문 R
@@ -91,6 +91,12 @@ export const questionSlice = createSlice({
     name: 'question',
     initialState,
     reducers:{
+      editQuestion:(state, action) => {
+        console.log(action.payload)
+        state.questionTitle = action.payload.questionTitle
+        state.questionContent = action.payload.questionContent
+        state.questionTags = action.payload.questiontags
+      }
     },
     extraReducers: (builder) => {
         builder.addCase(readQuestion.pending, (state,action)=>{
@@ -117,7 +123,12 @@ export const questionSlice = createSlice({
             state.questionBestAnswerId=action.payload.questionBestAnswerId
             state.questionQuestionComments = action.payload.questionQuestionComments
             state.questionWriter = action.payload.questionWriter
-            // state.questionTags = action.payload.questionTags
+            if(action.payload.questionTags){
+              state.questionTags = action.payload.questionTags
+            }else{
+              state.questionTags = ''
+            }
+            
         })
         builder.addCase(readQuestion.rejected, (state,action) => {
             state.status = 'failed'
@@ -132,4 +143,5 @@ export const questionSlice = createSlice({
     }
 })
 
+export const {editQuestion} = questionSlice.actions
 export default questionSlice.reducer;
