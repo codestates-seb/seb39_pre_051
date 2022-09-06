@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import { setCookie } from '../utils/cookie';
 
-
 const AuthLogin = (props) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
   const [emailValid, setEmailValid] = useState(false);
@@ -73,7 +72,9 @@ const AuthLogin = (props) => {
       setPasswordDesc('');
     } else {
       setPasswordValid(false);
-      setPasswordDesc('Passwords must contain at least eight characters and less than 20 characters, including at least 1 letter, 1 number and 1 special character.');
+      setPasswordDesc(
+        'Passwords must contain at least eight characters and less than 20 characters, including at least 1 letter, 1 number and 1 special character.'
+      );
     }
   };
   const rePasswordValidation = () => {
@@ -105,20 +106,18 @@ const AuthLogin = (props) => {
         const token = data.userToken;
         const userName = data.userName;
         const decoded = jwt_decode(token);
-        setCookie('token',token)
+        setCookie('token', token);
         localStorage.setItem('userId', JSON.stringify(decoded.sub));
         localStorage.setItem('userName', JSON.stringify(userName));
-        // localStorage.setItem('userImg', JSON.stringify(decoded))
         alert('Login Success');
         navigate('/');
         window.location.reload();
       } catch (err) {
-        alert('Check your Email and Password')
-        console.log('로그인 error', err);
+        alert('Check your Email and Password');
       }
     } else {
       //회원가입 일시
-      if(emailValid && passwordValid && rePasswordValid){
+      if (emailValid && passwordValid && rePasswordValid) {
         try {
           const response = axios.post('/users/signup', {
             userName: displayName,
@@ -128,14 +127,12 @@ const AuthLogin = (props) => {
           alert('SignUp Success');
           navigate('/');
           window.location.reload();
-          return console.log(response);
+          return response;
         } catch (err) {
           alert('Check valid option');
-  
-          console.log('회원가입 error', err);
         }
-      } else{
-        window.alert('Check valid option')
+      } else {
+        window.alert('Check valid option');
       }
     }
   };

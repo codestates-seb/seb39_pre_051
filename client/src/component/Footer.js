@@ -81,6 +81,7 @@ const FooterCopyright = styled.div`
 const STACK_OVERFLOW_com = 'https://stackoverflow.com';
 const STACK_OVERFLOW_co = 'https://stackoverflow.co';
 const STACK_EXCHANGE = 'https://stackexchange.com/';
+
 const Footer = () => {
   return (
     <FooterLayout>

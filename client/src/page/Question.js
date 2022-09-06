@@ -24,7 +24,7 @@ const Question = () => {
 
   //태그
   const [tagsArray, setTagsArr] = useState([]);
-  const [stringTags, setStringTags]  = useState('')
+  const [stringTags, setStringTags] = useState('');
 
   const {
     questionId,
@@ -37,25 +37,25 @@ const Question = () => {
     questionAnswers,
     questionBestAnswerId,
     questionWriter,
-
     questionTags,
     likesPressedQuestionIdFromToken,
     likesPressedAnswersIdFromToken,
   } = questionState;
 
   useEffect(() => {
-    if(userId){
-      dispatch(readQuestion({questionId : params.questionId, userId}))
+    if (userId) {
+      dispatch(readQuestion({ questionId: params.questionId, userId }));
       setTitle(questionTitle);
       setOriginalTitle(questionTitle);
-      setTagsArr(questionTags.split(','))
-    }else{
-      dispatch(readQuestion({questionId:params.questionId}));
+      setTagsArr(questionTags.split(','));
+    } else {
+      dispatch(readQuestion({ questionId: params.questionId }));
       setTitle(questionTitle);
       setOriginalTitle(questionTitle);
-      setTagsArr(questionTags.split(','))
+      setTagsArr(questionTags.split(','));
     }
   }, [dispatch, params.questionId, questionTitle]);
+
   let year = null;
   let month = null;
   let day = null;
@@ -81,13 +81,12 @@ const Question = () => {
 
   const handleQuestionEditMode = () => {
     setQuestionEditMode(!questionEditMode);
-    // setTitle(questionTitle);
-    // setTagsArr(questionTags.split(','))
     //태그
     let string = '';
     tagsArray.map((el) => (string += el + ','));
     setStringTags(string.slice(0, -1));
   };
+
   return (
     <>
       <TopBar />

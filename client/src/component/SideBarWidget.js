@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import { faStackOverflow } from '@fortawesome/free-brands-svg-icons';
 
-const SideBarWidget = (props) => {
+const SideBarWidget = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
   return (
     <WidgetLayout>

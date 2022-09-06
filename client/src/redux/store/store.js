@@ -5,6 +5,6 @@ import themeSlice from '../slice/themeSlice';
 export const store = configureStore({
   reducer: {
     themeSlice,
-    questionSlice
+    questionSlice,
   },
 });

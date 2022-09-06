@@ -75,34 +75,23 @@ const OpinionCard = ({
         return;
       }
       if (isQuestion) {
-        console.log(`${id}번 질문에 대한 댓글 ${enteredComment}입니다.`);
         await axios
           .post(`/questionComments/${id}`, {
             questionCommentWriterId: userId,
             questionCommentContent: enteredComment,
           })
-          .then((res) => console.log(res))
-          .catch((err) => {
-            console.log(err);
-          });
+          .then((res) => res)
+          .catch((err) => err);
         commentInput.current.value = '';
         window.location.reload(`/questions/${questionId}`)
-
-        // return response;
       } else {
-        console.log(
-          `${questionId}번 질문 ${id}번 답변에 대한 댓글 ${enteredComment}입니다.`
-        );
-
         await axios
           .post(`/answerComments/${id}`, {
             answerCommentWriterId: userId,
             answerCommentContent: enteredComment,
           })
-          .then((res) => console.log(res))
-          .catch((err) => {
-            console.log(err);
-          });
+          .then((res) => res)
+          .catch((err) => err);
         commentInput.current.value = '';
         window.location.reload(`/questions/${questionId}`)
       }
@@ -154,7 +143,6 @@ const OpinionCard = ({
     if (isQuestion) {
       try {
         if (window.confirm('Delete this question?')) {
-          console.log(`${id}번 질문 삭제 입니다.`);
           const response = await axios.delete(`/questions/${id}`);
           navigate('/');
           window.location.reload();
@@ -168,7 +156,6 @@ const OpinionCard = ({
     } else {
       try {
         if (window.confirm('Delete this post?')) {
-          console.log(`${questionId}번 질문의 ${id}번 답변 삭제 버튼입니다. `);
           const response = await axios.delete(`/answer/${id}`);
           window.location.reload(`/questions/${questionId}`)
           return response;
@@ -222,6 +209,7 @@ const OpinionCard = ({
   const handleAnswersLikes = async () => {
     if (userId) {
       const response = await axios.patch(`/answerLikes/${id}/${userId}`);
+
       if (likesPressedAnswersIdFromToken.includes(id)) {
         if (isAnswerClick) {
           setAnswerLike(answerLike + 1);

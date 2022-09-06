@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUserId } from '../getUserInfo';
 import { removeCookie } from '../utils/cookie';
-import Logo from'../component/Logo';
+import Logo from '../component/Logo';
 
 const TopBar = ({ data, setData }) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
@@ -28,7 +28,7 @@ const TopBar = ({ data, setData }) => {
   };
 
   const handleLogOut = () => {
-    removeCookie()
+    removeCookie();
     localStorage.removeItem('userId');
     localStorage.removeItem('userName');
     navigate('/');
@@ -59,7 +59,7 @@ const TopBar = ({ data, setData }) => {
     <Header themeState={themeState}>
       <TopBarDiv>
         <TopBarLogoA href='/' themeState={themeState}>
-          <Logo  />
+          <Logo />
         </TopBarLogoA>
         <TobBarLeftNav>
           <TopBarA href='https://stackoverflow.co/' themeState={themeState}>
@@ -182,8 +182,8 @@ const Header = styled.header`
   align-items: center;
   background-color: ${(props) =>
     props.themeState === 'light' ? '#f8f9f9' : '#393939'};
-    @media (max-width: 64rem){
-    }
+  @media (max-width: 64rem) {
+  }
 `;
 
 const TopBarLogoA = styled.a`
@@ -237,9 +237,9 @@ const TopBarSearchDiv = styled.div`
   align-items: center;
   position: relative;
   flex-grow: 1;
-  @media (max-width:64rem){
-    display:none
-  };
+  @media (max-width: 64rem) {
+    display: none;
+  }
   #searchIcon {
     position: absolute;
     top: 50%;

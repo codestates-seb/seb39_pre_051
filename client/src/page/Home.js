@@ -36,7 +36,7 @@ const Home = () => {
           )
         );
       })
-      .catch((err) => console.log(err));
+      .catch((err) => err);
   }, [page, size]);
 
   return (
@@ -63,6 +63,7 @@ const Home = () => {
                 questionAnswers={el.questionAnswers}
                 questionCreatedAt={el.questionCreatedAt}
                 questionWriter={el.questionWriter}
+                questionTags={el.questionTags}
               ></Card>
             ))}
             <PaginationWrapper>

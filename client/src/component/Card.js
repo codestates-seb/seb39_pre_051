@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 
-const tagArray = ['java', 'javascript', 'python', 'GO', 'C++'];
-
 const Card = ({
   questionId,
   questionTitle,
@@ -12,9 +10,9 @@ const Card = ({
   questionLikesCount,
   questionAnswers,
   questionCreatedAt,
+  questionTags,
 }) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
-  console.log(questionWriter)
   const year = questionCreatedAt[0];
   const month = questionCreatedAt[1];
   const day = questionCreatedAt[2];
@@ -46,11 +44,18 @@ const Card = ({
           <QuestionSummary>{questionContent}</QuestionSummary>
           <QuestionInfoContainer>
             <TagWrapper>
-              {tagArray.map((el, key) => (
-                <Tag key={key} themeState={themeState}>
-                  {el}
-                </Tag>
-              ))}
+              {questionTags !== null ? (
+                questionTags
+                  .replace(/ /g, '')
+                  .split(',')
+                  .map((el, key) => (
+                    <Tag key={key} themeState={themeState}>
+                      {el}
+                    </Tag>
+                  ))
+              ) : (
+                <></>
+              )}
             </TagWrapper>
             <InfoWrapper>
               <img
