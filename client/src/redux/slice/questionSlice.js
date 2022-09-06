@@ -21,11 +21,20 @@ let initialState = {
 //질문 R
 export const readQuestion = createAsyncThunk(
   'questions/readQuestion',
-  async (questionId) => {
-    const response = await axios.get(`/questions/${questionId}`);
+  async (questionInfo) => {
+    if(questionInfo.userId){
+    const response = await axios.get(`/questions/${questionInfo.questionId}`,{
+      userId : questionInfo.userId
+    });
     const data = await response.data.data;
     console.log(data);
     return data;
+    }else{
+      const response = await axios.get(`/questions/${questionInfo.questionId}`);
+      const data = await response.data.data;
+      console.log(data);
+      return data;
+    }
   }
 );
 

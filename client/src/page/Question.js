@@ -42,11 +42,19 @@ const Question = () => {
   } = questionState;
 
   useEffect(() => {
-    dispatch(readQuestion(params.questionId));
-    setTitle(questionTitle);
-    setOriginalTitle(questionTitle);
-    // const splitTags = questionTags.split(',')
-    // setTagsArr(splitTags)
+    if(userId){
+      dispatch(readQuestion({questionId : params.questionId, userId}))
+      setTitle(questionTitle);
+      setOriginalTitle(questionTitle);
+      // const splitTags = questionTags.split(',')
+      // setTagsArr(splitTags)
+    }else{
+      dispatch(readQuestion({questionId:params.questionId}))
+      setTitle(questionTitle);
+      setOriginalTitle(questionTitle);
+      // const splitTags = questionTags.split(',')
+      // setTagsArr(splitTags)
+    }
   }, [dispatch, params.questionId, questionTitle]);
 
   let year = null;
