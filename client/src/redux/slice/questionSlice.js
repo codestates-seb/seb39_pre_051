@@ -67,7 +67,6 @@ export const questionSlice = createSlice({
         state.questionTags = action.payload.questiontags
       }
     },
-  },
   extraReducers: (builder) => {
     builder.addCase(readQuestion.pending, (state, action) => {
       state.status = 'Loading';
