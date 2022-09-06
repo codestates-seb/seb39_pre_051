@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUserId } from '../getUserInfo';
 import { removeCookie } from '../utils/cookie';
+import Logo from'../component/Logo';
 
 const TopBar = ({ data, setData }) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
@@ -59,7 +60,7 @@ const TopBar = ({ data, setData }) => {
     <Header themeState={themeState}>
       <TopBarDiv>
         <TopBarLogoA href='/' themeState={themeState}>
-          <TopBarLogoSpan />
+          <Logo  />
         </TopBarLogoA>
         <TobBarLeftNav>
           <TopBarA href='https://stackoverflow.co/' themeState={themeState}>
