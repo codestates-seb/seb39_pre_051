@@ -2,35 +2,42 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 let initialState = {
-    status:null,
-    error:null,
-    questionId: null,
-    questionWriterId: null,
-    questionContent: null,
-    questionLikesCount: null,
-    questionCreatedAt:[],
-    questionModifiedAt : [],
-    questionTitle: null,
-    questionQuestionComments: [],
-    questionAnswers:[],
-    questionWriter: {},
-    questionBestAnswerId:null,
-    questionTags: ''
-}
+  status: null,
+  error: null,
+  questionId: null,
+  questionWriterId: null,
+  questionContent: null,
+  questionLikesCount: null,
+  questionCreatedAt: [],
+  questionModifiedAt: [],
+  questionTitle: null,
+  questionQuestionComments: [],
+  questionAnswers: [],
+  questionWriter: {},
+  questionBestAnswerId: null,
+  likesPressedQuestionIdFromToken: 0,
+  likesPressedAnswersIdFromToken: [],
+  questionTags: ''
+};
+
 
 //질문 R
 export const readQuestion = createAsyncThunk(
   'questions/readQuestion',
   async (questionInfo) => {
-    if(questionInfo.userId){
-      console.log( questionInfo.userId, typeof questionInfo.userId)
-    const response = await axios.get(`/questions/${questionInfo.questionId}/${questionInfo.userId}`).catch((err)=>console.log(err))
-    const data = await response.data.data;
-    console.log(data);
-    return data;
-    }else{
-      console.log(questionInfo)
-      const response = await axios.get(`/questions/${questionInfo.questionId}/0`).catch((err)=>console.log(err))
+    if (questionInfo.userId) {
+      console.log(questionInfo.userId, typeof questionInfo.userId);
+      const response = await axios
+        .get(`/questions/${questionInfo.questionId}/${questionInfo.userId}`)
+        .catch((err) => console.log(err));
+      const data = await response.data.data;
+      console.log(data);
+      return data;
+    } else {
+      console.log(questionInfo);
+      const response = await axios
+        .get(`/questions/${questionInfo.questionId}/0`)
+        .catch((err) => console.log(err));
       const data = await response.data.data;
       console.log(data);
       return data;
@@ -128,7 +135,11 @@ export const questionSlice = createSlice({
             }else{
               state.questionTags = ''
             }
-            
+            state.questionWriter = action.payload.questionWriter;
+            state.likesPressedQuestionIdFromToken =
+              action.payload.likesPressedQuestionIdFromToken;
+            state.likesPressedAnswersIdFromToken =
+              action.payload.likesPressedAnswersIdFromToken;
         })
         builder.addCase(readQuestion.rejected, (state,action) => {
             state.status = 'failed'

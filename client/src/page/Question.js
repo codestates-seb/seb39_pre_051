@@ -20,7 +20,7 @@ const Question = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
   const questionState = useSelector((state) => state.questionSlice);
   const dispatch = useDispatch();
-  const userId = getUserId()
+  const userId = getUserId();
 
   //태그
   const [tagsArray, setTagsArr] = useState([]);
@@ -38,7 +38,10 @@ const Question = () => {
     questionAnswers,
     questionBestAnswerId,
     questionWriter,
-    questionTags
+
+    questionTags,
+    likesPressedQuestionIdFromToken,
+    likesPressedAnswersIdFromToken,
   } = questionState;
 
   useEffect(() => {
@@ -48,7 +51,7 @@ const Question = () => {
       setOriginalTitle(questionTitle);
       setTagsArr(questionTags.split(','))
     }else{
-      dispatch(readQuestion({questionId:params.questionId}))
+      dispatch(readQuestion({questionId:params.questionId}));
       setTitle(questionTitle);
       setOriginalTitle(questionTitle);
       setTagsArr(questionTags.split(','))
@@ -82,9 +85,9 @@ const Question = () => {
     // setTitle(questionTitle);
     // setTagsArr(questionTags.split(','))
     //태그
-    let string = ''
-    tagsArray.map((el)=>string+=el+',')
-    setStringTags(string.slice(0,-1))
+    let string = '';
+    tagsArray.map((el) => (string += el + ','));
+    setStringTags(string.slice(0, -1));
   };
   return (
     <>
@@ -134,13 +137,16 @@ const Question = () => {
             stringTags={stringTags}
             setStringTags={setStringTags}
             setTagsArr={setTagsArr}
+            //좋아요
+            likesPressedQuestionIdFromToken={likesPressedQuestionIdFromToken}
+            likesPressedAnswersIdFromToken={likesPressedAnswersIdFromToken}
           />
           <AnswerSummay>{questionAnswers.length} Answers</AnswerSummay>
           {questionAnswers.map((el) => (
             <OpinionCard
               key={el.answerId}
               id={el.answerId}
-              likes={el.answerLikesCount}
+              answerLikes={el.answerLikesCount}
               content={el.answerContent}
               modifiedAt={el.answerModifiedAt}
               writer={el.answerWriter}
@@ -149,6 +155,7 @@ const Question = () => {
               isQuestion={false}
               questionBestAnswerId={questionBestAnswerId}
               questionWriter={questionWriter.userId}
+              likesPressedAnswersIdFromToken={likesPressedAnswersIdFromToken}
             />
           ))}
           <AddAnswer questionId={questionId} />

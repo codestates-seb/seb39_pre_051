@@ -91,7 +91,7 @@ const Ask = () => {
         questionWriterId: userId,
         questionTitle,
         questionContent,
-        questionTag: questionTag.split(',').map((el) => el.replace(/ /g, '')),
+        questionTags: questionTag,
       })
       .then((res) => console.log(res))
       .catch((err) => {
