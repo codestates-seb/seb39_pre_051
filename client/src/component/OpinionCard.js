@@ -2,8 +2,7 @@ import styled from 'styled-components';
 import Comment from './Comment';
 import BestAnswerMark from './BestAnswerMark';
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { readQuestion } from '../redux/slice/questionSlice';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { getUserId } from '../getUserInfo';
@@ -34,7 +33,6 @@ const OpinionCard = ({
 }) => {
   const commentInput = useRef();
   const themeState = useSelector((state) => state.themeSlice).theme;
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [text, setText] = useState('');
   const [answerEditMode, setAnswerEditMode] = useState(false);
@@ -57,7 +55,6 @@ const OpinionCard = ({
 
   //태그
   const handleStringTags = (e) => {
-    console.log(e.target.value);
     setStringTags(e.target.value);
   };
 
@@ -79,8 +76,6 @@ const OpinionCard = ({
       }
       if (isQuestion) {
         console.log(`${id}번 질문에 대한 댓글 ${enteredComment}입니다.`);
-        console.log(typeof enteredComment);
-
         await axios
           .post(`/questionComments/${id}`, {
             questionCommentWriterId: userId,
@@ -91,7 +86,7 @@ const OpinionCard = ({
             console.log(err);
           });
         commentInput.current.value = '';
-        dispatch(readQuestion(id));
+        window.location.reload(`/questions/${questionId}`)
 
         // return response;
       } else {
@@ -109,7 +104,7 @@ const OpinionCard = ({
             console.log(err);
           });
         commentInput.current.value = '';
-        dispatch(readQuestion(questionId));
+        window.location.reload(`/questions/${questionId}`)
       }
     } else {
       if (
@@ -140,7 +135,7 @@ const OpinionCard = ({
       questionTags: stringTags,
     });
     setQuestionEditMode(!questionEditMode);
-    dispatch(readQuestion(id));
+    window.location.reload(`/questions/${questionId}`)
     return response;
   };
 
@@ -150,7 +145,7 @@ const OpinionCard = ({
       answerContent: text,
     });
     setAnswerEditMode(!answerEditMode);
-    dispatch(readQuestion(questionId));
+    window.location.reload(`/questions/${questionId}`)
     return response;
   };
 
@@ -175,7 +170,7 @@ const OpinionCard = ({
         if (window.confirm('Delete this post?')) {
           console.log(`${questionId}번 질문의 ${id}번 답변 삭제 버튼입니다. `);
           const response = await axios.delete(`/answer/${id}`);
-          dispatch(readQuestion(questionId));
+          window.location.reload(`/questions/${questionId}`)
           return response;
         } else {
           return;
@@ -186,7 +181,6 @@ const OpinionCard = ({
     }
   };
   const handleEditText = (e) => {
-    console.log(e.target.value);
     setText(e.target.value);
   };
 
@@ -228,9 +222,6 @@ const OpinionCard = ({
   const handleAnswersLikes = async () => {
     if (userId) {
       const response = await axios.patch(`/answerLikes/${id}/${userId}`);
-
-      console.log(likesPressedAnswersIdFromToken);
-
       if (likesPressedAnswersIdFromToken.includes(id)) {
         if (isAnswerClick) {
           setAnswerLike(answerLike + 1);

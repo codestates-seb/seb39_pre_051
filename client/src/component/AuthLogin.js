@@ -1,11 +1,11 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSquareFacebook } from '@fortawesome/free-brands-svg-icons';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import styled from 'styled-components';
 import axios from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import { setCookie } from '../utils/cookie';
@@ -27,11 +27,9 @@ const AuthLogin = (props) => {
     rePassword: '',
   });
   const { displayName, email, password, rePassword } = inputValue;
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleInput = (event) => {
     const { name, value } = event.target;
-    console.log(name, value);
     setInputValue({
       ...inputValue,
       [name]: value,
@@ -47,7 +45,7 @@ const AuthLogin = (props) => {
   const regNumber = /[0-9]/g;
   const regString = /[a-zA-Z]/g;
   const regSpecialCharacter =
-    /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
+/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
   const regEmail =
     /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
 
@@ -94,7 +92,7 @@ const AuthLogin = (props) => {
     if (props.status === 'login') {
       //로그인 일시
       if (!email || !password) {
-        console.log('Enter your Email and password!');
+        alert('Enter your Email and password!');
         return;
       }
 
@@ -107,9 +105,7 @@ const AuthLogin = (props) => {
         const token = data.userToken;
         const userName = data.userName;
         const decoded = jwt_decode(token);
-        console.log(decoded.sub);
         setCookie('token',token)
-        console.log(data.userName);
         localStorage.setItem('userId', JSON.stringify(decoded.sub));
         localStorage.setItem('userName', JSON.stringify(userName));
         // localStorage.setItem('userImg', JSON.stringify(decoded))

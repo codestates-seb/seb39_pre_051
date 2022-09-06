@@ -16,21 +16,18 @@ const Comment = (props) => {
   const userId = getUserId()
 
   const handleDelete = async() => {
-    console.log(props.id, props.isQuestion)
     if(props.isQuestion){
       if(window.confirm('Delete this comment?')){
-        console.log(`/questionComments/${props.id}`)
         const response = await axios.delete(`/questionComments/${props.id}`)
-        dispatch(readQuestion(questionId))
+        window.location.reload(`/questions/${props.questionId}`)
         return response 
       }else{
         return
       }
     } else{
       if(window.confirm('Delete this comment?')){
-        console.log(`/answerComments/${props.id}`)
         const response = await axios.delete(`/answerComments/${props.id}`)
-        dispatch(readQuestion(questionId))
+        window.location.reload(`/questions/${props.questionId}`)
         return response 
       }else{
         return
