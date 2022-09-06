@@ -77,11 +77,4 @@ public class Question {
     @OneToOne(cascade = {CascadeType.ALL})
     private QuestionLikes questionLikes;
 
-    /*
-    @OneToMany
-    @JoinColumn(name="question_tag_id")
-    @JsonIgnore
-    @JsonProperty
-    private List<QuestionTag> questionTags = new ArrayList<>();
-    */
 }

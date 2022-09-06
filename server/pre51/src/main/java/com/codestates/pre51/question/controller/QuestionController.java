@@ -1,5 +1,7 @@
 package com.codestates.pre51.question.controller;
 
+import com.codestates.pre51.answerlikes.entity.AnswerLikes;
+import com.codestates.pre51.answerlikes.service.AnswerLikesService;
 import com.codestates.pre51.dto.MultiResponseDTO;
 import com.codestates.pre51.question.dto.QuestionDTO;
 import com.codestates.pre51.question.entity.Question;
@@ -7,14 +9,20 @@ import com.codestates.pre51.question.mapper.QuestionMapper;
 import com.codestates.pre51.dto.SingleResponseDTO;
 import com.codestates.pre51.question.service.QuestionService;
 
+import com.codestates.pre51.questionLikes.entity.QuestionLikes;
+import com.codestates.pre51.questionLikes.service.QuestionLikesService;
+import com.codestates.pre51.users.dto.UserGetDto;
+import com.codestates.pre51.users.dto.UserLoginDto;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Positive;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -24,11 +32,15 @@ public class QuestionController {
 
     private final QuestionMapper questionMapper;
 
+    private final QuestionLikesService questionLikesService;
 
+    private final AnswerLikesService answerLikesService;
 
-    public QuestionController(QuestionService questionService, QuestionMapper questionMapper) {
+    public QuestionController(QuestionService questionService, QuestionMapper questionMapper, QuestionLikesService questionLikesService,AnswerLikesService answerLikesService) {
         this.questionService = questionService;
         this.questionMapper=questionMapper;
+        this.questionLikesService = questionLikesService;
+        this.answerLikesService=answerLikesService;
     }
 
     @ApiOperation
@@ -45,13 +57,35 @@ public class QuestionController {
     }
     @ApiOperation(value="질문 식별자를 이용한 해당 질문 조회" , notes=" 질문-식별자로 한개의 질문을 반환한다.")
     @GetMapping("/{question-id}")
-    public ResponseEntity getQuestion(@PathVariable("question-id") @ApiParam(name = "질문_식별자") long questionId){
+    public ResponseEntity getQuestion(@PathVariable("question-id") @ApiParam(name = "질문_식별자") long questionId,
+                                      @RequestBody(required = false) UserGetDto userGetDto){
         Question question = questionService.findQuestion(questionId);
         if(question==null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+
+
+        // 1. 토큰에 있는 유저가 누른 질문 좋아요 목록
+        long userId = userGetDto.getUserId(); // 토큰으로부터 받은 userid 사용
+        // questionLikes에 들어있는 데이터들 중
+        // userid가 questionLikesPresserId 와 같은 questionLikes 객체 탐색
+        // 그 값들 중 questionId와 같은 게 있으면 해당 번호 리턴 or boolean으로 리턴
+        long count = questionLikesService.findByLikesQuestionAndPresserId(question,userId);
+
+        QuestionDTO.Response questionToQuestionResponse = questionMapper.questionToQuestionResponse(question);
+        if(count!=0){
+            questionToQuestionResponse.setLikesPressedQuestionIdFromToken(questionId);
+        }
+
+        List<AnswerLikes> list = answerLikesService.findAnswerIdsByPresserId(userId);
+        List<Long> list1 = new ArrayList<>();
+        for(AnswerLikes data : list){
+            list1.add(data.getAnswerLikesId());
+        }
+        questionToQuestionResponse.setLikesPressedAnswersIdFromToken(list1);
         return new ResponseEntity<>(
-                new SingleResponseDTO<>(questionMapper.questionToQuestionResponse(question))
+                new SingleResponseDTO<>(questionToQuestionResponse)
                 ,HttpStatus.OK);
     }
 

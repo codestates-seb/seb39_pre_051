@@ -1,5 +1,6 @@
 package com.codestates.pre51.questioncomment.repository;
 
+import com.codestates.pre51.question.entity.Question;
 import com.codestates.pre51.questioncomment.entity.QuestionComment;
 import org.springframework.data.jpa.repository.JpaRepository;
 

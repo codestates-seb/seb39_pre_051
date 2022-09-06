@@ -44,7 +44,7 @@ public class UserMapper {
         return new UserResponseDto(user.getUserId(),
                 user.getUserName(),
                 user.getUserEmail(),
-                user.getUserPassword(),
+                //user.getUserPassword(),
                 null,
                 user.getUserCreatedAt(),
                 user.getUserImgUrl());

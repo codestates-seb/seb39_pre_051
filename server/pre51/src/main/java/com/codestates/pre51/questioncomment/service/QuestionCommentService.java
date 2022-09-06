@@ -39,4 +39,5 @@ public class QuestionCommentService {
         QuestionComment questionComment = questionCommentRepository.findByQuestionCommentId(questionCommentId);
         questionCommentRepository.delete(questionComment);
     }
+
 }

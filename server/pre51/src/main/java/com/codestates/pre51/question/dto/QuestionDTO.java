@@ -14,6 +14,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class QuestionDTO {
+
+    public static class Get{
+        private long userId;
+    }
+
     @Getter
     @AllArgsConstructor
     @Setter
@@ -79,5 +84,11 @@ public class QuestionDTO {
         private LocalDateTime questionAnsweredAt;
         private List<QuestionComment> questionQuestionComments;
         private List<Answer> questionAnswers;
+        private String usersQuestionLike;     // 토큰에 있는 사용자가 질문에 누른 좋아요 타입
+        private List<String> usersAnswerLike;     // 토큰에 있는 사용자가 답변에 누른 좋아요 타입
+
+        // 토큰에 있는 유저가 누른 question,answer 좋아요 목록
+        private long likesPressedQuestionIdFromToken;
+        private List<Long> likesPressedAnswersIdFromToken;
     }
 }

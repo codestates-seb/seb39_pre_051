@@ -33,4 +33,8 @@ public class QuestionLikesService {
         question.setQuestionLikesCount(likes);
         questionRepository.save(question);
     }
+
+    public long findByLikesQuestionAndPresserId(Question question,long questionLikesPresserId) {
+        return questionLikesRepository.countQuestionLikesByQuestionAndQuestionLikesPresserId(question,questionLikesPresserId);
+    }
 }
