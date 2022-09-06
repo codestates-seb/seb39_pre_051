@@ -26,12 +26,10 @@ export const readQuestion = createAsyncThunk(
   'questions/readQuestion',
   async (questionInfo) => {
     if (questionInfo.userId) {
-      console.log(questionInfo.userId, typeof questionInfo.userId);
       const response = await axios
         .get(`/questions/${questionInfo.questionId}/${questionInfo.userId}`)
         .catch((err) => console.log(err));
       const data = await response.data.data;
-      console.log(data);
       return data;
     } else {
       console.log(questionInfo);
@@ -39,7 +37,6 @@ export const readQuestion = createAsyncThunk(
         .get(`/questions/${questionInfo.questionId}/0`)
         .catch((err) => console.log(err));
       const data = await response.data.data;
-      console.log(data);
       return data;
     }
   }
@@ -57,49 +54,18 @@ export const createAnswer = createAsyncThunk(
       }
     );
     const data = await response.data;
-    console.log(data);
     return data;
   }
 );
 
-export const addQuestionComment = createAsyncThunk(
-  'questions/addQuestionComment',
-  async (questionCommentData) => {
-    console.log(questionCommentData.questionId, {
-      questionCommentWriterId:
-        questionCommentData.questionComment.questionCommentWriterId,
-      questionCommentContent:
-        questionCommentData.questionComment.questionCommentContent,
-    });
-    const response = await axios.post(
-      `/questionComments/${questionCommentData.questionId}`,
-      questionCommentData.questionComment
-    );
-    const data = await response.data;
-    console.log(data);
-    return data;
-  }
-);
 
-export const addAnswerComment = createAsyncThunk(
-  'questions/addAnswerComment',
-  async (answerCommentData) => {
-    console.log(answerCommentData);
-    const response = await axios.post(
-      `/answerComments/${answerCommentData.answerId}`,
-      answerCommentData.answerComment
-    );
-    const data = await response.data;
-    return data;
-  }
-);
+
 
 export const questionSlice = createSlice({
     name: 'question',
     initialState,
     reducers:{
       editQuestion:(state, action) => {
-        console.log(action.payload)
         state.questionTitle = action.payload.questionTitle
         state.questionContent = action.payload.questionContent
         state.questionTags = action.payload.questiontags

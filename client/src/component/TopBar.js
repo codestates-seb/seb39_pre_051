@@ -7,7 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faStackExchange } from '@fortawesome/free-brands-svg-icons';
 import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import DarkModeSwitch from './DarkModeSwitch';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +17,6 @@ import Logo from'../component/Logo';
 
 const TopBar = ({ data, setData }) => {
   const themeState = useSelector((state) => state.themeSlice).theme;
-  const userState = useSelector((state) => state.userInfoSlice);
   const userId = getUserId();
   const [isOpen, setIsOpen] = useState(null);
   const [search, setSearch] = useState('');
@@ -94,7 +93,7 @@ const TopBar = ({ data, setData }) => {
             <>
               <IconWrapper>
                 <a href={`/users/${userId}`} id='userInfo'>
-                  <img src={userState.profileImage} alt='프로필사진' />
+                  <img src={ 'https://creazilla-store.fra1.digitaloceanspaces.com/emojis/58522/orange-square-emoji-clipart-xl.png'} alt='프로필사진' />
                 </a>
                 <div id='icon'>
                   <FontAwesomeIcon icon={faInbox} size='2x' />

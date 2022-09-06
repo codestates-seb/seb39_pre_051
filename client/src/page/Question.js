@@ -28,7 +28,6 @@ const Question = () => {
 
   const {
     questionId,
-    questionWriterId,
     questionContent,
     questionLikesCount,
     questionCreatedAt,
