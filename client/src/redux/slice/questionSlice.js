@@ -15,6 +15,7 @@ let initialState = {
     questionAnswers:[],
     questionWriter: {},
     questionBestAnswerId:null,
+    // questionTags: null
 }
 
 //질문 R
@@ -107,6 +108,7 @@ export const questionSlice = createSlice({
             state.questionBestAnswerId=action.payload.questionBestAnswerId
             state.questionQuestionComments = action.payload.questionQuestionComments
             state.questionWriter = action.payload.questionWriter
+            // state.questionTags = action.payload.questionTags
         })
         builder.addCase(readQuestion.rejected, (state,action) => {
             state.status = 'failed'

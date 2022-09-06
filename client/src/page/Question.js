@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { readQuestion } from '../redux/slice/questionSlice';
 import SideBarWidget from '../component/SideBarWidget';
+import { getUserId } from '../getUserInfo';
 
 const Question = () => {
   const [questionEditMode, setQuestionEditMode] = useState(false);
@@ -19,6 +20,11 @@ const Question = () => {
   const themeState = useSelector((state) => state.themeSlice).theme;
   const questionState = useSelector((state) => state.questionSlice);
   const dispatch = useDispatch();
+  const userId = getUserId()
+
+  //태그
+  const [tagsArray, setTagsArr] = useState(['JAVASCRIPT', 'JAVA', 'PYTHON']);
+  const [stringTags, setStringTags]  = useState('')
 
   const {
     questionId,
@@ -32,12 +38,15 @@ const Question = () => {
     questionAnswers,
     questionBestAnswerId,
     questionWriter,
+    // questionTags
   } = questionState;
 
   useEffect(() => {
     dispatch(readQuestion(params.questionId));
     setTitle(questionTitle);
     setOriginalTitle(questionTitle);
+    // const splitTags = questionTags.split(',')
+    // setTagsArr(splitTags)
   }, [dispatch, params.questionId, questionTitle]);
 
   let year = null;
@@ -66,6 +75,10 @@ const Question = () => {
   const handleQuestionEditMode = () => {
     setQuestionEditMode(!questionEditMode);
     setTitle(questionTitle);
+    //태그
+    let string = ''
+    tagsArray.map((el)=>string+=el+',')
+    setStringTags(string.slice(0,-1))
   };
   return (
     <>
@@ -113,6 +126,10 @@ const Question = () => {
             handleQuestionEditMode={handleQuestionEditMode}
             title={title}
             questionBestAnswerId={questionBestAnswerId}
+            //태그
+            tagsArray={tagsArray}
+            stringTags={stringTags}
+            setStringTags={setStringTags}
           />
           <AnswerSummay>{questionAnswers.length} Answers</AnswerSummay>
           {questionAnswers.map((el) => (
@@ -156,7 +173,7 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   border-left: 1px solid #d6d9dc;
-  border-bottom: 1px solid #d6d9dc;
+  /* border-bottom: 1px solid #d6d9dc; */
   /* padding: 2.4rem; */
   padding: 2.4rem 0;
   width: 72.5rem;
