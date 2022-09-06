@@ -39,6 +39,8 @@ const Home = () => {
       .catch((err) => console.log(err));
   }, [page, size]);
 
+  console.log(data);
+
   return (
     <>
       <TopBar data={data} setData={setData} />
@@ -63,6 +65,7 @@ const Home = () => {
                 questionAnswers={el.questionAnswers}
                 questionCreatedAt={el.questionCreatedAt}
                 questionWriter={el.questionWriter}
+                questionTags={el.questionTags}
               ></Card>
             ))}
             <PaginationWrapper>

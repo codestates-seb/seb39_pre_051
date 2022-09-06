@@ -63,6 +63,7 @@ const QuestionMain = () => {
                 questionAnswers={el.questionAnswers}
                 questionCreatedAt={el.questionCreatedAt}
                 questionWriter={el.questionWriter}
+                questionTags={el.questionTags}
               ></Card>
             ))}
             <PaginationWrapper>
