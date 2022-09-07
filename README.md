@@ -33,6 +33,7 @@
 - `Javascript`
 - `React`
 - `Redux Toolkit`
+- `Styled Components`
 
 ### **BackEnd**
 
