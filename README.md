@@ -98,8 +98,14 @@
 
 ## API 문서
 
-![boardcomment](https://user-images.githubusercontent.com/52846807/178108104-e43db22d-2962-4fbf-b30c-9d08b85b5dc5.png)
-![friend](https://user-images.githubusercontent.com/52846807/178108107-f2626917-e286-49ee-8987-70c7fb423bf7.png)
-![lecturesmessage](https://user-images.githubusercontent.com/52846807/178108108-639a8f8d-499a-4d26-a014-f2f380f9a3e8.png)
-![post](https://user-images.githubusercontent.com/52846807/178108109-76bf0449-cdec-45e8-bc61-cf51f45810d6.png)
-![schooltimetable](https://user-images.githubusercontent.com/52846807/178108111-82581519-14a5-433a-a557-959834c62ed8.png)
+<img width="1478" alt="image" src="https://user-images.githubusercontent.com/49191949/188789686-d317c501-3827-4764-8f89-c8a0822167e0.png">
+<img width="1446" alt="image" src="https://user-images.githubusercontent.com/49191949/188789763-87cb78e7-d7ae-4234-aaf4-746bdb700efb.png">
+<img width="1428" alt="image" src="https://user-images.githubusercontent.com/49191949/188789834-0b49c60f-834b-4d5f-b170-84795fde53f0.png">
+<img width="1427" alt="image" src="https://user-images.githubusercontent.com/49191949/188789885-b1324bda-d1d1-4f97-9e15-caf7ef6f42f8.png">
+<img width="1424" alt="image" src="https://user-images.githubusercontent.com/49191949/188789908-1b573f29-1521-4d89-8014-82c075251bed.png">
+<img width="1424" alt="image" src="https://user-images.githubusercontent.com/49191949/188789925-82b37d90-860c-4fd4-a03e-e1fff1abea71.png">
+<img width="1428" alt="image" src="https://user-images.githubusercontent.com/49191949/188789946-3cd43447-dee1-48e2-988e-9cdf7d78fc23.png">
+<img width="1424" alt="image" src="https://user-images.githubusercontent.com/49191949/188789957-4e8d7029-997e-46fc-9cbd-062a8bc44518.png">
+
+
+
