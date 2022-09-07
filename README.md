@@ -107,5 +107,9 @@
 <img width="1428" alt="image" src="https://user-images.githubusercontent.com/49191949/188789946-3cd43447-dee1-48e2-988e-9cdf7d78fc23.png">
 <img width="1424" alt="image" src="https://user-images.githubusercontent.com/49191949/188789957-4e8d7029-997e-46fc-9cbd-062a8bc44518.png">
 
+## 테이블 다이어그램
+![table](https://user-images.githubusercontent.com/49191949/188813891-a9c68394-1258-439b-a76f-01d04da2cc11.png)
+
+
 
 
