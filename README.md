@@ -31,6 +31,8 @@
 - `HTML`
 - `CSS`
 - `Javascript`
+- `React`
+- `Redux Toolkit`
 
 ### **BackEnd**
 
@@ -86,6 +88,12 @@
 - 댓글 등록, 수정, 삭제, 조회
 
 - 페이징
+
+- 질문 검색
+
+- Light/Dark 모드
+
+- 질문 좋아요, 채택
 
 ## API 문서
 
